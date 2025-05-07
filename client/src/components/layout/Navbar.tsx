@@ -1,6 +1,6 @@
-import insuranceMoney from "../../../assets/insurance.svg";
-import { navbarMenuItems } from "../../../constants/index";
-import type { NavbarMenuItem } from "../types/navbar-menu-item";
+import insuranceMoney from "../../assets/insurance.svg";
+import { navbarMenuItems } from "../../constants/index";
+import type { NavbarMenuItem } from "../../types/navbar-menu-item";
 
 function Navbar() {
   return (
