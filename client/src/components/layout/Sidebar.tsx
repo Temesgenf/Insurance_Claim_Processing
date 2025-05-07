@@ -1,23 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   HomeIcon,
   BuildingStorefrontIcon,
   DocumentTextIcon,
-  ClipboardDocumentListIcon
-} from '@heroicons/react/24/outline';
-
+  ClipboardDocumentListIcon,
+} from "@heroicons/react/24/outline";
 
 const Sidebar: React.FC = () => {
   const [productsOpen, setProductsOpen] = useState(false);
 
   return (
-    <aside className="h-screen w-64 bg-gradient-to-b from-green-500 to-green-700 text-white shadow-lg flex flex-col">
-      <nav className="flex-1">
+    <aside className="h-screen w-64 bg-[#154654] text-white shadow-lg">
+      <nav>
         <ul className="py-6 space-y-2">
           <li>
             <a
-              href="/dashboard"
-              className="flex items-center px-6 py-3 rounded-lg hover:bg-green-300 transition-colors duration-200 font-medium"
+              href="/user/dashboard"
+              className="flex items-center px-6 py-3 rounded-lg hover:bg-[#0a393f] transition-colors duration-200 font-medium"
             >
               <HomeIcon className="h-5 w-5 mr-3" />
               Dashboard
@@ -25,20 +24,27 @@ const Sidebar: React.FC = () => {
           </li>
           <li className="relative">
             <button
-              className="flex items-center w-full px-6 py-3 rounded-lg hover:bg-green-300 transition-colors duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="flex items-center w-full px-6 py-3 rounded-lg hover:bg-[#0a393f] transition-colors duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-blue-400"
               onClick={() => setProductsOpen((open) => !open)}
               aria-expanded={productsOpen}
             >
               <BuildingStorefrontIcon className="h-5 w-5 mr-3" />
               Products
               <svg
-                className={`ml-auto w-5 h-5 transform transition-transform duration-200 ${productsOpen ? 'rotate-180' : ''}`}
+                className={`ml-auto w-5 h-5 transform transition-transform duration-200 ${
+                  productsOpen ? "rotate-180" : ""
+                }`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </button>
             {productsOpen && (
@@ -46,7 +52,7 @@ const Sidebar: React.FC = () => {
                 <li>
                   <a
                     href="/products/life"
-                    className="block px-6 py-3 hover:bg-blue-100 rounded-t-lg transition-colors duration-150"
+                    className="block px-6 py-3 hover:bg-[#0a393f] rounded-t-lg transition-colors duration-150"
                   >
                     Life Insurance
                   </a>
@@ -72,8 +78,8 @@ const Sidebar: React.FC = () => {
           </li>
           <li>
             <a
-              href="/policies"
-              className="flex items-center px-6 py-3 rounded-lg hover:bg-green-300 transition-colors duration-200 font-medium"
+              href="/user/policies"
+              className="flex items-center px-6 py-3 rounded-lg hover:bg-[#0a393f] transition-colors duration-200 font-medium"
             >
               <DocumentTextIcon className="h-5 w-5 mr-3" />
               Policies
@@ -81,8 +87,8 @@ const Sidebar: React.FC = () => {
           </li>
           <li>
             <a
-              href="/claims"
-              className="flex items-center px-6 py-3 rounded-lg hover:bg-green-300 transition-colors duration-200 font-medium"
+              href="/user/claims"
+              className="flex items-center px-6 py-3 rounded-lg hover:bg-[#0a393f] transition-colors duration-200 font-medium"
             >
               <ClipboardDocumentListIcon className="h-5 w-5 mr-3" />
               Claims
