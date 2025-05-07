@@ -1,4 +1,4 @@
-const navbarmenu = [
+const navbarMenuItems = [
   {
     id: 1,
     title: "Home",
@@ -21,4 +21,4 @@ const navbarmenu = [
   },
 ];
 
-export { navbarmenu };
+export { navbarMenuItems };
