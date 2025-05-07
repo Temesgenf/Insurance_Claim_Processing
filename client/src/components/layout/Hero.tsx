@@ -1,5 +1,5 @@
 import { IoChevronForwardCircleOutline } from "react-icons/io5";
-import happyFamilyImage from "../../../assets/c.png";
+import happyFamilyImage from "../../assets/c.png";
 
 function Hero() {
   return (
