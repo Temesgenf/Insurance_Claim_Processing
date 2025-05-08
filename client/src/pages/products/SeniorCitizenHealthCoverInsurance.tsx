@@ -1,10 +1,12 @@
-import React from 'react';
-import Sidebar from '../../components/layout/Sidebar';
-import { productsData } from '../../../public/data/Products';
-import ProductTabs from '../../components/ProductTabs';
+import React from "react";
+import Sidebar from "../../components/layout/Sidebar";
+import { productsData } from "../../../public/data/Products";
+import ProductTabs from "../../components/layout/ProductTabs";
 
 const SeniorCitizenHealthCoverInsurance: React.FC = () => {
-  const product = productsData.find((p: { id: string }) => p.id === 'senior-citizen-health');
+  const product = productsData.find(
+    (p: { id: string }) => p.id === "senior-citizen-health"
+  );
 
   return (
     <div className="flex min-h-screen">

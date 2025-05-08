@@ -1,6 +1,6 @@
 import { IoChevronForwardCircleOutline } from "react-icons/io5";
 import happyFamilyImage from "../../assets/c.png";
-
+import { AiFillLike } from "react-icons/ai";
 function Hero() {
   return (
     <section>
@@ -109,23 +109,29 @@ function Hero() {
         </div>
         <div className="flex justify-center items-center relative">
           <img src={happyFamilyImage} alt="" className="scale-[1.6]" />
-          <div className="rounded-full w-[600px] h-[600px]  bg-[#547aff] opacity-[0.5] absolute -bottom-10 -z-10 flex justify-center items-center">
+          <div className="rounded-full w-[600px] h-[600px]  bg-[#547aff] opacity-[1] absolute -bottom-10 -z-10 flex justify-center items-center">
             <div className="rounded-full w-[500px] h-[500px] bg-white flex justify-center items-center">
               <div className="rounded-full w-[350px] h-[350px] bg-[#547aff]  flex justify-center items-center">
                 <div className="rounded-full w-[250px] h-[250px] bg-[#fff]"></div>
               </div>
             </div>
           </div>
-          <div className="flex jusitify-between items-center h-16 rounded-full bg-gray-200">
-            <img
-              className="inline-block size-11 rounded-full ring-2 ring-white dark:ring-neutral-900"
-              src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
-              alt="avatar"
-            />
+          <div className="absolute -left-10 bottom-0">
+            <div className="flex jusitify-between items-center h-10  bg-white w-max rounded-full py-[40px] pl-[10px] pr-[50px] relative">
+              <img
+                className=" size-11 rounded-full ring-2 ring-white dark:ring-neutral-900 "
+                src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
+                alt="avatar"
+              />
 
-            <p>
-              <span>Doney</span> has got an easy claim
-            </p>
+              <p className="w-[200px] px-[20px] py-[10px] block">
+                <span className="text-xl font-bold">Doney</span> has got an easy
+                claim
+              </p>
+              <div className="flex justify-center items-center bg-[#547aff] rounded-full w-[50px] h-[50px] absolute right-2">
+                <AiFillLike className="text-2xl text-[#fff] " />
+              </div>
+            </div>
           </div>
         </div>
       </div>
