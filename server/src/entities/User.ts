@@ -4,14 +4,35 @@ import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id!: number;
+  readonly userId!: number;
 
   @Column()
-  name!: string;
+  readonly username!: string;
+
+  @Column()
+  readonly fullName!: string;
 
   @Column({ unique: true })
-  email!: string;
+  readonly email!: string;
 
   @Column()
-  password!: string;
+  readonly hashedPassword!: string;
+
+  @Column()
+  readonly dob!: Date;
+
+  @Column()
+  readonly phoneNumber!: string;
+
+  @Column()
+  readonly age!: number;
+
+  @Column({ default: false })
+  readonly isAdmin!: boolean;
+
+  @Column()
+  readonly createdAt!: Date;
+
+  @Column()
+  readonly updatedAt!: Date;
 }
