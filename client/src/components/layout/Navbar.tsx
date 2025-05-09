@@ -1,8 +1,10 @@
 import insuranceMoney from "../../assets/insurance.svg";
 import { navbarMenuItems } from "../../constants/index";
 import type { NavbarMenuItem } from "../../types/navbar-menu-item";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
+  const navigate = useNavigate();
   return (
     <nav>
       <div className="flex justify-between items-center py-4 md:pt-4">
@@ -19,7 +21,12 @@ function Navbar() {
             ))}
           </ul>
         </div>
-        <button className="bg-[#547aff] font-semibold text-[#fff] leading-6 flex justify-center items-center py-4 px-[50px] rounded-[20px]">
+        <button
+          onClick={() => {
+            navigate("/login");
+          }}
+          className="bg-[#547aff] font-semibold text-[#fff] leading-6 flex justify-center items-center py-4 px-[50px] rounded-[20px]"
+        >
           Get Started
         </button>
       </div>
