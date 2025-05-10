@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import { userService } from "../services/user.service";
+import { UserService } from "../services/user.service";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { env } from "../utils/env";
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const users = await userService.getAllUsers();
+    const users = await UserService.getAllUsers();
     res.status(200).json(users);
   } catch (error: any) {
     console.error("Error getting all users:", error);
@@ -54,7 +54,7 @@ export const registerUser = async (req: Request, res: Response) => {
     }
 
     // Check if user already exists
-    const existingUser = await userService.findUserByEmail(email);
+    const existingUser = await UserService.findUserByEmail(email);
     if (existingUser) {
       return res.status(400).json({ message: "Email already registered" });
     }
@@ -64,7 +64,7 @@ export const registerUser = async (req: Request, res: Response) => {
     const fullName = `${firstName} ${lastName}`;
     const age = new Date().getFullYear() - new Date(dateOfBirth).getFullYear();
     // Create user
-    const newUser = await userService.createUser({
+    const newUser = await UserService.createUser({
       fullName,
       age,
       email,
@@ -92,7 +92,7 @@ export const loginUser = async (req: Request, res: Response) => {
     const { email, password } = req.body;
     console.log("req.body in controller before try catch", req.body);
     // Find the user by email
-    const user = await userService.findUserByEmail(email);
+    const user = await UserService.findUserByEmail(email);
 
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
