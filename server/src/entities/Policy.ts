@@ -13,9 +13,9 @@ import { Product } from "./Product";
 import { User } from "./User";
 import { ApplicationStatus } from "../common/enums/application-status.enum";
 
-@Entity("policy_contracts")
+@Entity("policies")
 @Unique(["policyNumber"]) // Ensures policy numbers are unique
-export class PolicyContract {
+export class Policy {
   @PrimaryGeneratedColumn()
   readonly PolicyId!: number;
 
@@ -32,7 +32,6 @@ export class PolicyContract {
     length: 50,
     nullable: false,
   })
-  @Index() // Improves lookup performance
   readonly policyNumber!: string;
 
   @Column({
@@ -54,17 +53,10 @@ export class PolicyContract {
   })
   readonly status!: ApplicationStatus;
 
-  @CreateDateColumn({
-    type: "timestamp",
-    default: () => "CURRENT_TIMESTAMP",
-  })
+  @Column()
   readonly createdAt!: Date;
 
-  @UpdateDateColumn({
-    type: "timestamp",
-    default: () => "CURRENT_TIMESTAMP",
-    onUpdate: "CURRENT_TIMESTAMP",
-  })
+  @Column()
   readonly updatedAt!: Date;
 
   // Optional: For tracking when policy became active

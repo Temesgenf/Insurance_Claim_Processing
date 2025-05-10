@@ -13,13 +13,12 @@ export class Provider {
   readonly providerId!: number;
 
   @Column({ type: "varchar", length: 100 })
-  @Index()
   readonly name!: string;
 
   @Column({ type: "varchar", length: 255, nullable: true })
   readonly picture?: string; // Nullable for providers without profile images
 
-  @Column({ type: "jsonb", nullable: true })
+  @Column({ type: "simple-json", nullable: true })
   readonly location?: {
     address: string;
     city: string;
@@ -28,10 +27,13 @@ export class Provider {
   };
 
   @Column({ type: "varchar", length: 20 })
-  @Index()
   readonly contactNumber!: string;
 
-  @Column({ type: "varchar", array: true, default: [] })
+  @Column({
+    type: "simple-array",
+    nullable: true,
+    default: "",
+  })
   readonly specialities!: string[];
 
   @Column({ type: "decimal", precision: 3, scale: 2, default: 0 })
