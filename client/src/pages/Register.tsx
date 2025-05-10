@@ -1,4 +1,3 @@
-import React from "react";
 import InsuranceImage from "../assets/insurance.svg";
 import { Link } from "react-router-dom";
 const Register = () => {

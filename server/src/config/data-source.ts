@@ -1,10 +1,10 @@
 import { DataSource } from "typeorm";
 import { User } from "../entities/User";
-import { Product } from "../entities/Product";
 import { Provider } from "../entities/Provider";
 import { Policy } from "../entities/Policy";
 import { Claim } from "../entities/Claim";
 import { ClaimDocument } from "../entities/Claim-Document";
+import { Product } from "../entities/Product";
 
 export const AppDataSource = new DataSource({
   type: "mysql",

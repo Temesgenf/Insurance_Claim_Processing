@@ -7,7 +7,6 @@ export class UserRepository {
   }
 
   static create(user: User) {
-    console.log("user", user);
     return AppDataSource.getRepository(User).save(user);
   }
 }

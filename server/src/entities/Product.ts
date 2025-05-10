@@ -1,15 +1,5 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { PremiumRate } from "../common/enums/premium-rate.enum";
-import { Provider } from "./Provider";
 
 @Entity()
 export class Product {
@@ -59,10 +49,6 @@ export class Product {
     nullable: true, // Optional field
   })
   readonly description!: string;
-
-  @ManyToOne(() => Provider)
-  @JoinColumn({ name: "providerId" })
-  readonly provider!: Provider;
 
   @Column({
     type: "simple-array", // Stores an array of strings
