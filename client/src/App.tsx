@@ -18,6 +18,8 @@ import FamilyHealthProtectionInsurance from "./pages/products/FamilyHealthProtec
 import SeniorCitizenHealthCoverInsurance from "./pages/products/SeniorCitizenHealthCoverInsurance";
 import MaternityChildCareInsurance from "./pages/products/MaternityChildCareInsurance";
 import PersonalAccidentProtectionInsurance from "./pages/products/PersonalAccidentProtectionInsurance";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/user/dashboard" element={<UserDashboard />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route
             path="/products/critical-care"
             element={<CriticalCareInsurance />}
