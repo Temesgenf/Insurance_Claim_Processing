@@ -1,11 +1,5 @@
 import { Request, Response } from "express";
-import { getCustomRepository } from "typeorm";
-import { ProductRepository } from "../repositories/product.repository";
-import { Product } from "../entities/Product";
-import { CreateProductDto } from "../common/dtos/create-product.dto";
 import ProductService from "../services/product.service";
-import { User } from "../entities/User";
-import { userService } from "../services/user.service";
 
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
