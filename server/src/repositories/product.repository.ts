@@ -9,13 +9,18 @@ export class ProductRepository {
     });
   }
 
+  static async findById(id: number): Promise<Product | null> {
+    return AppDataSource.getRepository(Product).findOne({
+      where: { productId: id },
+    });
+  }
+
   static async findAll(): Promise<Product[]> {
     return AppDataSource.getRepository(Product).find();
   }
 
-  static createProduct(dto: CreateProductDto) {
-    const response = AppDataSource.getRepository(Product).create(dto);
-    console.log("Creating product in repository:", response);
+  static async createProduct(product: Product) {
+    const response = await AppDataSource.getRepository(Product).save(product);
     return response;
   }
 

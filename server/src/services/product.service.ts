@@ -1,4 +1,5 @@
 import { CreateProductDto } from "../common/dtos/create-product.dto";
+import { Product } from "../entities/Product";
 import { ProductRepository } from "../repositories/product.repository";
 
 class ProductService {
@@ -10,8 +11,11 @@ class ProductService {
     return ProductRepository.findByName(productName);
   }
 
-  static async createProduct(product: CreateProductDto) {
-    console.log("Creating product:", product);
+  static async getProductById(id: number) {
+    return ProductRepository.findById(id);
+  }
+
+  static async createProduct(product: Product) {
     return ProductRepository.createProduct(product);
   }
 

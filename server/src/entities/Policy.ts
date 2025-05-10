@@ -17,15 +17,15 @@ import { ApplicationStatus } from "../common/enums/application-status.enum";
 @Unique(["policyNumber"]) // Ensures policy numbers are unique
 export class Policy {
   @PrimaryGeneratedColumn()
-  readonly PolicyId!: number;
+  readonly policyId!: number;
 
   @ManyToOne(() => Product)
-  @JoinColumn({ name: "product_id" })
-  readonly product!: Product; // Using relation instead of productId
+  @JoinColumn({ name: "productId" })
+  readonly productId!: number;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: "policy_holder_id" })
-  readonly policyHolder!: User; // Using relation instead of policyHolderId
+  @JoinColumn({ name: "userId" })
+  readonly policyHolderId!: number; // Using relation instead of policyHolderId
 
   @Column({
     type: "varchar",

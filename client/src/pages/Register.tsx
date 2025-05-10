@@ -1,4 +1,3 @@
-import React from "react";
 import InsuranceImage from "../assets/insurance.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";

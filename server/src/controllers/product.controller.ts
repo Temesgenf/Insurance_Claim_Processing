@@ -16,25 +16,22 @@ export const getAllProducts = async (req: Request, res: Response) => {
   }
 };
 
-// export const createProduct = async (req: Request, res: Response) => {
-//   console.log("this is controller", req.body);
-//   try {
-//     console.log("req.body in controller", req.body);
-//     const product = await ProductService.createProduct(req.body);
-//     console.log("product in controller", product);
-//     res.json(product);
-//   } catch (error) {
-//     res.status(500).json({ message: "Failed to create product" });
-//   }
-// };
-
 export async function createProduct(req: Request, res: Response) {
   try {
     const product = await ProductService.createProduct(req.body);
-    console.log("product in controller", product);
     res.json(product);
   } catch (error) {
     res.status(500).json({ message: "Failed to create product" });
+  }
+}
+
+export async function getProductById(req: Request, res: Response) {
+  try {
+    const id = parseInt(req.params.id);
+    const product = await ProductService.getProductById(id);
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch product" });
   }
 }
 

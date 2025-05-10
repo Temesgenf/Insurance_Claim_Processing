@@ -21,8 +21,6 @@ const Table: React.FC<TableProps> = ({ columns, data }) => {
     }
   };
 
-  console.log("Table data:", data); // Debugging line to check the data being passed
-
   return (
     <div className="overflow-x-auto mt-8">
       <table className="min-w-full divide-y divide-gray-200">

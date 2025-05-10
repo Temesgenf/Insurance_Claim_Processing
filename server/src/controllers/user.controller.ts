@@ -18,8 +18,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
 export async function createUser(req: Request, res: Response) {
   try {
-    const user = await userService.createUser(req.body);
-    // console.log("users in controller", user);
+    const user = await UserService.createUser(req.body);
     res.json(user);
   } catch (error) {
     res.status(500).json({ message: "Failed to create user" });
