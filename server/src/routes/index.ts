@@ -1,5 +1,5 @@
 import { Express } from "express";
-import { userRouter } from "./user.routes";
+import userRouter from "./user.routes";
 import { productRouter } from "./product.routes";
 import { policyRouter } from "./policy.router";
 

@@ -5,7 +5,7 @@ import { Product } from "../entities/Product";
 import { CreateProductDto } from "../common/dtos/create-product.dto";
 import ProductService from "../services/product.service";
 import { User } from "../entities/User";
-import { UserService } from "../services/user.service";
+import { userService } from "../services/user.service";
 
 export const getAllProducts = async (req: Request, res: Response) => {
   try {

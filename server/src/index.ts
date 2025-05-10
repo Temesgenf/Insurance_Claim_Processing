@@ -11,7 +11,7 @@ app.use(cors());
 
 registerRoutes(app);
 
-const PORT = process.env.PORT || 3000;
+const PORT = parseInt(process.env.PORT || "3000", 10);
 
 AppDataSource.initialize()
   .then(() => {
