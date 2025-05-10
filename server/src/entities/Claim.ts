@@ -16,7 +16,6 @@ export class Claim {
   readonly claimId!: number;
 
   @Column({ type: "varchar", length: 50 })
-  @Index()
   readonly policyId!: string;
 
   @Column({ type: "varchar", length: 50, unique: true })

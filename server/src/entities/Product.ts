@@ -22,7 +22,6 @@ export class Product {
     unique: true,
     nullable: false,
   })
-  @Index() // Improves lookup performance
   readonly productCode!: string;
 
   @Column({
@@ -71,16 +70,9 @@ export class Product {
   })
   readonly keyBenefits!: string[];
 
-  @CreateDateColumn({
-    type: "timestamp",
-    default: () => "CURRENT_TIMESTAMP",
-  })
+  @Column()
   readonly createdAt!: Date;
 
-  @UpdateDateColumn({
-    type: "timestamp",
-    default: () => "CURRENT_TIMESTAMP",
-    onUpdate: "CURRENT_TIMESTAMP",
-  })
+  @Column()
   readonly updatedAt!: Date;
 }
