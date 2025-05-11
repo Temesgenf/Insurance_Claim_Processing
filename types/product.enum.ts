@@ -8,5 +8,6 @@ export interface Product {
   basePremium: number;
   premiumRate: string;
   keyBenefits: string[];
+  coverages: string[];
   description: string;
 }

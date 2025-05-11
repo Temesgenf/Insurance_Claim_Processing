@@ -19,3 +19,8 @@ export const getProductById = async (id: number) => {
   const response = await axios.get(`${API_BASE_URL}/api/products/${id}`);
   return response;
 };
+
+export const createProduct = async (productData: any) => {
+  const response = await axios.post(`${API_BASE_URL}/api/products`, productData);
+  return response;
+};
