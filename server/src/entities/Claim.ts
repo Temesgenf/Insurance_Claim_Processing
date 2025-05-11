@@ -4,26 +4,21 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  Index,
   ManyToOne,
   JoinColumn,
 } from "typeorm";
-import { User } from "./User";
+import { Policy } from "./Policy";
 
 @Entity()
 export class Claim {
   @PrimaryGeneratedColumn()
   readonly claimId!: number;
 
-  @Column({ type: "varchar", length: 50 })
-  readonly policyId!: string;
+  @Column({ name: "policyId" })
+  policyId!: string;
 
-  @Column({ type: "varchar", length: 50, unique: true })
+  @Column({ type: "varchar", length: 50, unique: true, nullable: true })
   readonly claimNumber!: string;
-
-  @ManyToOne(() => User)
-  @JoinColumn({ name: "userId" })
-  readonly policyHolderId!: User;
 
   @Column({
     type: "varchar",
@@ -37,6 +32,17 @@ export class Claim {
 
   @Column({ type: "decimal", precision: 12, scale: 2 })
   readonly amountRequested!: number;
+
+  @Column({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
+  })
+  readonly lossDate!: Date;
+  @Column({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
+  })
+  readonly lossTime!: Date;
 
   @CreateDateColumn()
   readonly createdAt!: Date;

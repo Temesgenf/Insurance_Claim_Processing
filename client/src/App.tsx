@@ -2,6 +2,7 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import ClaimsPage from "./pages/ClaimsPage";
+import ClaimDetailPage from "./pages/ClaimDetailPage";
 import NewClaimPage from "./pages/NewClaimPage";
 import UserDashboard from "./pages/UserDashboard";
 import AdminPage from "./pages/AdminPage";
@@ -13,6 +14,8 @@ import AdminSettingsPage from "./pages/AdminSettingsPage";
 import ProductDetail from "./pages/ProductDetail";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import PoliciesPage from "./pages/PoliciesPage";
+import NewPolicyPage from "./pages/NewPolicyPage";
 
 function App() {
   return (
@@ -24,8 +27,14 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/user/claims" element={<ClaimsPage />} />
+          <Route
+            path="/user/claims/:claimNumber"
+            element={<ClaimDetailPage />}
+          />
           <Route path="/user/new-claim" element={<NewClaimPage />} />
           <Route path="/products/:productId" element={<ProductDetail />} />
+          <Route path="/user/policies" element={<PoliciesPage />} />
+          <Route path="/user/new-policy" element={<NewPolicyPage />} />
           <Route path="/admin/dashboard" element={<AdminPage />} />
           <Route path="/admin/users" element={<AdminUsersPage />} />
           <Route path="/admin/policies" element={<AdminPoliciesPage />} />

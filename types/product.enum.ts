@@ -1,5 +1,3 @@
-// Shared Product type for both client and server
-
 export interface Product {
   productId: number;
   productCode: string;
