@@ -1,5 +1,5 @@
 import React from "react";
-import { HomeIcon, UsersIcon, DocumentTextIcon, ClipboardIcon, ChartBarIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
+import { HomeIcon, UsersIcon, DocumentTextIcon, ClipboardIcon, ChartBarIcon, Cog6ToothIcon, CubeIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 
 const AdminSidebar: React.FC = () => {
@@ -23,6 +23,15 @@ const AdminSidebar: React.FC = () => {
             >
               <UsersIcon className="h-5 w-5 mr-3" />
               Users
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/admin/products"
+              className="flex items-center px-6 py-3 rounded-lg hover:bg-[#24344d] transition-colors duration-200 font-medium"
+            >
+              <CubeIcon className="h-5 w-5 mr-3" />
+              Products
             </Link>
           </li>
           <li>

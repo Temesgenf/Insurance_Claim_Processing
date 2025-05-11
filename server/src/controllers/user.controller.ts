@@ -89,7 +89,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
 export const loginUser = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, remember } = req.body;
     console.log("req.body in controller before try catch", req.body);
     // Find the user by email
     const user = await UserService.findUserByEmail(email);
@@ -107,9 +107,15 @@ export const loginUser = async (req: Request, res: Response) => {
 
     // Generate a JWT token
     const token = jwt.sign({ userId: user.userId }, env.JWT_SECRET, {
-      expiresIn: "1h", // Token expires in 1 hour
+      expiresIn: remember ? "7d" : "1h", // Token expires in 1 hour
     });
 
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: remember ? 1000 * 60 * 60 * 24 * 7 : undefined,
+    });
     res.status(200).json({ message: "Login successful", token });
   } catch (error: any) {
     console.error("Error logging in user:", error);
