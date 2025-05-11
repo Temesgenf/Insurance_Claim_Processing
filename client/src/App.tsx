@@ -10,6 +10,7 @@ import AdminPoliciesPage from "./pages/AdminPoliciesPage";
 import AdminClaimsPage from "./pages/AdminClaimsPage";
 import AdminAnalyticsPage from "./pages/AdminAnalyticsPage";
 import AdminSettingsPage from "./pages/AdminSettingsPage";
+import AdminProductPage from "./pages/AdminProductPage";
 import ProductDetail from "./pages/ProductDetail";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -32,6 +33,7 @@ function App() {
           <Route path="/admin/claims" element={<AdminClaimsPage />} />
           <Route path="/admin/analytics" element={<AdminAnalyticsPage />} />
           <Route path="/admin/settings" element={<AdminSettingsPage />} />
+          <Route path="/admin/products" element={<AdminProductPage />} />
         </Routes>
       </div>
     </>
