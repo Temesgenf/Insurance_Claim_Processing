@@ -148,7 +148,7 @@ const Sidebar: React.FC = () => {
           </li>
           <li>
             <a
-              href="/policies"
+              href="/user/policies"
               className="flex items-center px-6 py-3 rounded-lg hover:bg-[#0a393f] transition-colors duration-200 font-medium"
             >
               <DocumentTextIcon className="h-5 w-5 mr-3" />

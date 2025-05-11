@@ -2,14 +2,21 @@ import { Product } from "../entities/Product";
 import { AppDataSource } from "../config/data-source";
 import { CreateProductDto } from "../common/dtos/create-product.dto";
 import { Policy } from "../entities/Policy";
+import { CreatePolicyDto } from "../common/dtos/create-policy.dto";
 
 export class PolicyRepository {
   static async findAll(): Promise<Policy[]> {
     return AppDataSource.getRepository(Policy).find();
   }
 
-  static async createPolicy(policy: Policy) {
-    const response = await AppDataSource.getRepository(Policy).save(policy);
+  static async findById(id: number): Promise<Policy | null> {
+    return AppDataSource.getRepository(Policy).findOne({
+      where: { policyId: id },
+    });
+  }
+
+  static async createPolicy(policyDto: CreatePolicyDto) {
+    const response = await AppDataSource.getRepository(Policy).save(policyDto);
     return response;
   }
 }

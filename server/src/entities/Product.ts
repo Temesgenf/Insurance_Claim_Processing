@@ -57,7 +57,7 @@ export class Product {
   readonly keyBenefits!: string[];
 
   @Column({
-    type: "simple-array", 
+    type: "simple-array",
     nullable: true,
   })
   readonly coverages!: string[];
