@@ -46,4 +46,12 @@ export const userRepository = {
   getAllUsers: async (): Promise<User[]> => {
     return await AppDataSource.getRepository(User).find();
   },
+  deleteUser: async (userId: number) => {
+    return await AppDataSource.getRepository(User).delete(userId);
+  },
+  findUserById: async (userId: number): Promise<User | null> => {
+    return await AppDataSource.getRepository(User).findOne({
+      where: { userId },
+    });
+  },
 };

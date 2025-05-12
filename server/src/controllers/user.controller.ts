@@ -87,6 +87,16 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
+export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const userId = parseInt(req.params.id, 10);
+    await UserService.deleteUser(userId);
+    res.status(204).send();
+  } catch (error: any) {
+    res.status(500).json({ message: "Failed to delete user", error: error.message });
+  }
+};
+
 export const loginUser = async (req: Request, res: Response) => {
   try {
     const { email, password, remember } = req.body;
@@ -106,17 +116,26 @@ export const loginUser = async (req: Request, res: Response) => {
     }
 
     // Generate a JWT token
-    const token = jwt.sign({ userId: user.userId }, env.JWT_SECRET, {
-      expiresIn: remember ? "7d" : "1h", // Token expires in 1 hour
-    });
-
+    const token = jwt.sign(
+      {
+        userId: user.userId,
+        isAdmin: user.isAdmin,
+      },
+      env.JWT_SECRET,
+      { expiresIn: remember ? "7d" : "1h" }
+    );
     res.cookie("token", token, {
       httpOnly: true,
       secure: env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: remember ? 1000 * 60 * 60 * 24 * 7 : undefined,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
     });
-    res.status(200).json({ message: "Login successful", token });
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      isAdmin: user.isAdmin,
+      user,
+    });
   } catch (error: any) {
     console.error("Error logging in user:", error);
     res.status(500).json({ message: "Failed to login", error: error.message });

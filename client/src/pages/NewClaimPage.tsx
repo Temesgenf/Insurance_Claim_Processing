@@ -4,13 +4,15 @@ import Sidebar from "../components/layout/Sidebar";
 import { createClaim } from "../services/claimService";
 import { useNavigate } from "react-router-dom";
 import type { Policy } from "./PoliciesPage";
+import { useAuth } from "../Context/AuthContext";
 import { getPolicyByPolicyNumber } from "../services/policyService";
 import { getProductById } from "../services/productService";
 import type { Product } from "../types/product";
 
 export const NewClaimPage = () => {
   const [showDetails, setShowDetails] = useState(false);
-
+  const { user } = useAuth();
+  console.log(user);
   const navigate = useNavigate();
   const [form, setForm] = useState({
     policyId: "",
@@ -89,6 +91,7 @@ export const NewClaimPage = () => {
         lossDate: new Date(form.lossDate),
         lossTime: new Date(`1970-01-01T${form.lossTime}:00Z`),
         treatmentDetails: form.treatmentDetails,
+        user: { id: user?.id, name: user?.firstName },
       });
       navigate("/user/claims");
     } catch (err: any) {

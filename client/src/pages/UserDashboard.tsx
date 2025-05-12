@@ -8,12 +8,12 @@ import {
   ClipboardList,
   ShieldCheck,
   AlertTriangle,
+  LogOut,
 } from "lucide-react";
 import { getAllPolicies } from "../services/policyService";
 import { getAllClaims } from "../services/claimService";
 import { useNavigate } from "react-router-dom";
-
-// No more static statCards. We'll compute them from real data.
+import { useAuth } from "../Context/AuthContext";
 
 // Status color helper (copied from ClaimsPage for consistency)
 const getStatusColor = (status: string) => {
@@ -32,11 +32,19 @@ const getStatusColor = (status: string) => {
 };
 
 const UserDashboard: React.FC = () => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  // Sign-out handler
+  const handleSignOut = () => {
+    logout(); // clear auth state & tokens
+    navigate("/login", { replace: true });
+  };
+
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRecentActivity = async () => {
@@ -49,6 +57,7 @@ const UserDashboard: React.FC = () => {
         ]);
         const policiesData = policiesRes.data || [];
         const claimsData = claimsRes.data || [];
+
         // Compute stats
         const stats = {
           totalPolicies: policiesData.length,
@@ -70,7 +79,8 @@ const UserDashboard: React.FC = () => {
           ).length,
         };
         setStats(stats);
-        // Recent activity
+
+        // Recent activity items
         const policies = policiesData.map((p: any) => ({
           type: "Policy",
           action: "Created",
@@ -92,14 +102,14 @@ const UserDashboard: React.FC = () => {
         const merged = [...policies, ...claims].sort(
           (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
         );
-        setRecentActivity(merged.slice(0, 10));
-        console.log("Recent activity:", merged);
-      } catch (err: any) {
+        setRecentActivity(merged.slice(0, 5));
+      } catch {
         setError("Failed to load recent activity");
       } finally {
         setLoading(false);
       }
     };
+
     fetchRecentActivity();
   }, []);
 
@@ -107,7 +117,7 @@ const UserDashboard: React.FC = () => {
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <Sidebar />
       <main className="flex-1 p-6 md:p-10">
-        {/* Header */}
+        {/* Header with Sign Out */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
@@ -125,6 +135,14 @@ const UserDashboard: React.FC = () => {
               <div className="font-semibold text-gray-800">John Doe</div>
               <div className="text-xs text-gray-500">john.doe@email.com</div>
             </div>
+            {/* Sign Out Button */}
+            <button
+              onClick={handleSignOut}
+              className="flex items-center space-x-1 text-sm text-red-600 hover:text-red-800 ml-4"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Sign Out</span>
+            </button>
           </div>
         </div>
 
@@ -140,7 +158,7 @@ const UserDashboard: React.FC = () => {
             </div>
           ) : stats ? (
             <>
-              {/* Policies Cards */}
+              {/* Policies */}
               <div
                 className="rounded-2xl shadow-md p-6 bg-gradient-to-br from-blue-100 to-blue-300 flex flex-col items-start hover:shadow-xl transition group cursor-pointer"
                 onClick={() => navigate("/user/policies")}
@@ -194,11 +212,11 @@ const UserDashboard: React.FC = () => {
                 </div>
               </div>
 
-              {/* Claims Cards */}
+              {/* Claims */}
               <div
                 className="rounded-2xl shadow-md p-6 bg-gradient-to-br from-indigo-100 to-indigo-300 flex flex-col items-start hover:shadow-xl transition group cursor-pointer"
                 onClick={() => navigate("/user/claims")}
-                title="Go to Claims"
+                title="Total Claims"
               >
                 <FileText className="w-8 h-8 text-indigo-500 mb-4" />
                 <div className="text-2xl font-bold text-gray-800 mb-1 group-hover:text-indigo-700 transition">

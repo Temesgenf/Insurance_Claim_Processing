@@ -39,6 +39,7 @@ export interface Claim {
   lossDate: string;
   lossTime: string;
   createdAt: string;
+  user: object;
   updatedAt: string;
 }
 

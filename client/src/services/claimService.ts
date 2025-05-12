@@ -8,6 +8,7 @@ interface Claim {
   amountRequested: number;
   lossDate: Date;
   lossTime: Date;
+  user: object;
 }
 
 export const getAllClaims = async () => {
@@ -22,5 +23,15 @@ export const getClaimById = async (id: string) => {
 
 export const createClaim = async (claim: Claim) => {
   const response = await axios.post(`${API_BASE_URL}/api/claims`, claim);
+  return response;
+};
+
+export const approveClaim = async (claimId: number) => {
+  const response = await axios.put(`${API_BASE_URL}/api/claims/${claimId}/approve`);
+  return response;
+};
+
+export const rejectClaim = async (claimId: number) => {
+  const response = await axios.put(`${API_BASE_URL}/api/claims/${claimId}/reject`);
   return response;
 };
