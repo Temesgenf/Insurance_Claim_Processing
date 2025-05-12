@@ -25,8 +25,8 @@ const AdminProductPage: React.FC = () => {
     basePremium: "",
     premiumRate: "Annual",
     description: "",
-    keyBenefits: "",
-    coverages: ""
+    keyBenefits: [""],
+    coverages: [""],
   });
 
   // Fetch products helper
@@ -51,6 +51,29 @@ const AdminProductPage: React.FC = () => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Dynamic multi-input handlers for keyBenefits and coverages
+  const handleMultiInputChange = (type: 'keyBenefits' | 'coverages', idx: number, value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      [type]: prev[type].map((item: string, i: number) => (i === idx ? value : item)),
+    }));
+  };
+
+  const handleAddField = (type: 'keyBenefits' | 'coverages') => {
+    setForm((prev) => ({
+      ...prev,
+      [type]: [...prev[type], ""]
+    }));
+  };
+
+  const handleRemoveField = (type: 'keyBenefits' | 'coverages', idx: number) => {
+    setForm((prev) => ({
+      ...prev,
+      [type]: prev[type].filter((_: string, i: number) => i !== idx)
+    }));
+  };
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.productCode || !form.productName || !form.sumInsured || !form.basePremium || !form.premiumRate || !form.description) return;
@@ -59,16 +82,9 @@ const AdminProductPage: React.FC = () => {
     try {
       const productToSend = {
         ...form,
-        keyBenefits: form.keyBenefits
-          .split(",")
-          .map((b) => b.trim())
-          .filter((b) => b.length > 0),
-        coverages: form.coverages
-          .split(",")
-          .map((c) => c.trim())
-          .filter((c) => c.length > 0),
+        keyBenefits: form.keyBenefits.map((b: string) => b.trim()).filter((b: string) => b.length > 0),
+        coverages: form.coverages.map((c: string) => c.trim()).filter((c: string) => c.length > 0),
       };
-      
       // After successful creation, re-fetch all products from backend
       await createProduct(productToSend);
       await fetchProducts();
@@ -79,8 +95,8 @@ const AdminProductPage: React.FC = () => {
         basePremium: "",
         premiumRate: "Annual",
         description: "",
-        keyBenefits: "",
-        coverages: ""
+        keyBenefits: [""],
+        coverages: [""],
       });
       setSuccess(true);
       setTimeout(() => {
@@ -93,6 +109,7 @@ const AdminProductPage: React.FC = () => {
       setLoading(false);
     }
   };
+
 
 
   return (
@@ -159,129 +176,223 @@ const AdminProductPage: React.FC = () => {
             </div>
           </>
         ) : (
-          <section className="max-w-xl bg-white p-8 rounded-xl shadow space-y-6 mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-gray-700">Create New Product</h2>
-            </div>
-            {success && (
-              <div className="mb-4 p-3 rounded bg-green-100 text-green-800 text-center font-semibold">
-                Product added successfully!
-              </div>
-            )}
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block font-semibold mb-2">Product Code</label>
-                <input
-                  type="text"
-                  name="productCode"
-                  value={form.productCode}
-                  onChange={handleChange}
-                  className="w-full border rounded p-2"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block font-semibold mb-2">Product Name</label>
-                <input
-                  type="text"
-                  name="productName"
-                  value={form.productName}
-                  onChange={handleChange}
-                  className="w-full border rounded p-2"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block font-semibold mb-2">Sum Insured</label>
-                <input
-                  type="number"
-                  name="sumInsured"
-                  value={form.sumInsured}
-                  onChange={handleChange}
-                  className="w-full border rounded p-2"
-                  required
-                  min="0"
-                />
-              </div>
-              <div>
-                <label className="block font-semibold mb-2">Base Premium</label>
-                <input
-                  type="number"
-                  name="basePremium"
-                  value={form.basePremium}
-                  onChange={handleChange}
-                  className="w-full border rounded p-2"
-                  required
-                  min="0"
-                />
-              </div>
-              <div>
-                <label className="block font-semibold mb-2">Premium Rate</label>
-                <select
-                  name="premiumRate"
-                  value={form.premiumRate}
-                  onChange={handleChange}
-                  className="w-full border rounded p-2"
-                  required
-                >
-                  <option value="Annual">Annual</option>
-                  <option value="Monthly">Monthly</option>
-                  <option value="Quarterly">Quarterly</option>
-                  <option value="Semi-Annual">Semi-Annual</option>
-                </select>
-              </div>
-              <div>
-                <label className="block font-semibold mb-2">Description</label>
-                <textarea
-                  name="description"
-                  value={form.description}
-                  onChange={handleChange}
-                  className="w-full border rounded p-2"
-                  required
-                  rows={3}
-                />
-              </div>
-              <div>
-                <label className="block font-semibold mb-2">Key Benefits (comma-separated)</label>
-                <textarea
-                  name="keyBenefits"
-                  value={form.keyBenefits}
-                  onChange={handleChange}
-                  className="w-full border rounded p-2"
-                  rows={2}
-                  placeholder="e.g. Fast claims, 24/7 support, Cashless treatment"
-                />
-              </div>
-              <div>
-                <label className="block font-semibold mb-2">Coverages (comma-separated)</label>
-                <textarea
-                  name="coverages"
-                  value={form.coverages}
-                  onChange={handleChange}
-                  className="w-full border rounded p-2"
-                  rows={2}
-                  placeholder="e.g. Hospitalization, Outpatient, Maternity"
-                />
-              </div>
-              <button
-                type="submit"
-                className={`bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded mt-4 flex items-center justify-center ${loading ? 'opacity-60 cursor-not-allowed' : ''}`}
-                disabled={loading}
-              >
-                {loading ? (
-                  <span className="flex items-center">
-                    <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-                    </svg>
-                    Adding...
-                  </span>
-                ) : (
-                  'Add Product'
-                )}
-              </button>
-            </form>
-          </section>
+          <section className="max-w-xl mx-auto bg-gradient-to-br from-blue-50 via-white to-indigo-100 p-8 rounded-2xl shadow-2xl border border-blue-100 mb-8 animate-fade-in">
+  <div className="flex items-center gap-2 mb-6">
+    <span className="bg-blue-600 text-white rounded-full p-2 shadow-lg">
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+    </span>
+    <h2 className="text-2xl font-bold text-blue-800 tracking-tight">Create New Product</h2>
+  </div>
+  {success && (
+    <div className="mb-4 p-3 rounded bg-green-100 text-green-800 text-center font-semibold animate-bounce-in">
+      Product added successfully!
+    </div>
+  )}
+  <form onSubmit={handleSubmit} className="space-y-5">
+    <div>
+      <label className="block font-semibold mb-1 text-blue-900 flex items-center gap-1">
+        <span>Product Code</span>
+        <span className="text-blue-400" title="Unique identifier for the product">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 01-8 0m8 0a4 4 0 10-8 0m8 0V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m8 0a4 4 0 01-8 0" /></svg>
+        </span>
+      </label>
+      <input
+        type="text"
+        name="productCode"
+        value={form.productCode}
+        onChange={handleChange}
+        className="w-full border border-blue-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white/80 placeholder:text-blue-300 transition-shadow"
+        required
+        placeholder="e.g. HLTH1234"
+      />
+      <span className="text-xs text-gray-400 ml-1">Unique code for this product.</span>
+    </div>
+    <div>
+      <label className="block font-semibold mb-1 text-blue-900 flex items-center gap-1">
+        <span>Product Name</span>
+        <span className="text-blue-400" title="Enter a descriptive name">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-3-3v6m9-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        </span>
+      </label>
+      <input
+        type="text"
+        name="productName"
+        value={form.productName}
+        onChange={handleChange}
+        className="w-full border border-blue-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white/80 placeholder:text-blue-300 transition-shadow"
+        required
+        placeholder="e.g. Health Plus Plan"
+      />
+      <span className="text-xs text-gray-400 ml-1">Name as seen by customers.</span>
+    </div>
+    <div>
+      <label className="block font-semibold mb-1 text-blue-900 flex items-center gap-1">
+        <span>Sum Insured</span>
+        <span className="text-blue-400" title="Maximum coverage amount">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-3.866 0-7 1.343-7 3v2c0 1.657 3.134 3 7 3s7-1.343 7-3v-2c0-1.657-3.134-3-7-3z" /></svg>
+        </span>
+      </label>
+      <input
+        type="number"
+        name="sumInsured"
+        value={form.sumInsured}
+        onChange={handleChange}
+        className="w-full border border-blue-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white/80 placeholder:text-blue-300 transition-shadow"
+        required
+        min="0"
+        placeholder="e.g. 100000"
+      />
+      <span className="text-xs text-gray-400 ml-1">Maximum amount covered by this product.</span>
+    </div>
+    <div>
+      <label className="block font-semibold mb-1 text-blue-900 flex items-center gap-1">
+        <span>Base Premium</span>
+        <span className="text-blue-400" title="Base cost for this product">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-3.866 0-7 1.343-7 3v2c0 1.657 3.134 3 7 3s7-1.343 7-3v-2c0-1.657-3.134-3-7-3z" /></svg>
+        </span>
+      </label>
+      <input
+        type="number"
+        name="basePremium"
+        value={form.basePremium}
+        onChange={handleChange}
+        className="w-full border border-blue-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white/80 placeholder:text-blue-300 transition-shadow"
+        required
+        min="0"
+        placeholder="e.g. 1200"
+      />
+      <span className="text-xs text-gray-400 ml-1">Base premium for this policy.</span>
+    </div>
+    <div>
+      <label className="block font-semibold mb-1 text-blue-900 flex items-center gap-1">
+        <span>Premium Rate</span>
+        <span className="text-blue-400" title="Select payment frequency">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 17l4 4 4-4m0-5a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        </span>
+      </label>
+      <select
+        name="premiumRate"
+        value={form.premiumRate}
+        onChange={handleChange}
+        className="w-full border border-blue-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white/80 transition-shadow"
+        required
+      >
+        <option value="Annual">Annual</option>
+        <option value="Monthly">Monthly</option>
+        <option value="Quarterly">Quarterly</option>
+        <option value="Semi-Annual">Semi-Annual</option>
+      </select>
+      <span className="text-xs text-gray-400 ml-1">How often is the premium paid?</span>
+    </div>
+    <div>
+      <label className="block font-semibold mb-1 text-blue-900 flex items-center gap-1">
+        <span>Description</span>
+        <span className="text-blue-400" title="Short summary of the product">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 20h9" /></svg>
+        </span>
+      </label>
+      <textarea
+        name="description"
+        value={form.description}
+        onChange={handleChange}
+        className="w-full border border-blue-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white/80 placeholder:text-blue-300 transition-shadow"
+        required
+        rows={3}
+        placeholder="e.g. Comprehensive health insurance for families."
+      />
+      <span className="text-xs text-gray-400 ml-1">Briefly describe this product.</span>
+    </div>
+    <div>
+      <label className="block font-semibold mb-1 text-blue-900 flex items-center gap-1">
+        <span>Key Benefits</span>
+        <span className="text-blue-400" title="Add multiple benefits">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+        </span>
+      </label>
+      {form.keyBenefits.map((benefit: string, idx: number) => (
+        <div className="flex items-center gap-2 mb-2" key={idx}>
+          <input
+            type="text"
+            value={benefit}
+            onChange={e => handleMultiInputChange('keyBenefits', idx, e.target.value)}
+            className="flex-1 border border-blue-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white/80 placeholder:text-blue-300 transition-shadow"
+            placeholder={idx === 0 ? "e.g. Fast claims" : "Add another benefit"}
+          />
+          {form.keyBenefits.length > 1 && (
+            <button type="button" onClick={() => handleRemoveField('keyBenefits', idx)} className="text-red-500 hover:text-red-700 p-1" title="Remove">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          )}
+          {idx === form.keyBenefits.length - 1 && (
+            <button type="button" onClick={() => handleAddField('keyBenefits')} className="text-blue-500 hover:text-blue-700 p-1" title="Add">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+            </button>
+          )}
+        </div>
+      ))}
+      <span className="text-xs text-gray-400 ml-1">Add as many benefits as you like.</span>
+    </div>
+    <div>
+      <label className="block font-semibold mb-1 text-blue-900 flex items-center gap-1">
+        <span>Coverages</span>
+        <span className="text-blue-400" title="Add multiple coverages">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+        </span>
+      </label>
+      {form.coverages.map((coverage: string, idx: number) => (
+        <div className="flex items-center gap-2 mb-2" key={idx}>
+          <input
+            type="text"
+            value={coverage}
+            onChange={e => handleMultiInputChange('coverages', idx, e.target.value)}
+            className="flex-1 border border-blue-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white/80 placeholder:text-blue-300 transition-shadow"
+            placeholder={idx === 0 ? "e.g. Hospitalization" : "Add another coverage"}
+          />
+          {form.coverages.length > 1 && (
+            <button type="button" onClick={() => handleRemoveField('coverages', idx)} className="text-red-500 hover:text-red-700 p-1" title="Remove">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          )}
+          {idx === form.coverages.length - 1 && (
+            <button type="button" onClick={() => handleAddField('coverages')} className="text-blue-500 hover:text-blue-700 p-1" title="Add">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+            </button>
+          )}
+        </div>
+      ))}
+      <span className="text-xs text-gray-400 ml-1">Add as many coverages as you like.</span>
+    </div>
+    <div className="flex gap-4 pt-2">
+      <button
+        type="submit"
+        className={`bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow transition-all flex items-center justify-center ${loading ? 'opacity-60 cursor-not-allowed' : ''}`}
+        disabled={loading}
+      >
+        {loading ? (
+          <span className="flex items-center">
+            <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+            </svg>
+            Adding...
+          </span>
+        ) : (
+          <><svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+            Add Product
+          </>)
+        }
+      </button>
+      <button
+        type="button"
+        className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-6 rounded-lg shadow transition-all"
+        onClick={() => setShowForm(false)}
+        disabled={loading}
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
         )}
       </main>
     </div>
