@@ -7,6 +7,7 @@
 // userRouter.post("/", createUser);
 
 import express from "express";
+import { deleteUser } from "../controllers/user.controller";
 import {
   registerUser,
   loginUser,
@@ -18,5 +19,6 @@ const userRouter = express.Router();
 userRouter.post("/register", registerUser);
 userRouter.post("/login", loginUser);
 userRouter.get("/usersall", getAllUsers);
+userRouter.delete("/:id", deleteUser);
 
 export default userRouter;
