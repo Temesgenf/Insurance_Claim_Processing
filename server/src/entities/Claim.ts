@@ -25,24 +25,24 @@ export class Claim {
     length: 20,
     default: "pending",
   })
-  readonly status!: string;
+  status!: string;
 
   @Column({ type: "text", nullable: true })
-  readonly treatmentDetails!: string;
+  treatmentDetails!: string;
 
   @Column({ type: "decimal", precision: 12, scale: 2 })
-  readonly amountRequested!: number;
+  amountRequested!: number;
 
   @Column({
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP",
   })
-  readonly lossDate!: Date;
+  lossDate!: Date;
   @Column({
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP",
   })
-  readonly lossTime!: Date;
+  lossTime!: Date;
 
   @CreateDateColumn()
   readonly createdAt!: Date;
