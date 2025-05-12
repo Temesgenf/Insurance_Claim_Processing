@@ -74,7 +74,6 @@ const Login = () => {
       // localStorage.setItem("AccessToken", token);
 
       navigate("/user/dashboard");
-      console.log("Login successful", response.data);
     } catch (error: any) {
       let errorMessage = "An error occurred. Please try again.";
       if (error.response) {

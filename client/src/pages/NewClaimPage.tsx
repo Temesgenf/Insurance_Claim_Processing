@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ClaimInfoCard from "../components/layout/ClaimInfoCard";
-import PolicyInfoCard from "../components/layout/PolicyInfoCard";
 import Sidebar from "../components/layout/Sidebar";
-import { createClaim, getAllClaims } from "../services/claimService";
+import { createClaim } from "../services/claimService";
 import { useNavigate } from "react-router-dom";
-import type { Claim } from "./ClaimsPage";
+import type { Policy } from "./PoliciesPage";
+import { getPolicyByPolicyNumber } from "../services/policyService";
+import { getProductById } from "../services/productService";
+import type { Product } from "../types/product";
 
-const NewClaimPage = () => {
+export const NewClaimPage = () => {
   const [showDetails, setShowDetails] = useState(false);
 
   const navigate = useNavigate();
@@ -16,34 +18,59 @@ const NewClaimPage = () => {
     amountRequested: 0,
     lossDate: "",
     lossTime: "",
+    policyNumber: "",
   });
-  const [claims, setClaims] = useState<Claim[]>([]);
+  const [policy, setPolicy] = useState<Policy | null>(null);
+  const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   // Image upload state
-  const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   // Handle image upload and preview
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const files = Array.from(e.target.files);
-    setImages(files);
     setImagePreviews(files.map((file) => URL.createObjectURL(file)));
   };
 
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const response = await getAllClaims();
-        setClaims(response.data);
-      } catch {
-        setClaims([]);
-      }
+  // Fetch policy only when user searches
+  const handlePolicySearch = async () => {
+    setError("");
+    setPolicy(null);
+    setProduct(null);
+    if (!form.policyNumber) {
+      setError("Please enter a policy number.");
+      return;
     }
-    fetchProducts();
-  }, []);
+    try {
+      const response = await getPolicyByPolicyNumber(form.policyNumber);
+      if (!response.data) {
+        setError("Policy not found.");
+        return;
+      }
+      setShowDetails(true);
+      setPolicy(response.data);
+      if (response.data && response.data.productId) {
+        try {
+          const prodRes = await getProductById(Number(response.data.productId));
+          setProduct(prodRes.data);
+        } catch {
+          setProduct(null);
+        }
+      } else {
+        setProduct(null);
+      }
+      if (!response.data) {
+        setError("Policy not found.");
+      }
+    } catch {
+      setError("Policy not found.");
+      setPolicy(null);
+      setProduct(null);
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -57,7 +84,7 @@ const NewClaimPage = () => {
     setError("");
     try {
       await createClaim({
-        policyId: form.policyId,
+        policyId: policy?.policyId || "",
         amountRequested: form.amountRequested,
         lossDate: new Date(form.lossDate),
         lossTime: new Date(`1970-01-01T${form.lossTime}:00Z`),
@@ -94,7 +121,30 @@ const NewClaimPage = () => {
         {!showDetails ? (
           <section className="flex flex-row mt-10 gap-5">
             <div className="flex-1">
-              <PolicyInfoCard onSearch={() => setShowDetails(true)} />
+              <div className="border border-gray-200 shadow-md p-8 rounded-lg bg-white">
+                <h2 className="text-xl font-bold mb-4">Search for a Policy</h2>
+                <div className="flex flex-col gap-3">
+                  <input
+                    type="text"
+                    placeholder="Enter Policy Number"
+                    className="px-4 py-2 border border-gray-300 rounded-md text-base"
+                    value={form.policyNumber}
+                    onChange={(e) =>
+                      setForm({ ...form, policyNumber: e.target.value })
+                    }
+                  />
+                  <button
+                    type="button"
+                    className="px-4 py-2 bg-[#154654] text-white rounded-md hover:bg-[#0e2c38] font-semibold"
+                    onClick={handlePolicySearch}
+                  >
+                    Search
+                  </button>
+                  {error && (
+                    <div className="text-red-600 font-medium mt-2">{error}</div>
+                  )}
+                </div>
+              </div>
             </div>
             <div className="flex-1">
               <ClaimInfoCard />
@@ -108,11 +158,18 @@ const NewClaimPage = () => {
                 <h1 className="font-bold">Policy Information</h1>
               </div>
               <div className="p-4 gap-3 flex flex-col">
+                {error && (
+                  <div className="mb-2 text-red-600 font-medium">{error}</div>
+                )}
                 <div className="flex flex-col gap-1">
                   <p className="text-sm font-medium">Policy Search</p>
                   <div className="flex flex-row gap-2">
                     <input
                       type="text"
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setForm({ ...form, policyNumber: e.target.value })
+                      }
+                      value={form.policyNumber}
                       className=" px-4 text-sm text-gray-700 placeholder-gray-400
                 bg-white border border-gray-300 rounded-md transition-all duration-200
                 hover:border-[#154654] focus:outline-none focus:ring-2
@@ -120,19 +177,49 @@ const NewClaimPage = () => {
                       placeholder="Policy Number"
                     />
                     <button
-                      onClick={() => setShowDetails(true)}
+                      type="button"
+                      onClick={handlePolicySearch}
                       className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 transition"
                     >
                       Search
-                    </button>{" "}
+                    </button>
                   </div>
                 </div>
                 <div className="mb-2">
                   <label className="block text-sm font-medium">
                     Policy Number
                   </label>
-                  <div className="text-[#099ab3] font-bold">P-2022-103</div>
+                  <div className="text-[#099ab3] font-bold">
+                    {policy?.policyNumber}
+                  </div>
                 </div>
+                {product && (
+                  <div className="mb-2">
+                    <label className="block text-sm font-medium">
+                      Product Details
+                    </label>
+                    <div className="text-gray-700 text-sm">
+                      <div>
+                        <b>Name:</b> {product.productName}
+                      </div>
+                      <div>
+                        <b>Code:</b> {product.productCode}
+                      </div>
+                      <div>
+                        <b>Sum Insured:</b> {product.sumInsured}
+                      </div>
+                      <div>
+                        <b>Base Premium:</b> {product.basePremium}
+                      </div>
+                      <div>
+                        <b>Premium Rate:</b> {product.premiumRate}
+                      </div>
+                      <div>
+                        <b>Description:</b> {product.description}
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <div className="mb-2">
                   <label className="block text-sm font-medium">
                     Policy Status
@@ -142,18 +229,18 @@ const NewClaimPage = () => {
                       "active"
                     )}`}
                   >
-                    Active
+                    {policy?.status}
                   </div>
                 </div>
                 <div className="mb-2">
                   <label className="block text-sm font-medium">
-                    Term Effective Date
+                    {policy?.startDate}
                   </label>
                   <div>2022-08-09</div>
                 </div>
                 <div className="mb-2">
                   <label className="block text-sm font-medium">
-                    Term Expiration Date
+                    {policy?.endDate}
                   </label>
                   <div>2023-08-09</div>
                 </div>

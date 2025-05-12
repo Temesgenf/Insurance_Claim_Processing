@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllPolicies } from "../services/policyService";
 
+import { ApplicationStatus } from '../enums/ApplicationStatus.enum';
+
 const columns = [
   "Policy Number",
   "Product Id",
@@ -16,8 +18,9 @@ export interface Policy {
   policyId: string;
   policyNumber: string;
   productId: string;
-  startDate: Date;
-  endDate: Date;
+  status: ApplicationStatus;
+  startDate: Date | string;
+  endDate: Date | string;
 }
 
 const getStatusColor = (status: string) => {
@@ -35,15 +38,24 @@ const getStatusColor = (status: string) => {
   }
 };
 
+import { useLocation } from "react-router-dom";
+
 const PoliciesPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [policies, setPolicies] = useState<Policy[]>([]);
+
+  // Helper to get status from query string
+  const getStatusFromQuery = () => {
+    const params = new URLSearchParams(location.search);
+    return params.get("status")?.toLowerCase() || null;
+  };
+  const statusFilter = getStatusFromQuery();
 
   useEffect(() => {
     const fetchPolicies = async () => {
       try {
         const response = await getAllPolicies();
-        console.log("Policies response:", response.data);
         const policiesData = response.data;
         const mappedPolicies = policiesData.map((policy: any) => ({
           policyId: policy.policyId,
@@ -53,14 +65,13 @@ const PoliciesPage = () => {
           startDate: policy.startDate,
           endDate: policy.endDate,
         }));
-        console.log("Mapped policies:", mappedPolicies);
         setPolicies(mappedPolicies);
       } catch (error) {
         console.error("Error fetching policies:", error);
       }
     };
     fetchPolicies();
-  }, []);
+  }, [location.search]);
 
   return (
     <main className="flex flex-claim">
@@ -90,7 +101,9 @@ const PoliciesPage = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {policies.map((policy, idx) => (
+              {policies
+                .filter(policy => !statusFilter || policy.status?.toLowerCase() === statusFilter)
+                .map((policy, idx) => (
                 <tr key={idx}>
                   {columns.map((col, colIdx) => {
                     if (col === "Status") {
@@ -117,7 +130,11 @@ const PoliciesPage = () => {
                     };
                     const field =
                       fieldMap[col] || col.toLowerCase().replace(/ /g, "_");
-                    const value = policy[field as keyof Policy];
+                    let value = policy[field as keyof Policy];
+                    // Format dates for display
+                    if ((field === "startDate" || field === "endDate") && value) {
+                      value = new Date(value).toLocaleDateString();
+                    }
                     return (
                       <td
                         key={colIdx}

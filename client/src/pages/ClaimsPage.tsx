@@ -2,7 +2,7 @@ import Sidebar from "../components/layout/Sidebar";
 import Button from "../components/ui/Button";
 import { useEffect, useState } from "react";
 import { getAllClaims } from "../services/claimService";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const columns = [
   "Claim Number",
@@ -30,24 +30,35 @@ const getStatusColor = (status: string) => {
 };
 
 export interface Claim {
+  claimId: string;
   policyId: string;
+  claimNumber: string;
+  status: string;
   treatmentDetails: string;
   amountRequested: number;
   lossDate: string;
   lossTime: string;
   createdAt: string;
+  updatedAt: string;
 }
 
 const ClaimsPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [claims, setClaims] = useState<Claim[]>([]);
+
+  // Helper to get status from query string
+  const getStatusFromQuery = () => {
+    const params = new URLSearchParams(location.search);
+    return params.get("status")?.toLowerCase() || null;
+  };
+  const statusFilter = getStatusFromQuery();
 
   useEffect(() => {
     const fetchClaims = async () => {
       try {
         const response = await getAllClaims();
         const claimsData = response.data;
-        console.log("Fetched claims:", claimsData);
         // If the backend fields are different, map them here
         const mappedClaims = claimsData.map((claim: any) => ({
           claimId: claim.claimId || claim.id || "",
@@ -123,82 +134,88 @@ const ClaimsPage = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {claims.map((claim, idx) => (
-                <tr key={idx}>
-                  {columns.map((col, colIdx) => {
-                    // Add a button at the end for 'See Detail'
-                    if (col === "") {
+              {claims
+                .filter(
+                  (claim: Claim) =>
+                    !statusFilter ||
+                    claim.status?.toLowerCase() === statusFilter
+                )
+                .map((claim: Claim, idx: number) => (
+                  <tr key={idx}>
+                    {columns.map((col: string, colIdx: number) => {
+                      // Add a button at the end for 'See Detail'
+                      if (col === "") {
+                        return (
+                          <td
+                            key={colIdx}
+                            className="px-6 py-4 whitespace-nowrap"
+                          >
+                            <button
+                              className="bg-[#154654] opacity-50 hover:bg-blue-600 text-white text-xs font-semibold py-1 px-3 rounded"
+                              onClick={() => handleSeeDetail(claim.claimId)}
+                            >
+                              See Detail
+                            </button>
+                          </td>
+                        );
+                      }
+                      // Map UI column names to backend field names
+                      const fieldMap: Record<string, string> = {
+                        "Claim Number": "claimNumber",
+                        "Policy ID": "policyId",
+                        Status: "status",
+                        "Amount Requested": "amountRequested",
+                        "Loss Date": "lossDate",
+                        "Loss Time": "lossTime",
+                      };
+                      const field =
+                        fieldMap[col] || col.toLowerCase().replace(/ /g, "_");
+                      let value = claim[field as keyof Claim];
+                      // Format dates for readability
+                      if (
+                        [
+                          "lossDate",
+                          "lossTime",
+                          "createdAt",
+                          "updatedAt",
+                        ].includes(field) &&
+                        value
+                      ) {
+                        value = new Date(value as string).toLocaleString();
+                      }
+                      // Format amount
+                      if (field === "amountRequested" && value !== undefined) {
+                        value = `$${Number(value).toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                        })}`;
+                      }
                       return (
                         <td
                           key={colIdx}
-                          className="px-6 py-4 whitespace-nowrap"
+                          className={
+                            field === "status"
+                              ? "px-6 py-4 whitespace-nowrap"
+                              : field === "claimNumber"
+                              ? "px-6 py-4 whitespace-nowrap text-sm font-medium text-[#099ab3]"
+                              : "px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                          }
                         >
-                          <button
-                            className="bg-[#154654] opacity-50 hover:bg-blue-600 text-white text-xs font-semibold py-1 px-3 rounded"
-                            onClick={() => handleSeeDetail(claim.claimId)}
-                          >
-                            See Detail
-                          </button>
+                          {field === "status" ? (
+                            <span
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
+                                claim.status
+                              )}`}
+                            >
+                              {claim.status}
+                            </span>
+                          ) : (
+                            (value as string)
+                          )}
                         </td>
                       );
-                    }
-                    // Map UI column names to backend field names
-                    const fieldMap: Record<string, string> = {
-                      "Claim Number": "claimNumber",
-                      "Policy ID": "policyId",
-                      Status: "status",
-                      "Amount Requested": "amountRequested",
-                      "Loss Date": "lossDate",
-                      "Loss Time": "lossTime",
-                    };
-                    const field =
-                      fieldMap[col] || col.toLowerCase().replace(/ /g, "_");
-                    let value = claim[field as keyof Claim];
-                    // Format dates for readability
-                    if (
-                      [
-                        "lossDate",
-                        "lossTime",
-                        "createdAt",
-                        "updatedAt",
-                      ].includes(field) &&
-                      value
-                    ) {
-                      value = new Date(value as string).toLocaleString();
-                    }
-                    // Format amount
-                    if (field === "amountRequested" && value !== undefined) {
-                      value = `$${Number(value).toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                      })}`;
-                    }
-                    return (
-                      <td
-                        key={col}
-                        className={
-                          field === "status"
-                            ? "px-6 py-4 whitespace-nowrap"
-                            : field === "claimNumber"
-                            ? "px-6 py-4 whitespace-nowrap text-sm font-medium text-[#099ab3]"
-                            : "px-6 py-4 whitespace-nowrap text-sm text-gray-500"
-                        }
-                      >
-                        {field === "status" ? (
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                              claim.status
-                            )}`}
-                          >
-                            {claim.status}
-                          </span>
-                        ) : (
-                          (value as string)
-                        )}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
+                    })}
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
