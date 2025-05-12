@@ -56,6 +56,12 @@ export class Product {
   })
   readonly keyBenefits!: string[];
 
+  @Column({
+    type: "simple-array",
+    nullable: true,
+  })
+  readonly coverages!: string[];
+
   @Column()
   readonly createdAt!: Date;
 

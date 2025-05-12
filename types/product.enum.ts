@@ -1,5 +1,3 @@
-// Shared Product type for both client and server
-
 export interface Product {
   productId: number;
   productCode: string;
@@ -8,5 +6,6 @@ export interface Product {
   basePremium: number;
   premiumRate: string;
   keyBenefits: string[];
+  coverages: string[];
   description: string;
 }

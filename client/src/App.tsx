@@ -2,6 +2,7 @@
 import { Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import ClaimsPage from "./pages/ClaimsPage";
+import ClaimDetailPage from "./pages/ClaimDetailPage";
 import NewClaimPage from "./pages/NewClaimPage";
 import UserDashboard from "./pages/UserDashboard";
 import AdminPage from "./pages/AdminPage";
@@ -10,9 +11,12 @@ import AdminPoliciesPage from "./pages/AdminPoliciesPage";
 import AdminClaimsPage from "./pages/AdminClaimsPage";
 import AdminAnalyticsPage from "./pages/AdminAnalyticsPage";
 import AdminSettingsPage from "./pages/AdminSettingsPage";
+import AdminProductPage from "./pages/AdminProductPage";
 import ProductDetail from "./pages/ProductDetail";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import PoliciesPage from "./pages/PoliciesPage";
+import NewPolicyPage from "./pages/NewPolicyPage";
 import { AuthProvider, useAuth } from "./Context/AuthContext";
 
 const PrivateRoute = () => {
@@ -53,6 +57,12 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/user/dashboard" element={<UserDashboard />} />
           <Route path="/user/claims" element={<ClaimsPage />} />
+          <Route
+            path="/user/claims/:claimNumber"
+            element={<ClaimDetailPage />}
+          />
+          <Route path="/user/policies" element={<PoliciesPage />} />
+          <Route path="/user/new-policy" element={<NewPolicyPage />} />
           <Route path="/user/new-claim" element={<NewClaimPage />} />
         </Route>
 
@@ -65,6 +75,7 @@ function App() {
             <Route path="/admin/claims" element={<AdminClaimsPage />} />
             <Route path="/admin/analytics" element={<AdminAnalyticsPage />} />
             <Route path="/admin/settings" element={<AdminSettingsPage />} />
+            <Route path="/admin/products" element={<AdminProductPage />} />
           </Route>
         </Route>
 

@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { getProductById } from "../services/productService";
 import type { Product } from "../../../types/product.enum";
 import ProductTabs from "../components/layout/ProductTabs";
+import Button from "../components/ui/Button";
 
 const ProductDetail: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();

@@ -4,7 +4,6 @@ import {
   FaMoneyBillWave,
   FaListUl,
   FaCheckCircle,
-  FaClipboardList,
 } from "react-icons/fa";
 import type { Product } from "../../../../types/product.enum";
 
@@ -12,8 +11,6 @@ const TAB_LIST = [
   { key: "overview", label: "Overview" },
   { key: "coverages", label: "Coverages" },
   { key: "keyFeatures", label: "Key Features" },
-  { key: "claimProcess", label: "Claim Process" },
-  { key: "history", label: "History" },
 ];
 
 interface ProductTabsProps {
@@ -135,8 +132,8 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ product }) => {
               <FaCheckCircle className="text-green-400" /> Coverages
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {safeBenefits.length > 0 ? (
-                safeBenefits.map((c: string, i: number) => (
+              {Array.isArray(product.coverages) && product.coverages.length > 0 ? (
+                product.coverages.map((c: string, i: number) => (
                   <div
                     key={i}
                     className="bg-green-50 border border-green-100 rounded-lg p-4 flex items-center gap-3"
@@ -177,13 +174,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ product }) => {
             </div>
           </div>
         )}
-        {activeTab === "claimProcess" && (
-          <div>
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <FaClipboardList className="text-orange-400" /> Claim Process
-            </h2>
-          </div>
-        )}
+        
       </div>
     </div>
   );
