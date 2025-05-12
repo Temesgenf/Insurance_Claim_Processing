@@ -1,142 +1,196 @@
+import { useEffect } from "react";
 import { IoChevronForwardCircleOutline } from "react-icons/io5";
 import happyFamilyImage from "../../assets/c.png";
 import { AiFillLike } from "react-icons/ai";
-function Hero() {
+import { motion, useAnimation } from "framer-motion";
+
+export default function Hero() {
+  const controls = useAnimation();
+
+  useEffect(() => {
+    controls.start({
+      scale: [0.8, 1.05, 1],
+      opacity: [0, 1],
+      transition: { duration: 1.2, ease: "easeOut" },
+    });
+  }, [controls]);
+
   return (
-    <section>
-      <div className="grid grid-cols-1 md:grid-cols-2 min-h-[550px] my-[1rem]">
-        <div className="flex flex-col justify-center py-14 md:py-0 relative z-10">
-          <div className="flex items-center bg-gray-200 space-x-2 px-2 py-1 rounded-full shadow-sm w-max">
-            <span className="bg-[#547aff] text-white text-[14px] font-500 px-3 py-1 rounded-full">
-              New
+    <section className="relative overflow-hidden bg-white mt-12">
+      <div className="container mx-auto px-6 md:px-12 lg:px-24 grid grid-cols-1 md:grid-cols-2 gap-8 items-center min-h-screen py-16">
+        {/* Left Text Column */}
+        <motion.div
+          initial={{ x: -50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="space-y-8 text-center md:text-left"
+        >
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            className="inline-flex items-center bg-blue-100 px-4 py-2 rounded-full shadow-sm"
+          >
+            <span className="bg-blue-600 text-white text-sm font-medium px-4 py-1 rounded-full">
+              New Feature
             </span>
-            <span className="text-sm text-gray-800 font-medium">
-              Experience Seamless Claims 🎉
+            <span className="ml-3 text-sm font-medium text-gray-800">
+              Instant Claim Processing 🚀
             </span>
+          </motion.div>
+
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 ">
+            <span className="text-blue-600">Smart Insurance</span> Claims Made
+            Simple
+          </h1>
+
+          <p className="text-xl text-gray-700 max-w-2xl">
+            Revolutionize your claims experience with AI-powered solutions that
+            save time and reduce paperwork.
+          </p>
+
+          <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-6 ">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex items-center justify-center bg-blue-600 text-white font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              Start Free Trial
+              <IoChevronForwardCircleOutline className="ml-3 text-2xl animate-pulse" />
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex items-center justify-center bg-white text-gray-900 font-semibold px-8 py-4 rounded-full shadow-md border-2 border-gray-200 hover:border-blue-500 transition-all duration-300"
+            >
+              Watch Demo
+              <IoChevronForwardCircleOutline className="ml-3 text-2xl text-blue-600" />
+            </motion.button>
           </div>
 
-          <div className="text-center md:text-left space-y-7">
-            <h1 className="text-5xl lg:text-6xl font-bold text-[#000]  xl:leading-[1.1]">
-              Transforming <span className="text-[#547aff]">Insurance</span>{" "}
-              Claims Management
-            </h1>
-            <p className="text-2xl tracking-wide font-400 ">
-              experience seamless claims processing with claimspro.ai
-            </p>
-          </div>
-          <div className="flex justify-center gap-4 md:justify-start mt-20">
-            <button className="bg-[#547aff] font-semibold text-[#fff] leading-6 flex justify-center items-center py-4 gap-2 md:gap-3 px-[50px] rounded-[20px]">
-              <span>Get Started </span>
-              <IoChevronForwardCircleOutline className="text-2xl" />
-            </button>
-            <button className="bg-[#f9f9f9] font-semibold text-[#000] leading-6 flex justify-center items-center py-4 gap-2 md:gap-3 px-[50px] rounded-[20px]">
-              <span>Learn More </span>
-              <IoChevronForwardCircleOutline className="text-2xl text-[#ff6600]" />
-            </button>
-          </div>
-          <div className="flex jusitify-center items-center gap-4 my-4">
-            <div className="flex -space-x-2">
-              <img
-                className="inline-block size-11 rounded-full ring-2 ring-white dark:ring-neutral-900"
-                src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
-                alt="avatar"
-              />
-              <img
-                className="inline-block size-11 rounded-full ring-2 ring-white dark:ring-neutral-900"
-                src="https://images.unsplash.com/photo-1531927557220-a9e23c1e4794?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
-                alt="avatar"
-              />
-              <img
-                className="inline-block size-11 rounded-full ring-2 ring-white dark:ring-neutral-900"
-                src="https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&&auto=format&fit=facearea&facepad=3&w=300&h=300&q=80"
-                alt="avatar"
-              />
-              <img
-                className="inline-block size-11 rounded-full ring-2 ring-white dark:ring-neutral-900"
-                src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
-                alt="avatar"
-              />
-              <div className="hs-dropdown [--placement:top-left] relative inline-flex">
-                <button
-                  id="hs-avatar-group-dropdown"
-                  className="hs-dropdown-toggle inline-flex items-center justify-center size-11 rounded-full bg-[#f1c817] border-2 border-white font-medium text-gray-700 shadow-2xs align-middle hover:bg-gray-200 focus:outline-hidden focus:bg-gray-300 text-sm dark:bg-neutral-700 dark:text-white dark:hover:bg-neutral-600 dark:focus:bg-neutral-600 dark:border-neutral-800"
-                  aria-haspopup="menu"
-                  aria-expanded="false"
-                  aria-label="Dropdown"
-                >
-                  <span className=" font-bold ">18+</span>
-                </button>
-
-                <div
-                  className="hs-dropdown-menu hs-dropdown-open:opacity-100 w-48 hidden z-10 transition-[margin,opacity] opacity-0 duration-300 mb-2 bg-white shadow-md rounded-lg p-2 dark:bg-neutral-800 dark:border dark:border-neutral-700 dark:divide-neutral-700"
-                  role="menu"
-                  aria-orientation="vertical"
-                  aria-labelledby="hs-avatar-group-dropdown"
-                >
-                  <a
-                    className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300"
-                    href="#"
-                  >
-                    Chris Lynch
-                  </a>
-                  <a
-                    className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300"
-                    href="#"
-                  >
-                    Maria Guan
-                  </a>
-                  <a
-                    className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300"
-                    href="#"
-                  >
-                    Amil Evara
-                  </a>
-                  <a
-                    className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300"
-                    href="#"
-                  >
-                    Ebele Egbuna
-                  </a>
-                </div>
-              </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+            className="flex items-center justify-center md:justify-start gap-6 "
+          >
+            <div className="flex -space-x-4">
+              {[...Array(4)].map((_, i) => (
+                <motion.img
+                  key={i}
+                  whileHover={{ y: -5 }}
+                  className="w-12 h-12 rounded-full ring-2 ring-white shadow-md hover:shadow-lg transition-all duration-300"
+                  src={`https://i.pravatar.cc/48?img=${i + 1}`}
+                  alt="avatar"
+                />
+              ))}
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                className="w-12 h-12 rounded-full ring-2 ring-white bg-yellow-400 flex items-center justify-center font-bold text-gray-800 shadow-md hover:shadow-lg"
+              >
+                +24
+              </motion.div>
             </div>
-            <div>
-              <span className="text-xl text-[#000] text-[14px] font-bold leading-6">
-                Agent activity Update
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="flex justify-center items-center relative">
-          <img src={happyFamilyImage} alt="" className="scale-[1.6]" />
-          <div className="rounded-full w-[600px] h-[600px]  bg-[#547aff] opacity-[1] absolute -bottom-10 -z-10 flex justify-center items-center">
-            <div className="rounded-full w-[500px] h-[500px] bg-white flex justify-center items-center">
-              <div className="rounded-full w-[350px] h-[350px] bg-[#547aff]  flex justify-center items-center">
-                <div className="rounded-full w-[250px] h-[250px] bg-[#fff]"></div>
-              </div>
-            </div>
-          </div>
-          <div className="absolute -left-10 bottom-0">
-            <div className="flex jusitify-between items-center h-10  bg-white w-max rounded-full py-[40px] pl-[10px] pr-[50px] relative">
-              <img
-                className=" size-11 rounded-full ring-2 ring-white dark:ring-neutral-900 "
-                src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80"
-                alt="avatar"
-              />
-
-              <p className="w-[200px] px-[20px] py-[10px] block">
-                <span className="text-xl font-bold">Doney</span> has got an easy
-                claim
+            <div className="text-left">
+              <p className="font-semibold text-gray-800">
+                Trusted by 500+ Agents
               </p>
-              <div className="flex justify-center items-center bg-[#547aff] rounded-full w-[50px] h-[50px] absolute right-2">
-                <AiFillLike className="text-2xl text-[#fff] " />
+              <div className="flex items-center mt-1">
+                <AiFillLike className="text-blue-600 mr-1" />
+                <span className="text-sm text-gray-600">4.9/5 Rating</span>
               </div>
             </div>
-          </div>
+          </motion.div>
+        </motion.div>
+
+        {/* Right Image Column */}
+        <div className="relative flex justify-center items-center">
+          <motion.div
+            className="relative"
+            animate={{
+              y: [0, -15, 0],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            <img
+              src={happyFamilyImage}
+              alt="Happy Family"
+              className="w-full max-w-2xl mx-auto transform scale-105"
+            />
+
+            {/* Floating Elements */}
+            <motion.div
+              className="absolute top-0 -right-20 bg-white p-4 rounded-2xl shadow-xl border border-gray-100"
+              animate={{
+                y: [-10, 10, -10],
+              }}
+              transition={{
+                duration: 5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600">95%</div>
+                <div className="text-sm text-gray-600">Faster Processing</div>
+              </div>
+            </motion.div>
+
+            {/* Animated Background Elements */}
+            <div className="absolute inset-0 flex justify-center items-center -z-10">
+              <div className="absolute w-[700px] h-[700px] rounded-full bg-gray-100/40 animate-pulse"></div>
+              <div className="absolute w-[500px] h-[500px] rounded-full bg-gray-100/30"></div>
+            </div>
+          </motion.div>
+
+          {/* Testimonial Card */}
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={controls}
+            className="absolute -bottom-8 left-0 bg-white rounded-2xl shadow-xl flex items-center space-x-4 px-6 py-4 max-w-sm border-l-4 border-blue-600"
+          >
+            <img
+              className="w-14 h-14 rounded-full border-2 border-blue-200"
+              src="https://i.pravatar.cc/48?img=12"
+              alt="Doney"
+            />
+            <div>
+              <h3 className="font-bold text-gray-900">Sarah Johnson</h3>
+              <p className="text-sm text-gray-600">
+                Claim approved in 2 hours! ⚡
+              </p>
+            </div>
+            <AiFillLike className="text-3xl text-blue-600 animate-bounce" />
+          </motion.div>
         </div>
       </div>
+
+      {/* Subtle Floating Particles */}
+      {[...Array(8)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute hidden lg:block"
+          style={{
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            width: 12,
+            height: 12,
+            background: `rgba(59, 130, 246, 0.1)`,
+            borderRadius: "50%",
+          }}
+          animate={{
+            y: [0, -40, 0],
+            opacity: [0.2, 0.6, 0.2],
+          }}
+          transition={{
+            duration: 3 + Math.random() * 4,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
     </section>
   );
 }
-
-export default Hero;
