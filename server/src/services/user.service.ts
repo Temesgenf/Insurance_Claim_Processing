@@ -12,4 +12,7 @@ export const UserService = {
   getAllUsers: async (): Promise<User[]> => {
     return await userRepository.getAllUsers();
   },
+  findUserById: async (userId: number): Promise<User | null> => {
+    return await userRepository.findUserById(userId);
+  },
 };
