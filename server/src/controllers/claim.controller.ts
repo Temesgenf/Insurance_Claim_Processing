@@ -10,6 +10,7 @@ export async function createClaim(
   try {
     console.log(req.body);
     const claimData = CreateClaimDto.fromRequestBody(req.body);
+    console.log("Claim data from request body:", claimData);
     console.log("Claim data:", claimData);
     const newClaim = await ClaimService.createClaim(claimData);
     return res.status(201).json(newClaim);
@@ -19,7 +20,10 @@ export async function createClaim(
   }
 }
 
-export async function approveClaim(req: Request, res: Response): Promise<Response> {
+export async function approveClaim(
+  req: Request,
+  res: Response
+): Promise<Response> {
   try {
     const { id } = req.params;
     const updatedClaim = await ClaimService.updateClaimStatus(+id, "Approved");
@@ -33,8 +37,10 @@ export async function approveClaim(req: Request, res: Response): Promise<Respons
   }
 }
 
-
-export async function rejectClaim(req: Request, res: Response): Promise<Response> {
+export async function rejectClaim(
+  req: Request,
+  res: Response
+): Promise<Response> {
   try {
     const { id } = req.params;
     const updatedClaim = await ClaimService.updateClaimStatus(+id, "Rejected");
