@@ -43,4 +43,10 @@ export class ClaimRepository extends Repository<Claim> {
   static async findAll(): Promise<Claim[]> {
     return AppDataSource.getRepository(Claim).find();
   }
+
+  // Delete a claim by ID
+  static async deleteClaim(claimId: number): Promise<boolean> {
+    const result = await AppDataSource.getRepository(Claim).delete({ claimId });
+    return !!result.affected && result.affected > 0;
+  }
 }

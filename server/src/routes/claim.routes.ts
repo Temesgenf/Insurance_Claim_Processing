@@ -5,6 +5,7 @@ import {
   getClaimById,
   approveClaim,
   rejectClaim,
+  deleteClaim,
 } from "../controllers/claim.controller";
 
 const claimRouter = Router();
@@ -21,6 +22,6 @@ claimRouter.put("/:id/reject", rejectClaim);
 
 // claimRouter.put("/:id", updateClaim);
 
-// claimRouter.delete("/:id", deleteClaim);
+claimRouter.delete("/:id", deleteClaim);
 
 export default claimRouter;

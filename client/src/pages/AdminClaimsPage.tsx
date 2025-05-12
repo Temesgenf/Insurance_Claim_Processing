@@ -1,7 +1,8 @@
 import React from "react";
 import AdminSidebar from "../components/layout/AdminSidebar";
+import Swal from 'sweetalert2';
 
-import { getAllClaims, approveClaim, rejectClaim } from "../services/claimService";
+import { getAllClaims, approveClaim, rejectClaim, deleteClaim } from "../services/claimService";
 import { getAllUsers } from "../services/userService";
 import { getAllPolicies } from "../services/policyService";
 
@@ -159,6 +160,33 @@ const AdminClaimsPage: React.FC = () => {
                   })()}
                 </div>
               </div>
+            </div>
+            <div className="flex justify-end mt-6">
+              <button
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm shadow"
+                onClick={async () => {
+                  const result = await Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You won\'t be able to revert this!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                  });
+                  if (!result.isConfirmed) return;
+                  try {
+                    await deleteClaim(viewClaim.claimId);
+                    setClaims((prev) => prev.filter((c) => c.claimId !== viewClaim.claimId));
+                    setViewClaim(null);
+                    await Swal.fire('Deleted!', 'Claim has been deleted.', 'success');
+                  } catch (err) {
+                    await Swal.fire('Error', 'Failed to delete claim', 'error');
+                  }
+                }}
+              >
+                Delete Claim
+              </button>
             </div>
           </div>
         </div>

@@ -31,7 +31,7 @@ export class Policy {
     enum: ApplicationStatus,
     default: ApplicationStatus.PENDING,
   })
-  readonly status!: ApplicationStatus;
+  status!: ApplicationStatus;
 
   @Column()
   readonly createdAt!: Date;

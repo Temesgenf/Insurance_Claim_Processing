@@ -23,7 +23,6 @@ export class ClaimService {
     return ClaimRepository.createClaim(claim);
   }
   
-
   static async updateClaimStatus(claimId: number, status: string) {
     const claim = await ClaimRepository.findById(claimId);
     if (!claim) return null;
@@ -38,5 +37,9 @@ export class ClaimService {
       }
       return claim;
     });
+  }
+
+  static async deleteClaim(claimId: number) {
+    return ClaimRepository.deleteClaim(claimId);
   }
 }
