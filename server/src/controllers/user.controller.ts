@@ -87,6 +87,16 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
+export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const userId = parseInt(req.params.id, 10);
+    await UserService.deleteUser(userId);
+    res.status(204).send();
+  } catch (error: any) {
+    res.status(500).json({ message: "Failed to delete user", error: error.message });
+  }
+};
+
 export const loginUser = async (req: Request, res: Response) => {
   try {
     const { email, password, remember } = req.body;
