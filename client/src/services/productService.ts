@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 export const getAllProducts = async () => {
   const response = await axios.get(`${API_BASE_URL}/api/products`);
@@ -21,6 +21,9 @@ export const getProductById = async (id: number) => {
 };
 
 export const createProduct = async (productData: any) => {
-  const response = await axios.post(`${API_BASE_URL}/api/products`, productData);
+  const response = await axios.post(
+    `${API_BASE_URL}/api/products`,
+    productData
+  );
   return response;
 };

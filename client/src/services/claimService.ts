@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 interface Claim {
   policyId: string;
@@ -26,12 +26,16 @@ export const createClaim = async (claim: Claim) => {
 };
 
 export const approveClaim = async (claimId: number) => {
-  const response = await axios.put(`${API_BASE_URL}/api/claims/${claimId}/approve`);
+  const response = await axios.put(
+    `${API_BASE_URL}/api/claims/${claimId}/approve`
+  );
   return response;
 };
 
 export const rejectClaim = async (claimId: number) => {
-  const response = await axios.put(`${API_BASE_URL}/api/claims/${claimId}/reject`);
+  const response = await axios.put(
+    `${API_BASE_URL}/api/claims/${claimId}/reject`
+  );
   return response;
 };
 

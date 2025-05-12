@@ -22,6 +22,7 @@ const AuthContext = createContext<AuthContextType>({
   login: async () => {},
   logout: async () => {},
 });
+const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -38,12 +39,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
 
-      const response = await axios.get(
-        "http://localhost:3000/api/auth/verify",
-        {
-          headers: { Authorization: `Bearer ${authToken}` },
-        }
-      );
+      const response = await axios.get(`${API_BASE_URL}/api/auth/verify`, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
 
       localStorage.setItem("AccessToken", authToken);
       setUser(response.data.user);
@@ -63,7 +61,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async () => {
     try {
-      await axios.post("http://localhost:3000/api/auth/logout");
+      await axios.post(`${API_BASE_URL}/api/auth/logout`);
     } catch (error) {
       console.warn("Server logout failed:", error);
     } finally {
