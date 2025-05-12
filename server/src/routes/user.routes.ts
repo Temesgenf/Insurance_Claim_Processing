@@ -13,6 +13,7 @@ import {
   loginUser,
   getAllUsers,
 } from "../controllers/user.controller";
+import { verifyToken } from "../middleware/auth.middleware";
 
 const userRouter = express.Router();
 

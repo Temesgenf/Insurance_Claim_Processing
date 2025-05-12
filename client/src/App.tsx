@@ -19,24 +19,46 @@ import PoliciesPage from "./pages/PoliciesPage";
 import NewPolicyPage from "./pages/NewPolicyPage";
 import { AuthProvider, useAuth } from "./Context/AuthContext";
 
+// 1) PublicRoute: redirect to dashboard if already logged in
+const PublicRoute = () => {
+  const { user, loading } = useAuth();
+  if (loading) return <div>Loading...</div>;
+
+  // If user is logged in, send them to their dashboard immediately
+  if (user) {
+    return (
+      <Navigate
+        to={user.isAdmin ? "/admin/dashboard" : "/user/dashboard"}
+        replace
+      />
+    );
+  }
+
+  // Otherwise let them see <Login> or <Register>
+  return <Outlet />;
+};
+
+// 2) PrivateRoute: for any authenticated user
 const PrivateRoute = () => {
   const { user, loading } = useAuth();
   const location = useLocation();
-  console.log("User:", user);
 
   if (loading) return <div>Loading...</div>;
+
   return user ? (
     <Outlet />
   ) : (
+    // send them to /login, preserving the location they came from
     <Navigate to="/login" state={{ from: location }} replace />
   );
 };
 
+// 3) AdminRoute: for users with isAdmin === true
 const AdminRoute = () => {
   const { user } = useAuth();
   const location = useLocation();
-  console.log("User:", user);
 
+  // if they're not admin, bounce back to home
   if (!user?.isAdmin) {
     return <Navigate to="/" state={{ from: location }} replace />;
   }
@@ -47,10 +69,14 @@ function App() {
   return (
     <AuthProvider>
       <Routes>
-        {/* Public Routes */}
+        {/* Public */}
+        <Route element={<PublicRoute />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
+
+        {/* Always-public pages */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
         <Route path="/products/:productId" element={<ProductDetail />} />
 
         {/* Protected User Routes */}

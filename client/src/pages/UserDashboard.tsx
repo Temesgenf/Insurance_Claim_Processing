@@ -8,19 +8,27 @@ import {
   ClipboardList,
   ShieldCheck,
   AlertTriangle,
+  LogOut,
 } from "lucide-react";
 import { getAllPolicies } from "../services/policyService";
 import { getAllClaims } from "../services/claimService";
 import { useNavigate } from "react-router-dom";
-
-// No more static statCards. We'll compute them from real data.
+import { useAuth } from "../Context/AuthContext";
 
 const UserDashboard: React.FC = () => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  // Sign-out handler
+  const handleSignOut = () => {
+    logout(); // clear auth state & tokens
+    navigate("/login", { replace: true });
+  };
+
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRecentActivity = async () => {
@@ -33,6 +41,7 @@ const UserDashboard: React.FC = () => {
         ]);
         const policiesData = policiesRes.data || [];
         const claimsData = claimsRes.data || [];
+
         // Compute stats
         const stats = {
           totalPolicies: policiesData.length,
@@ -54,7 +63,8 @@ const UserDashboard: React.FC = () => {
           ).length,
         };
         setStats(stats);
-        // Recent activity
+
+        // Recent activity items
         const policies = policiesData.map((p: any) => ({
           type: "Policy",
           action: p.status.charAt(0).toUpperCase() + p.status.slice(1),
@@ -67,17 +77,19 @@ const UserDashboard: React.FC = () => {
           detail: `Claim #${c.claimNumber}`,
           date: c.createdAt,
         }));
-        // Merge, sort by date desc, take top 5
+
+        // Merge & sort
         const merged = [...policies, ...claims].sort(
           (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
         );
         setRecentActivity(merged.slice(0, 5));
-      } catch (err: any) {
+      } catch {
         setError("Failed to load recent activity");
       } finally {
         setLoading(false);
       }
     };
+
     fetchRecentActivity();
   }, []);
 
@@ -85,7 +97,7 @@ const UserDashboard: React.FC = () => {
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <Sidebar />
       <main className="flex-1 p-6 md:p-10">
-        {/* Header */}
+        {/* Header with Sign Out */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
@@ -103,6 +115,14 @@ const UserDashboard: React.FC = () => {
               <div className="font-semibold text-gray-800">John Doe</div>
               <div className="text-xs text-gray-500">john.doe@email.com</div>
             </div>
+            {/* Sign Out Button */}
+            <button
+              onClick={handleSignOut}
+              className="flex items-center space-x-1 text-sm text-red-600 hover:text-red-800 ml-4"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Sign Out</span>
+            </button>
           </div>
         </div>
 
@@ -118,7 +138,7 @@ const UserDashboard: React.FC = () => {
             </div>
           ) : stats ? (
             <>
-              {/* Policies Cards */}
+              {/* Policies */}
               <div
                 className="rounded-2xl shadow-md p-6 bg-gradient-to-br from-blue-100 to-blue-300 flex flex-col items-start hover:shadow-xl transition group cursor-pointer"
                 onClick={() => navigate("/user/policies")}
@@ -135,7 +155,7 @@ const UserDashboard: React.FC = () => {
               <div
                 className="rounded-2xl shadow-md p-6 bg-gradient-to-br from-yellow-100 to-yellow-300 flex flex-col items-start hover:shadow-xl transition group cursor-pointer"
                 onClick={() => navigate("/user/policies")}
-                title="Go to Policies"
+                title="Pending Policies"
               >
                 <ClipboardList className="w-8 h-8 text-yellow-500 mb-4" />
                 <div className="text-2xl font-bold text-gray-800 mb-1 group-hover:text-yellow-700 transition">
@@ -148,7 +168,7 @@ const UserDashboard: React.FC = () => {
               <div
                 className="rounded-2xl shadow-md p-6 bg-gradient-to-br from-green-100 to-green-300 flex flex-col items-start hover:shadow-xl transition group cursor-pointer"
                 onClick={() => navigate("/user/policies")}
-                title="Go to Policies"
+                title="Approved Policies"
               >
                 <CheckCircle className="w-8 h-8 text-green-500 mb-4" />
                 <div className="text-2xl font-bold text-gray-800 mb-1 group-hover:text-green-700 transition">
@@ -161,7 +181,7 @@ const UserDashboard: React.FC = () => {
               <div
                 className="rounded-2xl shadow-md p-6 bg-gradient-to-br from-red-100 to-red-300 flex flex-col items-start hover:shadow-xl transition group cursor-pointer"
                 onClick={() => navigate("/user/policies")}
-                title="Go to Policies"
+                title="Rejected Policies"
               >
                 <XCircle className="w-8 h-8 text-red-500 mb-4" />
                 <div className="text-2xl font-bold text-gray-800 mb-1 group-hover:text-red-700 transition">
@@ -172,11 +192,11 @@ const UserDashboard: React.FC = () => {
                 </div>
               </div>
 
-              {/* Claims Cards */}
+              {/* Claims */}
               <div
                 className="rounded-2xl shadow-md p-6 bg-gradient-to-br from-indigo-100 to-indigo-300 flex flex-col items-start hover:shadow-xl transition group cursor-pointer"
                 onClick={() => navigate("/user/claims")}
-                title="Go to Claims"
+                title="Total Claims"
               >
                 <FileText className="w-8 h-8 text-indigo-500 mb-4" />
                 <div className="text-2xl font-bold text-gray-800 mb-1 group-hover:text-indigo-700 transition">
@@ -189,7 +209,7 @@ const UserDashboard: React.FC = () => {
               <div
                 className="rounded-2xl shadow-md p-6 bg-gradient-to-br from-green-100 to-green-400 flex flex-col items-start hover:shadow-xl transition group cursor-pointer"
                 onClick={() => navigate("/user/claims")}
-                title="Go to Claims"
+                title="Approved Claims"
               >
                 <CheckCircle className="w-8 h-8 text-green-600 mb-4" />
                 <div className="text-2xl font-bold text-gray-800 mb-1 group-hover:text-green-700 transition">
@@ -202,7 +222,7 @@ const UserDashboard: React.FC = () => {
               <div
                 className="rounded-2xl shadow-md p-6 bg-gradient-to-br from-red-100 to-red-400 flex flex-col items-start hover:shadow-xl transition group cursor-pointer"
                 onClick={() => navigate("/user/claims")}
-                title="Go to Claims"
+                title="Rejected Claims"
               >
                 <AlertTriangle className="w-8 h-8 text-red-600 mb-4" />
                 <div className="text-2xl font-bold text-gray-800 mb-1 group-hover:text-red-700 transition">

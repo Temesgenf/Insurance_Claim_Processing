@@ -8,6 +8,7 @@ interface Claim {
   amountRequested: number;
   lossDate: Date;
   lossTime: Date;
+  user: object;
 }
 
 export const getAllClaims = async () => {

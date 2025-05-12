@@ -130,9 +130,12 @@ export const loginUser = async (req: Request, res: Response) => {
       sameSite: "strict",
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
-    res
-      .status(200)
-      .json({ message: "Login successful", token, isAdmin: user.isAdmin });
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      isAdmin: user.isAdmin,
+      user,
+    });
   } catch (error: any) {
     console.error("Error logging in user:", error);
     res.status(500).json({ message: "Failed to login", error: error.message });

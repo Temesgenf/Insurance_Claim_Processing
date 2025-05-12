@@ -9,6 +9,7 @@ export class CreateClaimDto {
     public readonly amountRequested: number,
     public readonly lossDate: Date,
     public readonly lossTime: Date,
+    public readonly user: object,
     public status?: ApplicationStatus,
     public claimDocument?: ClaimDocument,
     public claimNumber?: string
@@ -41,6 +42,7 @@ export class CreateClaimDto {
       req.amountRequested,
       req.lossDate,
       req.lossTime,
+      req.user,
       ApplicationStatus.PENDING
     );
   }
