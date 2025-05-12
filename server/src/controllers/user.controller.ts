@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/user.service";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { env } from "../utils/env";
 
