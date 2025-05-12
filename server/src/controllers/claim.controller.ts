@@ -17,7 +17,10 @@ export async function createClaim(
   }
 }
 
-export async function approveClaim(req: Request, res: Response): Promise<Response> {
+export async function approveClaim(
+  req: Request,
+  res: Response
+): Promise<Response> {
   try {
     const { id } = req.params;
     const updatedClaim = await ClaimService.updateClaimStatus(+id, "Approved");
@@ -31,8 +34,10 @@ export async function approveClaim(req: Request, res: Response): Promise<Respons
   }
 }
 
-
-export async function rejectClaim(req: Request, res: Response): Promise<Response> {
+export async function rejectClaim(
+  req: Request,
+  res: Response
+): Promise<Response> {
   try {
     const { id } = req.params;
     const updatedClaim = await ClaimService.updateClaimStatus(+id, "Rejected");
@@ -79,7 +84,10 @@ export async function getClaimById(
 }
 
 // Delete a claim by ID
-export async function deleteClaim(req: Request, res: Response): Promise<Response> {
+export async function deleteClaim(
+  req: Request,
+  res: Response
+): Promise<Response> {
   try {
     const { id } = req.params;
     const deleted = await ClaimService.deleteClaim(+id);

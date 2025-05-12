@@ -43,7 +43,7 @@ export class CreateClaimDto {
       req.amountRequested,
       req.lossDate,
       req.lossTime,
-      req.user,
+      req.user.id,
       ApplicationStatus.PENDING
     );
   }

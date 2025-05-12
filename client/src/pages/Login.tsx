@@ -76,6 +76,7 @@ const Login: React.FC = () => {
 
       const token = response.data.token as string;
       const isAdmin = !!response.data.isAdmin;
+      console.log(response.data);
 
       // 2) Tell AuthContext about the token (populates user)
       await login(token);
