@@ -30,7 +30,6 @@ export async function createPolicy(req: Request, res: Response) {
   }
 }
 
-
 export async function getPolicyById(req: Request, res: Response) {
   try {
     const id = parseInt(req.params.id);
@@ -73,3 +72,13 @@ export async function deletePolicy(req: Request, res: Response) {
   }
 }
 
+
+export async function getPolicyByPolicyNumber(req: Request, res: Response) {
+  try {
+    const policyNumber = req.params.policyNumber;
+    const policy = await PolicyService.getPolicyByPolicyNumber(policyNumber);
+    res.json(policy);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch policy", error });
+  }
+}

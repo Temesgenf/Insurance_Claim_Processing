@@ -16,6 +16,17 @@ export class PolicyRepository {
     });
   }
 
+  static async findByPolicyNumber(
+    policyNumber: string
+  ): Promise<Policy | null> {
+    console.log(await AppDataSource.getRepository(Policy).findOne({
+      where: { policyNumber },
+    }));
+    return AppDataSource.getRepository(Policy).findOne({
+      where: { policyNumber },
+    });
+  }
+
   static async createPolicy(policyDto: CreatePolicyDto) {
     const response = await AppDataSource.getRepository(Policy).save(policyDto);
     return response;

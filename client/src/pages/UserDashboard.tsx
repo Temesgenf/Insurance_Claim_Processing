@@ -15,6 +15,22 @@ import { getAllClaims } from "../services/claimService";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 
+// Status color helper (copied from ClaimsPage for consistency)
+const getStatusColor = (status: string) => {
+  switch ((status || "").toLowerCase()) {
+    case "approved":
+      return "bg-green-100 text-green-800";
+    case "submitted":
+      return "bg-blue-100 text-blue-800";
+    case "pending":
+      return "bg-yellow-100 text-yellow-800";
+    case "rejected":
+      return "bg-red-100 text-red-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+};
+
 const UserDashboard: React.FC = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
@@ -67,18 +83,22 @@ const UserDashboard: React.FC = () => {
         // Recent activity items
         const policies = policiesData.map((p: any) => ({
           type: "Policy",
-          action: p.status.charAt(0).toUpperCase() + p.status.slice(1),
-          detail: `Policy #${p.policyNumber}`,
-          date: p.createdAt,
+          action: "Created",
+          detail: `Policy #${p.policyNumber} Created`,
+          // Use createdAt if present, else fallback to startDate
+          date: p.createdAt || p.startDate,
+          id: p.policyId,
+          status: p.status,
         }));
         const claims = claimsData.map((c: any) => ({
           type: "Claim",
-          action: c.status.charAt(0).toUpperCase() + c.status.slice(1),
-          detail: `Claim #${c.claimNumber}`,
+          action: "Created",
+          detail: `Claim #${c.claimNumber} Created`,
           date: c.createdAt,
+          id: c.claimId,
+          status: c.status,
         }));
-
-        // Merge & sort
+        // Merge, sort by date desc, take top 10
         const merged = [...policies, ...claims].sort(
           (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
         );
@@ -154,8 +174,8 @@ const UserDashboard: React.FC = () => {
               </div>
               <div
                 className="rounded-2xl shadow-md p-6 bg-gradient-to-br from-yellow-100 to-yellow-300 flex flex-col items-start hover:shadow-xl transition group cursor-pointer"
-                onClick={() => navigate("/user/policies")}
-                title="Pending Policies"
+                onClick={() => navigate("/user/policies?status=pending")}
+                title="Go to Pending Policies"
               >
                 <ClipboardList className="w-8 h-8 text-yellow-500 mb-4" />
                 <div className="text-2xl font-bold text-gray-800 mb-1 group-hover:text-yellow-700 transition">
@@ -167,8 +187,8 @@ const UserDashboard: React.FC = () => {
               </div>
               <div
                 className="rounded-2xl shadow-md p-6 bg-gradient-to-br from-green-100 to-green-300 flex flex-col items-start hover:shadow-xl transition group cursor-pointer"
-                onClick={() => navigate("/user/policies")}
-                title="Approved Policies"
+                onClick={() => navigate("/user/policies?status=approved")}
+                title="Go to Approved Policies"
               >
                 <CheckCircle className="w-8 h-8 text-green-500 mb-4" />
                 <div className="text-2xl font-bold text-gray-800 mb-1 group-hover:text-green-700 transition">
@@ -180,8 +200,8 @@ const UserDashboard: React.FC = () => {
               </div>
               <div
                 className="rounded-2xl shadow-md p-6 bg-gradient-to-br from-red-100 to-red-300 flex flex-col items-start hover:shadow-xl transition group cursor-pointer"
-                onClick={() => navigate("/user/policies")}
-                title="Rejected Policies"
+                onClick={() => navigate("/user/policies?status=rejected")}
+                title="Go to Rejected Policies"
               >
                 <XCircle className="w-8 h-8 text-red-500 mb-4" />
                 <div className="text-2xl font-bold text-gray-800 mb-1 group-hover:text-red-700 transition">
@@ -208,8 +228,8 @@ const UserDashboard: React.FC = () => {
               </div>
               <div
                 className="rounded-2xl shadow-md p-6 bg-gradient-to-br from-green-100 to-green-400 flex flex-col items-start hover:shadow-xl transition group cursor-pointer"
-                onClick={() => navigate("/user/claims")}
-                title="Approved Claims"
+                onClick={() => navigate("/user/claims?status=approved")}
+                title="Go to Approved Claims"
               >
                 <CheckCircle className="w-8 h-8 text-green-600 mb-4" />
                 <div className="text-2xl font-bold text-gray-800 mb-1 group-hover:text-green-700 transition">
@@ -221,8 +241,8 @@ const UserDashboard: React.FC = () => {
               </div>
               <div
                 className="rounded-2xl shadow-md p-6 bg-gradient-to-br from-red-100 to-red-400 flex flex-col items-start hover:shadow-xl transition group cursor-pointer"
-                onClick={() => navigate("/user/claims")}
-                title="Rejected Claims"
+                onClick={() => navigate("/user/claims?status=rejected")}
+                title="Go to Rejected Claims"
               >
                 <AlertTriangle className="w-8 h-8 text-red-600 mb-4" />
                 <div className="text-2xl font-bold text-gray-800 mb-1 group-hover:text-red-700 transition">
@@ -261,12 +281,10 @@ const UserDashboard: React.FC = () => {
             </div>
           ) : (
             <ul>
-              {recentActivity.map((activity, idx) => (
-                <li
-                  key={idx}
-                  className="flex items-center justify-between py-3 border-b last:border-b-0"
-                >
-                  <div className="flex items-center gap-3">
+              {recentActivity.map((activity, idx) => {
+                // For claims, use claimId for navigation
+                const content = (
+                  <>
                     {activity.type === "Policy" ? (
                       <ShieldCheck className="w-5 h-5 text-blue-400" />
                     ) : (
@@ -275,15 +293,41 @@ const UserDashboard: React.FC = () => {
                     <span className="font-medium text-gray-700">
                       {activity.detail}
                     </span>
-                    <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">
+                    <span
+                      className={`ml-2 text-xs px-2 py-0.5 rounded-full ${getStatusColor(
+                        activity.status
+                      )}`}
+                    >
                       {activity.action}
                     </span>
-                  </div>
-                  <span className="text-xs text-gray-400">
-                    {new Date(activity.date).toLocaleDateString()}
-                  </span>
-                </li>
-              ))}
+                  </>
+                );
+                return (
+                  <li
+                    key={idx}
+                    className="flex items-center justify-between py-3 border-b last:border-b-0"
+                  >
+                    <div className="flex items-center gap-3">
+                      {activity.type === "Claim" ? (
+                        <span
+                          className="cursor-pointer hover:underline text-indigo-700"
+                          onClick={() =>
+                            navigate(`/user/claims/${activity.id}`)
+                          }
+                          title="View Claim Details"
+                        >
+                          {content}
+                        </span>
+                      ) : (
+                        content
+                      )}
+                    </div>
+                    <span className="text-xs text-gray-400">
+                      {new Date(activity.date).toLocaleDateString()}
+                    </span>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>

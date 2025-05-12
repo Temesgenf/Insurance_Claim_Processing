@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { Policy } from "../pages/PoliciesPage";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -27,4 +28,11 @@ export const rejectPolicy = async (policyId: number) => {
 
 export const deletePolicy = async (policyId: number) => {
   return axios.delete(`${API_BASE_URL}/api/policies/${policyId}`);
+};
+
+export const getPolicyByPolicyNumber = async (policyNumber: string) => {
+  const response = await axios.get(
+    `${API_BASE_URL}/api/policies/policyNumber/${policyNumber}`
+  );
+  return response;
 };
