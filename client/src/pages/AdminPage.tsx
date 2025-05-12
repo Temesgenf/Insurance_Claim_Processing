@@ -23,82 +23,152 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 import { useState } from "react";
-
-const adminCardData = [
-  {
-    title: "Total Users",
-    value: 120,
-    icon: <UsersIcon className="w-8 h-8 text-blue-500" />,
-    color: "from-blue-100 to-blue-300",
-    link: "/admin/users",
-  },
-  {
-    title: "Total Products",
-    value: 23,
-    icon: <CubeIcon className="w-8 h-8 text-pink-500" />,
-    color: "from-pink-100 to-pink-300",
-    link: "/admin/products",
-  },
-  {
-    title: "Total Policies",
-    value: 45,
-    icon: <DocumentTextIcon className="w-8 h-8 text-green-500" />,
-    color: "from-green-100 to-green-300",
-    link: "/admin/policies",
-  },
-  {
-    title: "Total Claims",
-    value: 230,
-    icon: <ClipboardIcon className="w-8 h-8 text-indigo-500" />,
-    color: "from-indigo-100 to-indigo-300",
-    link: "/admin/claims",
-  },
-  {
-    title: "Pending Claims",
-    value: 15,
-    icon: <ClipboardIcon className="w-8 h-8 text-yellow-500" />,
-    color: "from-yellow-100 to-yellow-300",
-    link: "/admin/claims",
-  },
-  {
-    title: "Approved Claims",
-    value: 200,
-    icon: <CheckCircleIcon className="w-8 h-8 text-green-600" />,
-    color: "from-green-100 to-green-400",
-    link: "/admin/claims",
-  },
-  {
-    title: "Rejected Claims",
-    value: 15,
-    icon: <XCircleIcon className="w-8 h-8 text-red-600" />,
-    color: "from-red-100 to-red-400",
-    link: "/admin/claims",
-  },
-  {
-    title: "Analytics",
-    value: "--",
-    icon: <ChartBarIcon className="w-8 h-8 text-purple-500" />,
-    color: "from-purple-100 to-purple-300",
-    link: "/admin/analytics",
-  },
-  {
-    title: "Settings",
-    value: "",
-    icon: <Cog6ToothIcon className="w-8 h-8 text-gray-500" />,
-    color: "from-gray-100 to-gray-300",
-    link: "/admin/settings",
-  },
-];
+import { getAllUsers } from "../services/userService";
+import { getAllPolicies } from "../services/policyService";
+import { getAllProducts } from "../services/productService";
+import { getAllClaims } from "../services/claimService";
 
 const AdminPage: React.FC = () => {
   const { user, logout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
   const navigate = useNavigate();
+  const [users, setUsers] = useState<any[]>([]);
+  const [claims, setClaims] = useState<any[]>([]);
+  const [policies, setPolicies] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const adminCardData = [
+    {
+      title: "Total Users",
+      value: users.length,
+      icon: <UsersIcon className="w-8 h-8 text-blue-500" />,
+      color: "from-blue-100 to-blue-300",
+      link: "/admin/users",
+    },
+    {
+      title: "Total Products",
+      value: products.length,
+      icon: <CubeIcon className="w-8 h-8 text-pink-500" />,
+      color: "from-pink-100 to-pink-300",
+      link: "/admin/products",
+    },
+    {
+      title: "Total Policies",
+      value: policies.length,
+      icon: <DocumentTextIcon className="w-8 h-8 text-green-500" />,
+      color: "from-green-100 to-green-300",
+      link: "/admin/policies",
+    },
+    {
+      title: "Total Claims",
+      value: claims.length,
+      icon: <ClipboardIcon className="w-8 h-8 text-indigo-500" />,
+      color: "from-indigo-100 to-indigo-300",
+      link: "/admin/claims",
+    },
+    {
+      title: "Pending Claims",
+      value: claims.filter((claim) => claim.status === "Pending").length,
+      icon: <ClipboardIcon className="w-8 h-8 text-yellow-500" />,
+      color: "from-yellow-100 to-yellow-300",
+      link: "/admin/claims",
+    },
+    {
+      title: "Approved Claims",
+      value: claims.filter((claim) => claim.status === "Approved").length,
+      icon: <CheckCircleIcon className="w-8 h-8 text-green-600" />,
+      color: "from-green-100 to-green-400",
+      link: "/admin/claims",
+    },
+    {
+      title: "Rejected Claims",
+      value: claims.filter((claim) => claim.status === "Rejected").length,
+      icon: <XCircleIcon className="w-8 h-8 text-red-600" />,
+      color: "from-red-100 to-red-400",
+      link: "/admin/claims",
+    },
+    {
+      title: "Analytics",
+      value: "--",
+      icon: <ChartBarIcon className="w-8 h-8 text-purple-500" />,
+      color: "from-purple-100 to-purple-300",
+      link: "/admin/analytics",
+    },
+    {
+      title: "Settings",
+      value: "",
+      icon: <Cog6ToothIcon className="w-8 h-8 text-gray-500" />,
+      color: "from-gray-100 to-gray-300",
+      link: "/admin/settings",
+    },
+  ];
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await getAllUsers();
+      setUsers(response.data);
+      // console.log(response.data);
+    } catch (err: any) {
+      setError("Failed to fetch users");
+    }
+    setLoading(false);
+  };
+
+  const fetchClaims = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await getAllClaims();
+      setClaims(response.data);
+
+      console.log(response.data);
+    } catch (err: any) {
+      setError("Failed to fetch users");
+    }
+    setLoading(false);
+  };
+  const fetchProducts = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await getAllProducts();
+      setProducts(response.data);
+      // console.log(response.data);
+    } catch (err: any) {
+      setError("Failed to fetch users");
+    }
+    setLoading(false);
+  };
+
+  const fetchPolicies = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await getAllPolicies();
+      setPolicies(response.data);
+      // console.log(response.data);
+    } catch (err: any) {
+      setError("Failed to fetch users");
+    }
+    setLoading(false);
+  };
 
   const handleSignOut = () => {
     logout(); // clear auth state & tokens
     navigate("/login", { replace: true });
   };
+
+  React.useEffect(() => {
+    fetchUsers();
+    fetchClaims();
+    fetchProducts();
+    fetchPolicies();
+  }, []);
+
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <AdminSidebar />
@@ -151,7 +221,9 @@ const AdminPage: React.FC = () => {
           {adminCardData.map((card, idx) => (
             <div
               key={idx}
-              onClick={() => card.link && navigate(card.link)}
+              onClick={() =>
+                card.link && navigate(`${card.link}?status=${card.title}`)
+              }
               className={`rounded-2xl shadow-md p-8 bg-gradient-to-br ${card.color} flex flex-col items-start hover:shadow-xl transition group cursor-pointer hover:scale-105`}
               title={card.title}
             >
