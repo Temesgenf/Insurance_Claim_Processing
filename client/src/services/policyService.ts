@@ -12,7 +12,19 @@ export const getPolicyById = async (id: string) => {
   return response;
 };
 
-export const createPolicy = async (policy: Policy) => {
+export const createPolicy = async (policy: any) => {
   const response = await axios.post(`${API_BASE_URL}/api/policies`, policy);
   return response;
+};
+
+export const approvePolicy = async (policyId: number) => {
+  return axios.put(`${API_BASE_URL}/api/policies/${policyId}/approve`);
+};
+
+export const rejectPolicy = async (policyId: number) => {
+  return axios.put(`${API_BASE_URL}/api/policies/${policyId}/reject`);
+};
+
+export const deletePolicy = async (policyId: number) => {
+  return axios.delete(`${API_BASE_URL}/api/policies/${policyId}`);
 };

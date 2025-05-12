@@ -25,6 +25,19 @@ class PolicyService {
   static async getPolicyById(id: number) {
     return PolicyRepository.findById(id);
   }
+
+  static async approvePolicy(id: number) {
+    return PolicyRepository.updatePolicyStatus(id, "approved");
+  }
+
+  static async rejectPolicy(id: number) {
+    return PolicyRepository.updatePolicyStatus(id, "rejected");
+  }
+
+  static async deletePolicy(id: number) {
+    return PolicyRepository.deletePolicy(id);
+  }
 }
+
 
 export default PolicyService;
