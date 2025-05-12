@@ -36,6 +36,7 @@ export class CreateClaimDto {
   // lossDate: Date;
 
   static fromRequestBody(req: any): CreateClaimDto {
+    console.log("req", req);
     return new CreateClaimDto(
       req.policyId,
       req.treatmentDetails,

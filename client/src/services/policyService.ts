@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { Policy } from "../pages/PoliciesPage";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -12,7 +13,26 @@ export const getPolicyById = async (id: string) => {
   return response;
 };
 
-export const createPolicy = async (policy: Policy) => {
+export const createPolicy = async (policy: any) => {
   const response = await axios.post(`${API_BASE_URL}/api/policies`, policy);
+  return response;
+};
+
+export const approvePolicy = async (policyId: number) => {
+  return axios.put(`${API_BASE_URL}/api/policies/${policyId}/approve`);
+};
+
+export const rejectPolicy = async (policyId: number) => {
+  return axios.put(`${API_BASE_URL}/api/policies/${policyId}/reject`);
+};
+
+export const deletePolicy = async (policyId: number) => {
+  return axios.delete(`${API_BASE_URL}/api/policies/${policyId}`);
+};
+
+export const getPolicyByPolicyNumber = async (policyNumber: string) => {
+  const response = await axios.get(
+    `${API_BASE_URL}/api/policies/policyNumber/${policyNumber}`
+  );
   return response;
 };

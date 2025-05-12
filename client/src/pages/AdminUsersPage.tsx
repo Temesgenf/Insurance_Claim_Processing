@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getAllUsers, deleteUser, deactivateUser } from "../services/userService";
+import Swal from 'sweetalert2';
 import AdminSidebar from "../components/layout/AdminSidebar";
 
 
@@ -27,17 +28,29 @@ const AdminUsersPage: React.FC = () => {
   }, []);
 
   const handleDelete = async (userId: number) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    });
+    if (!result.isConfirmed) return;
     setLoading(true);
     setError(null);
     try {
       await deleteUser(userId);
       await fetchUsers();
+      await Swal.fire('Deleted!', 'User has been deleted.', 'success');
     } catch (err: any) {
       setError("Failed to delete user");
+      await Swal.fire('Error', 'Failed to delete user', 'error');
     }
     setLoading(false);
   };
+
 
 
   return (

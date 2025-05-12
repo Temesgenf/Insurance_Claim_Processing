@@ -30,11 +30,53 @@ export async function createPolicy(req: Request, res: Response) {
   }
 }
 
-
 export async function getPolicyById(req: Request, res: Response) {
   try {
     const id = parseInt(req.params.id);
     const policy = await PolicyService.getPolicyById(id);
+    res.json(policy);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch policy", error });
+  }
+}
+
+export async function approvePolicy(req: Request, res: Response) {
+  try {
+    const id = parseInt(req.params.id);
+    const updated = await PolicyService.approvePolicy(id);
+    if (!updated) return res.status(404).json({ message: "Policy not found" });
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to approve policy", error });
+  }
+}
+
+export async function rejectPolicy(req: Request, res: Response) {
+  try {
+    const id = parseInt(req.params.id);
+    const updated = await PolicyService.rejectPolicy(id);
+    if (!updated) return res.status(404).json({ message: "Policy not found" });
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to reject policy", error });
+  }
+}
+
+export async function deletePolicy(req: Request, res: Response) {
+  try {
+    const id = parseInt(req.params.id);
+    await PolicyService.deletePolicy(id);
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete policy", error });
+  }
+}
+
+
+export async function getPolicyByPolicyNumber(req: Request, res: Response) {
+  try {
+    const policyNumber = req.params.policyNumber;
+    const policy = await PolicyService.getPolicyByPolicyNumber(policyNumber);
     res.json(policy);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch policy", error });

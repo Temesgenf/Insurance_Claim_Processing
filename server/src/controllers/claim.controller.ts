@@ -8,10 +8,7 @@ export async function createClaim(
   res: Response
 ): Promise<Response> {
   try {
-    console.log(req.body);
     const claimData = CreateClaimDto.fromRequestBody(req.body);
-    console.log("Claim data from request body:", claimData);
-    console.log("Claim data:", claimData);
     const newClaim = await ClaimService.createClaim(claimData);
     return res.status(201).json(newClaim);
   } catch (error) {
@@ -83,5 +80,23 @@ export async function getClaimById(
   } catch (error) {
     console.error("Error fetching claim:", error);
     return res.status(500).json({ message: "Failed to fetch claim" });
+  }
+}
+
+// Delete a claim by ID
+export async function deleteClaim(
+  req: Request,
+  res: Response
+): Promise<Response> {
+  try {
+    const { id } = req.params;
+    const deleted = await ClaimService.deleteClaim(+id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Claim not found" });
+    }
+    return res.status(204).send();
+  } catch (error) {
+    console.error("Error deleting claim:", error);
+    return res.status(500).json({ message: "Failed to delete claim" });
   }
 }
