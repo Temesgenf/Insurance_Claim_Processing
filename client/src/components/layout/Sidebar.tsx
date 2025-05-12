@@ -4,15 +4,25 @@ import {
   BuildingStorefrontIcon,
   DocumentTextIcon,
   ClipboardDocumentListIcon,
+  MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 import { getAllProducts } from "../../services/productService";
 import type { Product } from "../../../../types/product.enum";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const Sidebar: React.FC = () => {
   const [productsOpen, setProductsOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const location = useLocation();
+  const filteredProducts = React.useMemo(() => {
+    if (!searchTerm) return products;
+    return products.filter((p) =>
+      p.productName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.productCode?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [products, searchTerm]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -27,19 +37,19 @@ const Sidebar: React.FC = () => {
   }, []);
 
   return (
-    <aside className="h-screen w-64 bg-[#154654] text-white shadow-lg flex flex-col">
+    <aside className="h-screen w-64 bg-[#154654] text-white shadow-lg flex flex-col sticky top-0">
       <nav className="flex-1">
         <ul className="py-6 space-y-2">
           <li>
-            <a
-              href="/user/dashboard"
-              className="flex items-center px-6 py-3 rounded-lg hover:bg-[#0a393f] transition-colors duration-200 font-medium"
+            <Link
+              to="/user/dashboard"
+              className={`flex items-center px-6 py-3 rounded-lg transition-colors duration-200 font-medium ${location.pathname === "/user/dashboard" ? "bg-[#0a393f] text-blue-300" : "hover:bg-[#0a393f]"}`}
             >
               <HomeIcon className="h-5 w-5 mr-3" />
               Dashboard
-            </a>
+            </Link>
           </li>
-          <li>
+          <li className="relative">
             <button
               className="flex items-center w-full px-6 py-3 rounded-lg hover:bg-[#0a393f] transition-colors duration-200 font-medium focus:outline-none"
               onClick={() => setProductsOpen((open) => !open)}
@@ -65,104 +75,78 @@ const Sidebar: React.FC = () => {
               </svg>
             </button>
             {productsOpen && (
-              <motion.ul
+              <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ type: "spring", damping: 20, stiffness: 300 }}
-                className=" z-50 w-full bg-[#1a798c] text-white backdrop-blur-xl border border-gray-200/50 shadow-2xl overflow-hidden mt-1.5"
+                className="absolute left-6 right-2 mt-2 w-56 max-h-80 overflow-y-auto rounded-xl bg-[#1e3340]/95 shadow-2xl border border-blue-900/40 z-50 backdrop-blur-lg custom-scrollbar"
               >
-                {products?.map((product) => (
-                  <motion.li
-                    key={product.productId}
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
-                    className="border-b border-white/20 last:border-b-0"
-                  >
-                    <Link
-                      to={`/products/${product.productId}`}
-                      className="flex items-center px-5 py-4 group transition-all duration-300 hover:bg-gradient-to-r from-white to-blue-50/30"
-                    >
-                      {/* Elegant Initial Avatar */}
-                      <div className="relative flex-shrink-0">
-                        <div className="h-10 w-10 rounded-lg bg-[#154654] from-blue-500/10 to-indigo-500/10 flex items-center justify-center overflow-hidden">
-                          {product.productName?.charAt(0) ? (
-                            <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
-                              {product.productName.charAt(0)}
-                            </span>
-                          ) : (
-                            <svg
-                              className="h-5 w-5 text-indigo-400/80"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1.5}
-                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                              />
-                            </svg>
-                          )}
-                        </div>
-                        <div className="absolute -inset-1 rounded-lg bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                      </div>
-
-                      {/* Luxurious Text Styling */}
-                      <div className="ml-4 flex-1 min-w-0">
-                        <p className="text-base font-medium text-gray-200 group-hover:text-blue-600 transition-colors duration-300 truncate">
-                          {product.productName}
-                        </p>
-                        <p className="text-sm text-gray-200 group-hover:text-blue-500 transition-colors duration-300 truncate">
-                          {product.productCode}
-                        </p>
-                      </div>
-
-                      {/* Animated Chevron */}
-                      <motion.div
-                        className="ml-2"
-                        initial={{ x: 0 }}
-                        animate={{ x: 0 }}
-                        transition={{ type: "spring", stiffness: 500 }}
-                      >
-                        <svg
-                          className="h-4 w-4 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
+                {/* Search bar */}
+                <div className="sticky top-0 z-10 bg-[#1e3340]/95 p-2 border-b border-blue-900/40">
+                  <div className="flex items-center gap-2">
+                    <MagnifyingGlassIcon className="h-5 w-5 text-blue-400" />
+                    <input
+                      type="text"
+                      placeholder="Search products..."
+                      className="flex-1 px-3 py-2 rounded-md border border-blue-900/40 focus:outline-none focus:ring-2 focus:ring-blue-300 text-blue-100 bg-[#22384a]/90 placeholder:text-blue-200"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      autoFocus
+                    />
+                  </div>
+                </div>
+                {/* Product list */}
+                <ul className="max-h-64 overflow-y-auto custom-scrollbar divide-y divide-blue-900/20">
+                  {filteredProducts.length === 0 ? (
+                    <li className="py-6 text-center text-blue-300 select-none">No products found.</li>
+                  ) : (
+                    filteredProducts.map((product) => (
+                      <li key={product.productId}>
+                        <Link
+                          to={`/products/${product.productId}`}
+                          className={`group flex items-center gap-4 px-5 py-3 transition-all duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 hover:bg-[#294056]/80 active:bg-[#22384a]/90 cursor-pointer ${location.pathname === `/products/${product.productId}` ? "bg-blue-900/80 text-white" : ""}`}
+                          tabIndex={0}
+                          role="menuitem"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2.5}
-                            d="M9 5l7 7-7 7"
-                          />
-                        </svg>
-                      </motion.div>
-                    </Link>
-                  </motion.li>
-                ))}
-              </motion.ul>
+                          {/* Avatar */}
+                          <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-blue-200 to-indigo-200 flex items-center justify-center text-blue-800 font-bold text-lg">
+                            {product.productName?.charAt(0) || (
+                              <svg className="h-5 w-5 text-indigo-400/80" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                            )}
+                          </div>
+                          {/* Product info */}
+                          <div className="flex-1 min-w-0">
+                            <div className="truncate font-semibold text-white group-hover:text-white">{product.productName}</div>
+                            <div className="truncate text-xs text-white/80 group-hover:text-white">{product.productCode}</div>
+                          </div>
+                          {/* Chevron */}
+                          <svg className="h-4 w-4 text-blue-400 group-hover:text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+                        </Link>
+                      </li>
+                    ))
+                  )}
+                </ul>
+              </motion.div>
             )}
           </li>
           <li>
-            <a
-              href="/user/policies"
-              className="flex items-center px-6 py-3 rounded-lg hover:bg-[#0a393f] transition-colors duration-200 font-medium"
+            <Link
+              to="/user/policies"
+              className={`flex items-center px-6 py-3 rounded-lg transition-colors duration-200 font-medium ${location.pathname.startsWith("/user/policies") ? "bg-[#0a393f] text-blue-300" : "hover:bg-[#0a393f]"}`}
             >
               <DocumentTextIcon className="h-5 w-5 mr-3" />
               Policies
-            </a>
+            </Link>
           </li>
           <li>
-            <a
-              href="/user/claims"
-              className="flex items-center px-6 py-3 rounded-lg hover:bg-[#0a393f] transition-colors duration-200 font-medium"
+            <Link
+              to="/user/claims"
+              className={`flex items-center px-6 py-3 rounded-lg transition-colors duration-200 font-medium ${location.pathname.startsWith("/user/claims") ? "bg-[#0a393f] text-blue-300" : "hover:bg-[#0a393f]"}`}
             >
               <ClipboardDocumentListIcon className="h-5 w-5 mr-3" />
               Claims
-            </a>
+            </Link>
           </li>
         </ul>
       </nav>
