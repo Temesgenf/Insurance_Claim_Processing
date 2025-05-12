@@ -3,6 +3,7 @@ import Button from "../components/ui/Button";
 import { useEffect, useState } from "react";
 import { getAllClaims } from "../services/claimService";
 import { useNavigate } from "react-router-dom";
+import { useAnimation } from "framer-motion";
 
 const columns = [
   "Claim Number",
@@ -36,6 +37,7 @@ export interface Claim {
   lossDate: string;
   lossTime: string;
   createdAt: string;
+  user: object;
 }
 
 const ClaimsPage = () => {

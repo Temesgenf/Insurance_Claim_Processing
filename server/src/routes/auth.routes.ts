@@ -12,7 +12,6 @@ authRouter.get("/verify", verifyToken, (req, res) => {
       user: {
         id: req.user.userId,
         firstName: req.user.fullName,
-
         email: req.user.email,
         isAdmin: req.user.isAdmin,
       },

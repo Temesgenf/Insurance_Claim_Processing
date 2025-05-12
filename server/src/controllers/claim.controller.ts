@@ -8,7 +8,9 @@ export async function createClaim(
   res: Response
 ): Promise<Response> {
   try {
+    console.log(req.body);
     const claimData = CreateClaimDto.fromRequestBody(req.body);
+    console.log("Claim data:", claimData);
     const newClaim = await ClaimService.createClaim(claimData);
     return res.status(201).json(newClaim);
   } catch (error) {
