@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
 import InsuranceImage from "../assets/insurance.svg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const Login = () => {
+  const location = useLocation();
+  const role = location.search.split("=")[1];
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
@@ -66,15 +68,15 @@ const Login = () => {
           headers: {
             "Content-Type": "application/json", // Required header
           },
+          // withCredentials: true, // Include credentials for CORS
         }
       );
-
-      // Assuming the response contains a token and user data
-      // const { token } = response.data;
-      // localStorage.setItem("AccessToken", token);
-
-      navigate("/user/dashboard");
-      console.log("Login successful", response.data);
+      //set cookie
+      console.log("Login response:", response);
+      localStorage.setItem("AccessToken", response.data.token);
+      response.data.isAdmin
+        ? navigate("/admin/dashboard")
+        : navigate("/user/dashboard");
     } catch (error: any) {
       let errorMessage = "An error occurred. Please try again.";
       if (error.response) {
@@ -188,15 +190,17 @@ const Login = () => {
               >
                 {isSubmitting ? "Signing in..." : "Sign in"}
               </button>
-              <p className="text-sm font-light text-gray-500 ">
-                Don’t have an account yet?{" "}
-                <Link
-                  to="/register"
-                  className="font-medium text-primary-600 hover:underline "
-                >
-                  Sign up
-                </Link>
-              </p>
+              {role === "user" && (
+                <p className="text-sm font-light text-gray-500 ">
+                  Don’t have an account yet?{" "}
+                  <Link
+                    to="/register"
+                    className="font-medium text-primary-600 hover:underline "
+                  >
+                    Sign up
+                  </Link>
+                </p>
+              )}
             </form>
           </div>
         </div>

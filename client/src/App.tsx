@@ -1,5 +1,5 @@
-import "./App.css";
-import { Route, Routes } from "react-router-dom";
+// App.tsx
+import { Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import ClaimsPage from "./pages/ClaimsPage";
 import ClaimDetailPage from "./pages/ClaimDetailPage";
@@ -17,35 +17,72 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PoliciesPage from "./pages/PoliciesPage";
 import NewPolicyPage from "./pages/NewPolicyPage";
+import { AuthProvider, useAuth } from "./Context/AuthContext";
+
+const PrivateRoute = () => {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+  console.log("User:", user);
+
+  if (loading) return <div>Loading...</div>;
+  return user ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/login" state={{ from: location }} replace />
+  );
+};
+
+const AdminRoute = () => {
+  const { user } = useAuth();
+  const location = useLocation();
+  console.log("User:", user);
+
+  if (!user?.isAdmin) {
+    return <Navigate to="/" state={{ from: location }} replace />;
+  }
+  return <Outlet />;
+};
 
 function App() {
   return (
-    <>
-      <div>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
+    <AuthProvider>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/products/:productId" element={<ProductDetail />} />
+
+        {/* Protected User Routes */}
+        <Route element={<PrivateRoute />}>
           <Route path="/user/dashboard" element={<UserDashboard />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
           <Route path="/user/claims" element={<ClaimsPage />} />
           <Route
             path="/user/claims/:claimNumber"
             element={<ClaimDetailPage />}
           />
-          <Route path="/user/new-claim" element={<NewClaimPage />} />
-          <Route path="/products/:productId" element={<ProductDetail />} />
           <Route path="/user/policies" element={<PoliciesPage />} />
           <Route path="/user/new-policy" element={<NewPolicyPage />} />
-          <Route path="/admin/dashboard" element={<AdminPage />} />
-          <Route path="/admin/users" element={<AdminUsersPage />} />
-          <Route path="/admin/policies" element={<AdminPoliciesPage />} />
-          <Route path="/admin/claims" element={<AdminClaimsPage />} />
-          <Route path="/admin/analytics" element={<AdminAnalyticsPage />} />
-          <Route path="/admin/settings" element={<AdminSettingsPage />} />
-          <Route path="/admin/products" element={<AdminProductPage />} />
-        </Routes>
-      </div>
-    </>
+          <Route path="/user/new-claim" element={<NewClaimPage />} />
+        </Route>
+
+        {/* Protected Admin Routes */}
+        <Route element={<PrivateRoute />}>
+          <Route element={<AdminRoute />}>
+            <Route path="/admin/dashboard" element={<AdminPage />} />
+            <Route path="/admin/users" element={<AdminUsersPage />} />
+            <Route path="/admin/policies" element={<AdminPoliciesPage />} />
+            <Route path="/admin/claims" element={<AdminClaimsPage />} />
+            <Route path="/admin/analytics" element={<AdminAnalyticsPage />} />
+            <Route path="/admin/settings" element={<AdminSettingsPage />} />
+            <Route path="/admin/products" element={<AdminProductPage />} />
+          </Route>
+        </Route>
+
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </AuthProvider>
   );
 }
 
