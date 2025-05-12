@@ -5,7 +5,7 @@ import axios from "axios";
 export interface User {
   userId: number;
   email: string;
-  fullName: string;
+  firstName: string;
   isAdmin: boolean;
 }
 
