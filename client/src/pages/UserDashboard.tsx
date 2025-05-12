@@ -16,8 +16,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 
 const UserDashboard: React.FC = () => {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   // Sign-out handler
   const handleSignOut = () => {
@@ -40,6 +41,7 @@ const UserDashboard: React.FC = () => {
           getAllClaims(),
         ]);
         const policiesData = policiesRes.data || [];
+        console.log();
         const claimsData = claimsRes.data || [];
 
         // Compute stats
@@ -101,28 +103,43 @@ const UserDashboard: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              Welcome back, John Doe!
+              Welcome back, {user?.firstName}!
             </h1>
             <p className="text-gray-500">
               Here’s an overview of your insurance activity.
             </p>
           </div>
-          <div className="flex items-center gap-4 mt-4 md:mt-0">
-            <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-blue-400 to-indigo-400 flex items-center justify-center">
-              <User className="w-8 h-8 text-white" />
-            </div>
-            <div>
-              <div className="font-semibold text-gray-800">John Doe</div>
-              <div className="text-xs text-gray-500">john.doe@email.com</div>
-            </div>
-            {/* Sign Out Button */}
+          <div className="flex items-center gap-4 mt-4 md:mt-0 relative">
+            {/* Profile dropdown trigger */}
             <button
-              onClick={handleSignOut}
-              className="flex items-center space-x-1 text-sm text-red-600 hover:text-red-800 ml-4"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="flex items-center gap-4 hover:bg-gray-100 rounded-lg p-1 transition-colors"
             >
-              <LogOut className="w-4 h-4" />
-              <span>Sign Out</span>
+              <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-blue-400 to-indigo-400 flex items-center justify-center">
+                <User className="w-8 h-8 text-white" />
+              </div>
+              <div className="text-left">
+                <div className="font-semibold text-gray-800">
+                  {user?.firstName}
+                </div>
+                <div className="text-xs text-gray-500">{user.email}</div>
+              </div>
             </button>
+
+            {/* Dropdown menu */}
+            {isDropdownOpen && (
+              <div className="absolute right-0 top-16 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                <div className="p-2">
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
