@@ -9,6 +9,7 @@ interface LocationState {
   from?: { pathname: string };
 }
 
+const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -65,7 +66,7 @@ const Login: React.FC = () => {
     try {
       // 1) Post credentials
       const response = await axios.post(
-        "http://localhost:3000/api/users/login",
+        `${API_BASE_URL}/api/users/login`,
         {
           email: formData.email,
           password: formData.password,

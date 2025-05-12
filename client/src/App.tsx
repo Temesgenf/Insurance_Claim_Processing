@@ -41,8 +41,7 @@ const AdminRoute = () => {
   }
   return <Outlet />;
 };
-const apiBaseUrl = import.meta.env.VITE_APP_API_BASE_URL;
-console.log("API Base URL:", apiBaseUrl);
+
 // console.log(import.meta.env.REACT_APP_API_BASE_URL);
 function App() {
   return (

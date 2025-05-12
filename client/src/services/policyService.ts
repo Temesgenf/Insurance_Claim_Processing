@@ -1,5 +1,4 @@
 import axios from "axios";
-import type { Policy } from "../pages/PoliciesPage";
 
 const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
