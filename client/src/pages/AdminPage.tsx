@@ -10,10 +10,7 @@ import {
   CheckCircleIcon,
   XCircleIcon,
 } from "@heroicons/react/24/outline";
-import {
-  User,
-  LogOut,
-} from "lucide-react";
+import { User, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 import { useState } from "react";
@@ -190,7 +187,7 @@ const AdminPage: React.FC = () => {
                 <div className="font-semibold text-gray-800">
                   {user?.firstName}
                 </div>
-                <div className="text-xs text-gray-500">{user.email}</div>
+                <div className="text-xs text-gray-500">{user?.email}</div>
               </div>
             </button>
 

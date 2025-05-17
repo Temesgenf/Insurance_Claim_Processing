@@ -35,7 +35,7 @@ export default function UserDropdown() {
         {user?.profileImage ? (
           <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
             <img
-              src={user.profileImage}
+              src={user?.profileImage || ""}
               alt={`${user.firstName} ${user.lastName}`}
             />
           </span>

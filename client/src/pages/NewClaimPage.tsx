@@ -63,13 +63,13 @@ const NewClaimPage = () => {
     setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 2,
-    }).format(amount);
-  };
+  // const formatCurrency = (amount: number) => {
+  //   return new Intl.NumberFormat("en-US", {
+  //     style: "currency",
+  //     currency: "USD",
+  //     minimumFractionDigits: 2,
+  //   }).format(amount);
+  // };
 
   const getStatusColor = (status: string) => {
     const statusLower = status?.toLowerCase() || "";
@@ -659,7 +659,7 @@ const NewClaimPage = () => {
                                   : "text-gray-700"
                               }`}
                             >
-                              {product.productType || "N/A"}
+                              {product?.type || "N/A"}
                             </div>
                           </div>
                         </div>
