@@ -13,7 +13,6 @@ import {
 import {
   BoxCubeIcon,
   ChevronDownIcon,
-  GridIcon,
   HorizontaLDots,
   PieChartIcon,
   PlugInIcon,
@@ -22,7 +21,6 @@ import { useSidebar } from "../../Context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
 import { getAllProducts } from "../../services/productService";
 import type { Product } from "../../../../types/product.enum";
-import { motion } from "framer-motion";
 
 type NavItem = {
   name: string;

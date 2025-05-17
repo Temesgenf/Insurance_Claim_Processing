@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAllUsers, deleteUser, deactivateUser } from "../services/userService";
+import { getAllUsers, deleteUser } from "../services/userService";
 import Swal from 'sweetalert2';
 import AdminSidebar from "../components/layout/AdminSidebar";
 

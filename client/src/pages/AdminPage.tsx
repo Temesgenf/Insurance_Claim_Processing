@@ -12,12 +12,6 @@ import {
 } from "@heroicons/react/24/outline";
 import {
   User,
-  FileText,
-  CheckCircle,
-  XCircle,
-  ClipboardList,
-  ShieldCheck,
-  AlertTriangle,
   LogOut,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";

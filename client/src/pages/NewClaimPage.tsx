@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 import { useTheme } from "../Context/ThemeContext";
@@ -12,15 +12,12 @@ import ClaimInfoCard from "../components/layout/ClaimInfoCard";
 import PageMeta from "../components/common/PageMeta";
 import {
   FiSearch,
-  FiCalendar,
-  FiClock,
   FiDollarSign,
   FiUpload,
   FiArrowLeft,
   FiCheckCircle,
   FiAlertCircle,
   FiFileText,
-  FiInfo,
   FiX,
 } from "react-icons/fi";
 import DatePicker from "react-datepicker";

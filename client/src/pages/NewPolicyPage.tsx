@@ -9,7 +9,6 @@ import { motion } from "framer-motion";
 import {
   FaShieldAlt,
   FaCalendarAlt,
-  FaMoneyBillWave,
   FaInfoCircle,
 } from "react-icons/fa";
 import { useTheme } from "../Context/ThemeContext";

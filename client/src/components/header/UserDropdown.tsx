@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { Link } from "react-router";
 import { useAuth } from "../../Context/AuthContext";
 
 export default function UserDropdown() {
@@ -24,7 +23,7 @@ export default function UserDropdown() {
   // Get user initials for avatar fallback
   const getUserInitials = () => {
     if (!user) return "U";
-    return `${user.firstName?.charAt(0) || ""}${user.lastName?.charAt(0) || ""}`;
+    return `${user.firstName?.charAt(0) || ""}) || ""}`;
   };
 
   return (
@@ -35,7 +34,10 @@ export default function UserDropdown() {
       >
         {user?.profileImage ? (
           <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
-            <img src={user.profileImage} alt={`${user.firstName} ${user.lastName}`} />
+            <img
+              src={user.profileImage}
+              alt={`${user.firstName} ${user.lastName}`}
+            />
           </span>
         ) : (
           <span className="mr-3 overflow-hidden rounded-full h-11 w-11 bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-700 dark:text-blue-300 font-medium">

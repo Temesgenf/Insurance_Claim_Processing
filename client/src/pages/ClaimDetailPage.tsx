@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { FiArrowLeft, FiFileText, FiCalendar, FiClock, FiDollarSign, FiInfo, FiCheckCircle, FiXCircle, FiAlertCircle } from "react-icons/fi";
+import { motion } from "framer-motion";
+import { FiArrowLeft, FiFileText, FiCalendar, FiClock, FiInfo, FiCheckCircle, FiXCircle, FiAlertCircle } from "react-icons/fi";
 import AppSidebar from "../components/layout/AppSidebar";
 import { getClaimById } from "../services/claimService";
 import { useTheme } from "../Context/ThemeContext";
