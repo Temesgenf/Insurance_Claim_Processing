@@ -52,7 +52,12 @@ const ClaimDetailPage = () => {
     if (claimNumber) fetchClaim();
   }, [claimNumber]);
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string | undefined) => {
+    if (!status)
+      return theme === "dark"
+        ? "bg-gray-700 text-gray-300 border-gray-600"
+        : "bg-gray-100 text-gray-800 border-gray-200";
+
     switch (status.toLowerCase()) {
       case "approved":
         return theme === "dark"
@@ -73,7 +78,8 @@ const ClaimDetailPage = () => {
     }
   };
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (amount: number | undefined) => {
+    if (amount === undefined) return "$0.00";
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
@@ -81,7 +87,8 @@ const ClaimDetailPage = () => {
     }).format(amount);
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return "N/A";
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
@@ -89,7 +96,8 @@ const ClaimDetailPage = () => {
     });
   };
 
-  const formatTime = (timeString: string) => {
+  const formatTime = (timeString: string | undefined) => {
+    if (!timeString) return "N/A";
     return new Date(timeString).toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
@@ -269,8 +277,10 @@ const ClaimDetailPage = () => {
                           claim?.status
                         )}`}
                       >
-                        {claim?.status.charAt(0).toUpperCase() +
-                          claim?.status.slice(1)}
+                        {claim?.status
+                          ? claim.status.charAt(0).toUpperCase() +
+                            claim.status.slice(1)
+                          : "Unknown"}
                       </span>
                       <span
                         className={`text-xs ${
@@ -484,50 +494,55 @@ const ClaimDetailPage = () => {
                       </div>
                     </div>
 
-                    {claim?.status.toLowerCase() !== "pending" && (
-                      <div className="relative flex items-start">
-                        <div
-                          className={`absolute left-0 mt-1 w-8 h-8 rounded-full flex items-center justify-center ${
-                            claim?.status.toLowerCase() === "approved"
-                              ? theme === "dark"
-                                ? "bg-green-900 text-green-300"
-                                : "bg-green-100 text-green-600"
-                              : theme === "dark"
-                              ? "bg-red-900 text-red-300"
-                              : "bg-red-100 text-red-600"
-                          }`}
-                        >
-                          {claim?.status.toLowerCase() === "approved" ? (
-                            <FiCheckCircle className="w-4 h-4" />
-                          ) : (
-                            <FiXCircle className="w-4 h-4" />
-                          )}
-                        </div>
-                        <div className="ml-12">
-                          <h4
-                            className={`text-md font-medium ${
-                              theme === "dark"
-                                ? "text-gray-200"
-                                : "text-gray-800"
+                    {claim?.status &&
+                      claim.status.toLowerCase() !== "pending" && (
+                        <div className="relative flex items-start">
+                          <div
+                            className={`absolute left-0 mt-1 w-8 h-8 rounded-full flex items-center justify-center ${
+                              claim?.status &&
+                              claim.status.toLowerCase() === "approved"
+                                ? theme === "dark"
+                                  ? "bg-green-900 text-green-300"
+                                  : "bg-green-100 text-green-600"
+                                : theme === "dark"
+                                ? "bg-red-900 text-red-300"
+                                : "bg-red-100 text-red-600"
                             }`}
                           >
-                            Claim{" "}
-                            {claim?.status.charAt(0).toUpperCase() +
-                              claim?.status.slice(1)}
-                          </h4>
-                          <p
-                            className={`text-sm ${
-                              theme === "dark"
-                                ? "text-gray-400"
-                                : "text-gray-500"
-                            }`}
-                          >
-                            {formatDate(claim?.updatedAt)} at{" "}
-                            {formatTime(claim?.updatedAt)}
-                          </p>
+                            {claim?.status &&
+                            claim.status.toLowerCase() === "approved" ? (
+                              <FiCheckCircle className="w-4 h-4" />
+                            ) : (
+                              <FiXCircle className="w-4 h-4" />
+                            )}
+                          </div>
+                          <div className="ml-12">
+                            <h4
+                              className={`text-md font-medium ${
+                                theme === "dark"
+                                  ? "text-gray-200"
+                                  : "text-gray-800"
+                              }`}
+                            >
+                              Claim{" "}
+                              {claim?.status
+                                ? claim.status.charAt(0).toUpperCase() +
+                                  claim.status.slice(1)
+                                : "Unknown"}
+                            </h4>
+                            <p
+                              className={`text-sm ${
+                                theme === "dark"
+                                  ? "text-gray-400"
+                                  : "text-gray-500"
+                              }`}
+                            >
+                              {formatDate(claim?.updatedAt)} at{" "}
+                              {formatTime(claim?.updatedAt)}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
                   </div>
                 </div>
               </div>
@@ -552,19 +567,20 @@ const ClaimDetailPage = () => {
                     Back to Claims
                   </motion.button>
 
-                  {claim?.status.toLowerCase() === "pending" && (
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                        theme === "dark"
-                          ? "bg-red-600 hover:bg-red-700 text-white"
-                          : "bg-red-600 hover:bg-red-700 text-white"
-                      }`}
-                    >
-                      Cancel Claim
-                    </motion.button>
-                  )}
+                  {claim?.status &&
+                    claim.status.toLowerCase() === "pending" && (
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                          theme === "dark"
+                            ? "bg-red-600 hover:bg-red-700 text-white"
+                            : "bg-red-600 hover:bg-red-700 text-white"
+                        }`}
+                      >
+                        Cancel Claim
+                      </motion.button>
+                    )}
                 </div>
               </div>
             </motion.div>

@@ -112,6 +112,7 @@ const AdminPage: React.FC = () => {
   const fetchClaims = async () => {
     setLoading(true);
     setError(null);
+    console.log(error);
     try {
       const response = await getAllClaims();
       setClaims(response.data);
@@ -121,6 +122,7 @@ const AdminPage: React.FC = () => {
       setError("Failed to fetch users");
     }
     setLoading(false);
+    console.log(loading);
   };
   const fetchProducts = async () => {
     setLoading(true);

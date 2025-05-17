@@ -32,12 +32,9 @@ export default function UserDropdown() {
         onClick={toggleDropdown}
         className="flex items-center text-gray-700 dropdown-toggle dark:text-gray-400"
       >
-        {user?.profileImage ? (
+        {user?.firstName ? (
           <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
-            <img
-              src={user?.profileImage || ""}
-              alt={`${user.firstName} ${user.lastName}`}
-            />
+            <img src={""} alt={`${user.firstName}`} />
           </span>
         ) : (
           <span className="mr-3 overflow-hidden rounded-full h-11 w-11 bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-700 dark:text-blue-300 font-medium">
@@ -75,7 +72,7 @@ export default function UserDropdown() {
       >
         <div>
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-            {user ? `${user.firstName} ${user.lastName}` : "User"}
+            {user ? `${user.firstName} ` : "User"}
           </span>
           <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
             {user?.email || "No email available"}

@@ -56,6 +56,7 @@ const NewClaimPage = () => {
       ...prev,
       ...files.map((file) => URL.createObjectURL(file)),
     ]);
+    console.log(uploadedFiles);
   };
 
   const removeImage = (index: number) => {
@@ -659,7 +660,7 @@ const NewClaimPage = () => {
                                   : "text-gray-700"
                               }`}
                             >
-                              {product?.type || "N/A"}
+                              {product?.productName || "N/A"}
                             </div>
                           </div>
                         </div>

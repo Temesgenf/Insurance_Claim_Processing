@@ -88,7 +88,7 @@ const AppSidebar: React.FC = () => {
   const location = useLocation();
   const [products, setProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [productsOpen, setProductsOpen] = useState(false);
+  // const [productsOpen, setProductsOpen] = useState(false);
 
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: "main" | "others";
@@ -195,14 +195,14 @@ const AppSidebar: React.FC = () => {
   };
 
   // Special handler for products submenu
-  const handleProductsToggle = () => {
-    const productsIndex = navItems.findIndex(
-      (item) => item.name === "Products"
-    );
-    if (productsIndex !== -1) {
-      handleSubmenuToggle(productsIndex, "main");
-    }
-  };
+  // const handleProductsToggle = () => {
+  //   const productsIndex = navItems.findIndex(
+  //     (item) => item.name === "Products"
+  //   );
+  //   if (productsIndex !== -1) {
+  //     handleSubmenuToggle(productsIndex, "main");
+  //   }
+  // };
 
   const renderMenuItems = (items: NavItem[], menuType: "main" | "others") => (
     <ul className="flex flex-col gap-4">
