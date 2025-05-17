@@ -18,6 +18,7 @@ import Register from "./pages/Register";
 import PoliciesPage from "./pages/PoliciesPage";
 import NewPolicyPage from "./pages/NewPolicyPage";
 import { AuthProvider, useAuth } from "./Context/AuthContext";
+import AppLayout from "./components/layout/AppLayout";
 
 const PrivateRoute = () => {
   const { user, loading } = useAuth();
@@ -55,15 +56,17 @@ function App() {
 
         {/* Protected User Routes */}
         <Route element={<PrivateRoute />}>
-          <Route path="/user/dashboard" element={<UserDashboard />} />
-          <Route path="/user/claims" element={<ClaimsPage />} />
-          <Route
-            path="/user/claims/:claimNumber"
-            element={<ClaimDetailPage />}
-          />
-          <Route path="/user/policies" element={<PoliciesPage />} />
-          <Route path="/user/new-policy" element={<NewPolicyPage />} />
-          <Route path="/user/new-claim" element={<NewClaimPage />} />
+          <Route element={<AppLayout />}>
+            <Route path="/user/dashboard" element={<UserDashboard />} />
+            <Route path="/user/claims" element={<ClaimsPage />} />
+            <Route
+              path="/user/claims/:claimNumber"
+              element={<ClaimDetailPage />}
+            />
+            <Route path="/user/policies" element={<PoliciesPage />} />
+            <Route path="/user/new-policy" element={<NewPolicyPage />} />
+            <Route path="/user/new-claim" element={<NewClaimPage />} />
+          </Route>
         </Route>
 
         {/* Protected Admin Routes */}

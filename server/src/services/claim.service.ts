@@ -10,17 +10,21 @@ export class ClaimService {
   }
 
   static async createClaim(claim: CreateClaimDto) {
-    // for claimId we will generate a random claimnumber which mimics actual claimnumber in insurance systems but it should be unique and has patter like CLA-XXXX-XXXX
-
-    claim.claimNumber = `CLA-${Math.floor(Math.random() * 10000)}-${Math.floor(
-      Math.random() * 10000
-    )}`;
-    claim.claimNumber = `CLA-${Math.floor(Math.random() * 10000)
+    // Generate a formatted claim number
+    const claimNumber = `CLA-${Math.floor(Math.random() * 10000)
       .toString()
       .padStart(4, "0")}-${Math.floor(Math.random() * 10000)
       .toString()
       .padStart(4, "0")}`;
-    return ClaimRepository.createClaim(claim);
+    
+    // Create a new claim object with all properties from the original claim
+    // plus the generated claim number
+    const claimWithNumber = {
+      ...claim,
+      claimNumber
+    };
+    
+    return ClaimRepository.createClaim(claimWithNumber);
   }
   
   static async updateClaimStatus(claimId: number, status: string) {

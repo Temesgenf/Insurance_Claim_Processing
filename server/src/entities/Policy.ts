@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { ApplicationStatus } from "../common/enums/application-status.enum";
 
 @Entity("policies")
@@ -33,9 +33,33 @@ export class Policy {
   })
   status!: ApplicationStatus;
 
-  @Column()
+  @Column({
+    type: "decimal",
+    precision: 10,
+    scale: 2,
+    nullable: true,
+  })
+  readonly premiumAmount?: number;
+
+  @Column({
+    type: "decimal",
+    precision: 10,
+    scale: 2,
+    nullable: true,
+  })
+  readonly deductibleAmount?: number;
+
+  @Column({
+    type: "decimal",
+    precision: 12,
+    scale: 2,
+    nullable: true,
+  })
+  readonly coverageLimit?: number;
+
+  @CreateDateColumn()
   readonly createdAt!: Date;
 
-  @Column()
+  @UpdateDateColumn()
   readonly updatedAt!: Date;
 }
