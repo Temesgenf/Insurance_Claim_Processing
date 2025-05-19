@@ -3,6 +3,8 @@ import { UserService } from "../services/user.service";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { env } from "../utils/env";
+import multer from "multer";
+import path from "path";
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -28,30 +30,16 @@ export async function createUser(req: Request, res: Response) {
 export const registerUser = async (req: Request, res: Response) => {
   console.log("req.body in controller before try catch", req.body);
   try {
-    const {
-      firstName,
-      lastName,
-      dateOfBirth,
-      email,
-      password,
-      confirmPassword,
-    } = req.body;
+    const { firstName, lastName, dateOfBirth, email, password } = req.body;
 
     // Validation checks
-    if (
-      !firstName ||
-      !lastName ||
-      !dateOfBirth ||
-      !email ||
-      !password ||
-      !confirmPassword
-    ) {
+    if (!firstName || !lastName || !dateOfBirth || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    if (password !== confirmPassword) {
-      return res.status(400).json({ message: "Passwords do not match" });
-    }
+    // if (password !== confirmPassword) {
+    //   return res.status(400).json({ message: "Passwords do not match" });
+    // }
 
     // Check if user already exists
     const existingUser = await UserService.findUserByEmail(email);
@@ -84,6 +72,48 @@ export const registerUser = async (req: Request, res: Response) => {
       message: "Registration failed",
       error: error.message,
     });
+  }
+};
+
+export const updateProfilePicture = async (req: Request, res: Response) => {
+  try {
+    // console.log(req);
+
+    const userInfo = req.user;
+    console.log(userInfo);
+    const userId = userInfo?.userId;
+
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    // const userId = req.params.id;
+    const file = req.file;
+
+    if (!file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const user = await UserService.findUserById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update user with profile picture data
+    await UserService.updateUser(userId, {
+      profilePicture: file.buffer,
+      profilePictureType: file.mimetype,
+    });
+
+    return res.status(200).json({
+      message: "Profile picture uploaded successfully",
+    });
+  } catch (error) {
+    console.error("Error uploading profile picture:", error);
+    return res
+      .status(500)
+      .json({ message: "Failed to upload profile picture" });
   }
 };
 

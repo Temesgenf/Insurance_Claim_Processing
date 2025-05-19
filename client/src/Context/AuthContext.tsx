@@ -7,6 +7,8 @@ export interface User {
   email: string;
   firstName: string;
   isAdmin: boolean;
+  profilePicture: Buffer;
+  profilePictureType: string;
 }
 
 type AuthContextType = {

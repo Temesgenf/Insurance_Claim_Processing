@@ -6,7 +6,6 @@ import {
   BuildingStorefrontIcon,
   DocumentTextIcon,
   ClipboardDocumentListIcon,
-  MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 
 // Assume these icons are imported from an icon library
@@ -38,7 +37,7 @@ const navItems: NavItem[] = [
   {
     icon: <BuildingStorefrontIcon className="h-5 w-5" />,
     name: "Products",
-    subItems: [], // Will be populated dynamically
+    path: "/user/products", // Will be populated dynamically
   },
   {
     icon: <DocumentTextIcon className="h-5 w-5" />,
@@ -100,14 +99,6 @@ const AppSidebar: React.FC = () => {
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   // Filter products based on search term
-  const filteredProducts = React.useMemo(() => {
-    if (!searchTerm) return products;
-    return products.filter(
-      (p) =>
-        p.productName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.productCode?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [products, searchTerm]);
 
   // Fetch products
   useEffect(() => {
@@ -280,119 +271,118 @@ const AppSidebar: React.FC = () => {
                     : "0px",
               }}
             >
-              {nav.name === "Products" ? (
+              {
                 // Special rendering for Products submenu with search
-                <div className="mt-2 ml-9">
-                  {/* Search bar */}
-                  <div className="sticky top-0 z-10 p-2 border-b border-gray-200 dark:border-gray-700">
-                    <div className="flex items-center gap-2">
-                      <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
-                      <input
-                        type="text"
-                        placeholder="Search products..."
-                        className="flex-1 px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-300 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 placeholder:text-gray-400"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        autoFocus
-                      />
-                    </div>
-                  </div>
-                  {/* Product list */}
-                  <ul className="max-h-64 overflow-y-auto custom-scrollbar divide-y divide-gray-200 dark:divide-gray-700">
-                    {filteredProducts.length === 0 ? (
-                      <li className="py-6 text-center text-gray-500 select-none">
-                        No products found.
-                      </li>
-                    ) : (
-                      filteredProducts.map((product) => (
-                        <li key={product.productId}>
-                          <Link
-                            to={`/products/${product.productId}`}
-                            className={`group flex items-center gap-4 px-5 py-3 transition-all duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer ${
-                              location.pathname ===
-                              `/products/${product.productId}`
-                                ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
-                                : ""
-                            }`}
-                            tabIndex={0}
-                            role="menuitem"
-                          >
-                            {/* Avatar */}
-                            <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-blue-200 to-indigo-200 flex items-center justify-center text-blue-800 font-bold text-lg">
-                              {product.productName?.charAt(0) || (
-                                <svg
-                                  className="h-5 w-5 text-indigo-400/80"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={1.5}
-                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                                  />
-                                </svg>
-                              )}
-                            </div>
-                            {/* Product info */}
-                            <div className="flex-1 min-w-0">
-                              <div className="truncate font-semibold text-gray-800 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-300">
-                                {product.productName}
-                              </div>
-                              <div className="truncate text-xs text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300">
-                                {product.productCode}
-                              </div>
-                            </div>
-                          </Link>
-                        </li>
-                      ))
-                    )}
-                  </ul>
-                </div>
-              ) : (
+                // <div className="mt-2 ml-9">
+                //   {/* Search bar */}
+                //   <div className="sticky top-0 z-10 p-2 border-b border-gray-200 dark:border-gray-700">
+                //     <div className="flex items-center gap-2">
+                //       <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+                //       <input
+                //         type="text"
+                //         placeholder="Search products..."
+                //         className="flex-1 px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-300 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 placeholder:text-gray-400"
+                //         value={searchTerm}
+                //         onChange={(e) => setSearchTerm(e.target.value)}
+                //         autoFocus
+                //       />
+                //     </div>
+                //   </div>
+                //   {/* Product list */}
+                //   <ul className="max-h-64 overflow-y-auto custom-scrollbar divide-y divide-gray-200 dark:divide-gray-700">
+                //     {filteredProducts.length === 0 ? (
+                //       <li className="py-6 text-center text-gray-500 select-none">
+                //         No products found.
+                //       </li>
+                //     ) : (
+                //       filteredProducts.map((product) => (
+                //         <li key={product.productId}>
+                //           <Link
+                //             to={`/products/${product.productId}`}
+                //             className={`group flex items-center gap-4 px-5 py-3 transition-all duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer ${
+                //               location.pathname ===
+                //               `/products/${product.productId}`
+                //                 ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
+                //                 : ""
+                //             }`}
+                //             tabIndex={0}
+                //             role="menuitem"
+                //           >
+                //             {/* Avatar */}
+                //             <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-blue-200 to-indigo-200 flex items-center justify-center text-blue-800 font-bold text-lg">
+                //               {product.productName?.charAt(0) || (
+                //                 <svg
+                //                   className="h-5 w-5 text-indigo-400/80"
+                //                   fill="none"
+                //                   viewBox="0 0 24 24"
+                //                   stroke="currentColor"
+                //                 >
+                //                   <path
+                //                     strokeLinecap="round"
+                //                     strokeLinejoin="round"
+                //                     strokeWidth={1.5}
+                //                     d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                //                   />
+                //                 </svg>
+                //               )}
+                //             </div>
+                //             {/* Product info */}
+                //             <div className="flex-1 min-w-0">
+                //               <div className="truncate font-semibold text-gray-800 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-300">
+                //                 {product.productName}
+                //               </div>
+                //               <div className="truncate text-xs text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300">
+                //                 {product.productCode}
+                //               </div>
+                //             </div>
+                //           </Link>
+                //         </li>
+                //       ))
+                //     )}
+                //   </ul>
+                // </div>
                 // Regular submenu rendering
-                <ul className="mt-2 space-y-1 ml-9">
-                  {nav.subItems.map((subItem) => (
-                    <li key={subItem.name}>
-                      <Link
-                        to={subItem.path}
-                        className={`menu-dropdown-item ${
-                          isActive(subItem.path)
-                            ? "menu-dropdown-item-active"
-                            : "menu-dropdown-item-inactive"
-                        }`}
-                      >
-                        {subItem.name}
-                        <span className="flex items-center gap-1 ml-auto">
-                          {subItem.new && (
-                            <span
-                              className={`ml-auto ${
-                                isActive(subItem.path)
-                                  ? "menu-dropdown-badge-active"
-                                  : "menu-dropdown-badge-inactive"
-                              } menu-dropdown-badge`}
-                            >
-                              new
-                            </span>
-                          )}
-                          {subItem.pro && (
-                            <span
-                              className={`ml-auto ${
-                                isActive(subItem.path)
-                                  ? "menu-dropdown-badge-active"
-                                  : "menu-dropdown-badge-inactive"
-                              } menu-dropdown-badge`}
-                            >
-                              pro
-                            </span>
-                          )}
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              }
+              <ul className="mt-2 space-y-1 ml-9">
+                {nav.subItems.map((subItem) => (
+                  <li key={subItem.name}>
+                    <Link
+                      to={subItem.path}
+                      className={`menu-dropdown-item ${
+                        isActive(subItem.path)
+                          ? "menu-dropdown-item-active"
+                          : "menu-dropdown-item-inactive"
+                      }`}
+                    >
+                      {subItem.name}
+                      <span className="flex items-center gap-1 ml-auto">
+                        {subItem.new && (
+                          <span
+                            className={`ml-auto ${
+                              isActive(subItem.path)
+                                ? "menu-dropdown-badge-active"
+                                : "menu-dropdown-badge-inactive"
+                            } menu-dropdown-badge`}
+                          >
+                            new
+                          </span>
+                        )}
+                        {subItem.pro && (
+                          <span
+                            className={`ml-auto ${
+                              isActive(subItem.path)
+                                ? "menu-dropdown-badge-active"
+                                : "menu-dropdown-badge-inactive"
+                            } menu-dropdown-badge`}
+                          >
+                            pro
+                          </span>
+                        )}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
         </li>

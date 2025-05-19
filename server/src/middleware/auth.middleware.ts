@@ -3,6 +3,25 @@ import jwt from "jsonwebtoken";
 import { env } from "../utils/env";
 import { UserService } from "../services/user.service";
 import { User } from "../entities/User";
+import multer from "multer";
+import path from "path";
+
+const storage = multer.memoryStorage();
+
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ["image/jpeg", "image/png"];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Invalid file type. Only JPEG and PNG are allowed."));
+    }
+  },
+});
 
 declare global {
   namespace Express {
@@ -20,7 +39,7 @@ export const verifyToken = async (
   // Get token from Authorization header only
   console.log("Verifying token...");
   const authHeader = req.headers.authorization;
-  console.log("Authorization header:", req.headers.authorization);
+  // console.log("Authorization header:", req.headers.authorization);
 
   if (!authHeader?.startsWith("Bearer ")) {
     return res.status(401).json({ message: "Authentication required" });
@@ -37,6 +56,7 @@ export const verifyToken = async (
     }
 
     req.user = user;
+    // console.log("temy", req.user);
     next();
   } catch (error) {
     console.error("JWT verification error:", error);
@@ -62,3 +82,5 @@ export const requireAdmin = (
   }
   next();
 };
+
+export const updateProfilePictureMiddleware = upload.single("profilePicture");

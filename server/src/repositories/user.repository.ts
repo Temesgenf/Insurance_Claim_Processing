@@ -54,4 +54,12 @@ export const userRepository = {
       where: { userId },
     });
   },
+  updateUser: async (userId: number, userData: Partial<User>): Promise<User | null> => {
+    const repo = AppDataSource.getRepository(User);
+    const user = await repo.findOne({ where: { userId } });
+    if (!user) return null;
+    
+    const updatedUser = repo.merge(user, userData);
+    return await repo.save(updatedUser);
+  },
 };

@@ -119,7 +119,7 @@ const PoliciesPage = () => {
   // Handle view policy details
   const handleViewPolicy = (policyId: string) => {
     // Navigate to policy details page when implemented
-    console.log(`View policy ${policyId}`);
+    navigate(`/user/policies/${policyId}`);
   };
 
   // Filter policies based on search term and status

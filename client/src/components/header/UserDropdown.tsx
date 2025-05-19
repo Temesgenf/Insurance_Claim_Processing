@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { useAuth } from "../../Context/AuthContext";
@@ -6,6 +6,10 @@ import { useAuth } from "../../Context/AuthContext";
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useAuth();
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+
+  // Remove console.log in production
+  console.log(user);
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -23,8 +27,22 @@ export default function UserDropdown() {
   // Get user initials for avatar fallback
   const getUserInitials = () => {
     if (!user) return "U";
-    return `${user.firstName?.charAt(0) || ""}) || ""}`;
+    return `${user.fullName?.charAt(0) || ""}) || ""}`;
   };
+
+  // Convert buffer to image URL when user changes
+  useEffect(() => {
+    if (user?.profilePicture) {
+      // If the profile picture is a buffer stored in base64 format
+      const base64String = btoa(
+        new Uint8Array(user.profilePicture.data).reduce(
+          (data, byte) => data + String.fromCharCode(byte),
+          ""
+        )
+      );
+      setProfileImageUrl(base64String);
+    }
+  }, [user]);
 
   return (
     <div className="relative">
@@ -32,9 +50,14 @@ export default function UserDropdown() {
         onClick={toggleDropdown}
         className="flex items-center text-gray-700 dropdown-toggle dark:text-gray-400"
       >
-        {user?.firstName ? (
+        {profileImageUrl ? (
           <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
-            <img src={""} alt={`${user.firstName}`} />
+            <img
+              src={`data:image/jpeg;base64,${profileImageUrl}`}
+              alt={`${user?.fullName || "User"}'s profile`}
+              className="w-full h-full object-cover"
+              onError={() => setProfileImageUrl(null)} // Handle image load errors
+            />
           </span>
         ) : (
           <span className="mr-3 overflow-hidden rounded-full h-11 w-11 bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-700 dark:text-blue-300 font-medium">
@@ -43,7 +66,7 @@ export default function UserDropdown() {
         )}
 
         <span className="block mr-1 font-medium text-theme-sm">
-          {user?.firstName || "User"}
+          {user?.fullName || "User"}
         </span>
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
@@ -72,7 +95,7 @@ export default function UserDropdown() {
       >
         <div>
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-            {user ? `${user.firstName} ` : "User"}
+            {user ? `${user.fullName} ` : "User"}
           </span>
           <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
             {user?.email || "No email available"}
@@ -84,7 +107,7 @@ export default function UserDropdown() {
             <DropdownItem
               onItemClick={closeDropdown}
               tag="a"
-              to="/user/profile"
+              to="/user/profilepicture"
               className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
             >
               <svg

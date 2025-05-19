@@ -1,15 +1,18 @@
 // src/pages/Login.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import InsuranceImage from "../assets/insurance.svg";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
+import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
+import { motion } from "framer-motion";
 
 interface LocationState {
   from?: { pathname: string };
 }
 
 const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
+
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,12 +23,52 @@ const Login: React.FC = () => {
     password: "",
     remember: false,
   });
+
   const [errors, setErrors] = useState({
     email: "",
     password: "",
     server: "",
   });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [touched, setTouched] = useState({
+    email: false,
+    password: false,
+  });
+
+  // Validate form fields when they change (but only after they've been touched)
+  useEffect(() => {
+    if (touched.email) {
+      validateField("email", formData.email);
+    }
+    if (touched.password) {
+      validateField("password", formData.password);
+    }
+  }, [formData, touched]);
+
+  const validateField = (field: string, value: string) => {
+    let errorMessage = "";
+
+    if (field === "email") {
+      if (!value.trim()) {
+        errorMessage = "Email is required";
+      } else if (!/\S+@\S+\.\S+/.test(value)) {
+        errorMessage = "Please enter a valid email address";
+      }
+    }
+
+    if (field === "password") {
+      if (!value) {
+        errorMessage = "Password is required";
+      } else if (value.length < 6) {
+        errorMessage = "Password must be at least 6 characters";
+      }
+    }
+
+    setErrors((prev) => ({ ...prev, [field]: errorMessage }));
+    return !errorMessage;
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -33,28 +76,23 @@ const Login: React.FC = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
-    setErrors((prev) => ({ ...prev, [name]: "", server: "" }));
+
+    // Mark field as touched
+    if (name === "email" || name === "password") {
+      setTouched((prev) => ({ ...prev, [name]: true }));
+    }
+
+    setErrors((prev) => ({ ...prev, server: "" }));
   };
 
   const validateForm = () => {
-    let isValid = true;
-    const newErrors = { email: "", password: "", server: "" };
+    // Mark all fields as touched
+    setTouched({ email: true, password: true });
 
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
-      isValid = false;
-    }
+    const emailValid = validateField("email", formData.email);
+    const passwordValid = validateField("password", formData.password);
 
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
+    return emailValid && passwordValid;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -77,7 +115,6 @@ const Login: React.FC = () => {
 
       const token = response.data.token as string;
       const isAdmin = !!response.data.isAdmin;
-      console.log(response.data);
 
       // 2) Tell AuthContext about the token (populates user)
       await login(token);
@@ -87,7 +124,6 @@ const Login: React.FC = () => {
       const fromPath = (location.state as LocationState)?.from?.pathname;
       const redirectPath = fromPath || fallback;
 
-      console.log("Redirecting to:", redirectPath);
       navigate(redirectPath, { replace: true });
     } catch (err: any) {
       let message = "An error occurred. Please try again.";
@@ -106,111 +142,231 @@ const Login: React.FC = () => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
-    <section className="bg-gray-50 w-full h-screen">
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <a
-          href="#"
-          className="flex items-center mb-6 text-2xl font-semibold text-gray-900"
+    <section className="min-h-screen bg-white flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Logo and Title */}
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-8"
         >
-          <img className="w-8 h-8 mr-2" src={InsuranceImage} alt="logo" />
-          ClaimPro
-        </a>
-        <div className="w-full bg-white rounded-lg shadow sm:max-w-md xl:p-0">
-          <div className="p-6 space-y-4 sm:p-8">
-            <h1 className="text-xl font-bold leading-tight text-gray-900 md:text-2xl">
-              Sign in to your account
+          <Link to="/" className="inline-flex items-center justify-center">
+            <img
+              className="w-10 h-10 mr-2"
+              src={InsuranceImage}
+              alt="ClaimPro Logo"
+            />
+            <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
+              ClaimPro
+            </span>
+          </Link>
+          <h2 className="mt-2 text-gray-600">
+            Insurance Claim Processing System
+          </h2>
+        </motion.div>
+
+        {/* Login Card */}
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden"
+        >
+          <div className="p-8">
+            <h1 className="text-2xl font-bold text-gray-800 mb-6">
+              Welcome Back
             </h1>
-            <form className="space-y-4" onSubmit={handleSubmit}>
-              {/* Email */}
+
+            {/* Login Form */}
+            <form className="space-y-5" onSubmit={handleSubmit}>
+              {/* Email Field */}
               <div>
                 <label
                   htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900"
+                  className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Your email
+                  Email Address
                 </label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  className="bg-gray-50 border border-gray-300 rounded-lg block w-full p-2.5"
-                  placeholder="name@company.com"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FiMail className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    autoComplete="email"
+                    className={`pl-10 w-full px-4 py-2.5 rounded-lg border ${
+                      errors.email
+                        ? "border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500"
+                        : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    } transition-colors`}
+                    placeholder="you@example.com"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    aria-invalid={!!errors.email}
+                    aria-describedby={errors.email ? "email-error" : undefined}
+                  />
+                </div>
                 {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                  <p className="mt-1 text-sm text-red-600" id="email-error">
+                    {errors.email}
+                  </p>
                 )}
               </div>
-              {/* Password */}
+
+              {/* Password Field */}
               <div>
                 <label
                   htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-gray-900"
+                  className="block text-sm font-medium text-gray-700 mb-1"
                 >
                   Password
                 </label>
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  placeholder="••••••••"
-                  className="bg-gray-50 border border-gray-300 rounded-lg block w-full p-2.5"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FiLock className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    id="password"
+                    autoComplete="current-password"
+                    className={`pl-10 pr-10 w-full px-4 py-2.5 rounded-lg border ${
+                      errors.password
+                        ? "border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500"
+                        : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    } transition-colors`}
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    aria-invalid={!!errors.password}
+                    aria-describedby={
+                      errors.password ? "password-error" : undefined
+                    }
+                  />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <button
+                      type="button"
+                      onClick={togglePasswordVisibility}
+                      className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
+                    >
+                      {showPassword ? (
+                        <FiEyeOff className="h-5 w-5" />
+                      ) : (
+                        <FiEye className="h-5 w-5" />
+                      )}
+                    </button>
+                  </div>
+                </div>
                 {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                  <p className="mt-1 text-sm text-red-600" id="password-error">
+                    {errors.password}
+                  </p>
                 )}
               </div>
+
               {/* Remember & Forgot */}
               <div className="flex items-center justify-between">
-                <label className="flex items-center space-x-2 text-sm">
+                <label className="flex items-center">
                   <input
                     type="checkbox"
                     name="remember"
                     checked={formData.remember}
                     onChange={handleInputChange}
-                    className="w-4 h-4 border-gray-300 rounded"
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
-                  <span className="text-gray-500">Remember me</span>
+                  <span className="ml-2 text-sm text-gray-600">
+                    Remember me
+                  </span>
                 </label>
                 <Link
                   to="/forgot-password"
-                  className="text-sm font-medium text-primary-600 hover:underline"
+                  className="text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors"
                 >
                   Forgot password?
                 </Link>
               </div>
-              {/* Server error */}
+
+              {/* Server Error */}
               {errors.server && (
-                <p className="text-red-500 text-center">{errors.server}</p>
+                <div className="p-3 rounded-lg bg-red-50 border border-red-200">
+                  <p className="text-sm text-red-600 text-center">
+                    {errors.server}
+                  </p>
+                </div>
               )}
-              {/* Submit */}
-              <button
+
+              {/* Submit Button */}
+              <motion.button
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full text-white bg-primary-600 rounded-lg py-2.5 ${
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className={`w-full flex justify-center items-center py-2.5 px-4 rounded-lg text-white font-medium ${
                   isSubmitting
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-primary-700"
-                }`}
+                    ? "bg-blue-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                } transition-colors shadow-sm`}
               >
-                {isSubmitting ? "Signing in..." : "Sign in"}
-              </button>
+                {isSubmitting ? (
+                  <>
+                    <svg
+                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Signing in...
+                  </>
+                ) : (
+                  "Sign in"
+                )}
+              </motion.button>
+
               {/* Sign-up hint */}
-              <p className="text-sm font-light text-gray-500 text-center">
-                Don’t have an account yet?{" "}
+              <p className="text-center text-sm text-gray-600">
+                Don't have an account?{" "}
                 <Link
                   to="/register"
-                  className="font-medium text-primary-600 hover:underline"
+                  className="font-medium text-blue-600 hover:text-blue-500 transition-colors"
                 >
-                  Sign up
+                  Create one now
                 </Link>
               </p>
             </form>
           </div>
+        </motion.div>
+
+        {/* Footer */}
+        <div className="mt-8 text-center text-xs text-gray-500">
+          <p>
+            © {new Date().getFullYear()} ClaimPro Insurance. All rights
+            reserved.
+          </p>
         </div>
       </div>
     </section>

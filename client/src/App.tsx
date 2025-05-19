@@ -19,6 +19,9 @@ import PoliciesPage from "./pages/PoliciesPage";
 import NewPolicyPage from "./pages/NewPolicyPage";
 import { AuthProvider, useAuth } from "./Context/AuthContext";
 import AppLayout from "./components/layout/AppLayout";
+import DetailPolicy from "./pages/DetailPolicy";
+import ProductsPage from "./pages/ProductsPage";
+import EditProfilePage from "./pages/EditProfilePage";
 
 const PrivateRoute = () => {
   const { user, loading } = useAuth();
@@ -52,11 +55,14 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/products/:productId" element={<ProductDetail />} />
 
         {/* Protected User Routes */}
         <Route element={<PrivateRoute />}>
           <Route element={<AppLayout />}>
+            <Route path="user/products" element={<ProductsPage />} />
+            <Route path="/user/profilepicture" element={<EditProfilePage />} />
+            {/* <Route path="/products" element={<HomePage />} /> */}
+            <Route path="/products/:productId" element={<ProductDetail />} />
             <Route path="/user/dashboard" element={<UserDashboard />} />
             <Route path="/user/claims" element={<ClaimsPage />} />
             <Route
@@ -66,6 +72,7 @@ function App() {
             <Route path="/user/policies" element={<PoliciesPage />} />
             <Route path="/user/new-policy" element={<NewPolicyPage />} />
             <Route path="/user/new-claim" element={<NewClaimPage />} />
+            <Route path="/user/policies/:policyId" element={<DetailPolicy />} />
           </Route>
         </Route>
 

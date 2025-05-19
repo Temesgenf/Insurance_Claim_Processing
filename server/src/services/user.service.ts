@@ -18,4 +18,7 @@ export const UserService = {
   findUserById: async (userId: number): Promise<User | null> => {
     return await userRepository.findUserById(userId);
   },
+  updateUser: async (userId: number, userData: Partial<User>) => {
+    return await userRepository.updateUser(userId, userData);
+  },
 };

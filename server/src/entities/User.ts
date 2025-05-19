@@ -29,6 +29,13 @@ export class User {
   @Column({ default: false })
   readonly isAdmin!: boolean;
 
+  // New fields for profile picture
+  @Column({ type: "longblob", nullable: true })
+  readonly profilePicture!: Buffer;
+
+  @Column({ nullable: true })
+  readonly profilePictureType!: string;
+
   @Column()
   readonly createdAt!: Date;
 

@@ -7,13 +7,19 @@
 // userRouter.post("/", createUser);
 
 import express from "express";
-import { deleteUser } from "../controllers/user.controller";
+import {
+  deleteUser,
+  updateProfilePicture,
+} from "../controllers/user.controller";
 import {
   registerUser,
   loginUser,
   getAllUsers,
 } from "../controllers/user.controller";
-import { verifyToken } from "../middleware/auth.middleware";
+import {
+  verifyToken,
+  updateProfilePictureMiddleware,
+} from "../middleware/auth.middleware";
 
 const userRouter = express.Router();
 
@@ -21,5 +27,11 @@ userRouter.post("/register", registerUser);
 userRouter.post("/login", loginUser);
 userRouter.get("/usersall", getAllUsers);
 userRouter.delete("/:id", deleteUser);
+userRouter.post(
+  "/profile-picture",
+  verifyToken,
+  updateProfilePictureMiddleware,
+  updateProfilePicture
+);
 
 export default userRouter;
