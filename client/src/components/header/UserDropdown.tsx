@@ -4,7 +4,7 @@ import { Dropdown } from "../ui/dropdown/Dropdown";
 import { useAuth } from "../../Context/AuthContext";
 
 export interface profilePicture {
-  data: Buffer;
+  data: object;
   contentType: string;
 }
 export default function UserDropdown() {
