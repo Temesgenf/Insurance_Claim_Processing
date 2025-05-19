@@ -170,7 +170,7 @@ const AdminPage: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
           <div>
             <h1 className="text-4xl font-bold text-gray-800 mb-2">
-              Welcome, {user?.firstName}
+              Welcome, {user?.fullName}
             </h1>
             <p className="text-gray-500">
               Overview & management panel for your insurance system.
@@ -187,7 +187,7 @@ const AdminPage: React.FC = () => {
               </div>
               <div className="text-left">
                 <div className="font-semibold text-gray-800">
-                  {user?.firstName}
+                  {user?.fullName}
                 </div>
                 <div className="text-xs text-gray-500">{user?.email}</div>
               </div>

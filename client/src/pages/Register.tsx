@@ -4,10 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
-import { FiUser, FiMail, FiLock, FiCalendar, FiCheck } from "react-icons/fi";
+import { FiUser, FiMail, FiLock, FiCalendar } from "react-icons/fi";
 
 const API_BASE_URL =
   import.meta.env.VITE_APP_API_BASE_URL || "http://localhost:3000";
+// import claimRouter from "./../../../server/src/routes/claim.routes";
 
 // const Register: React.FC = () => {
 //   const navigate = useNavigate();
@@ -1027,16 +1028,22 @@ const Register: React.FC = () => {
     e.preventDefault();
     setShowTermsModal(true);
   };
-
+  const closeTermsModal = () => {
+    setShowTermsModal(false);
+  };
   const openPrivacyModal = (e: React.MouseEvent) => {
     e.preventDefault();
     setShowPrivacyModal(true);
   };
 
-  const closeModals = () => {
-    setShowTermsModal(false);
-    setShowPrivacyModal(false);
-  };
+  // const closePrivacyModal = () => {
+  //   setShowPrivacyModal(false);
+  // };
+
+  // const closeModals = () => {
+  //   setShowTermsModal(false);
+  //   setShowPrivacyModal(false);
+  // };
 
   return (
     <section className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -1563,6 +1570,357 @@ const Register: React.FC = () => {
           </p>
         </div>
       </div>
+      {
+        //when showprivacymodal is true
+      }
+      {showPrivacyModal && (
+        <div
+          className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
+          onClick={(e) => e.target === e.currentTarget && closeTermsModal()}
+        >
+          <div
+            className="bg-white p-8 rounded-lg max-w-3xl max-h-[80vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-semibold text-gray-800">
+                Terms of Service
+              </h2>
+              <button
+                type="button"
+                className="text-gray-500 hover:text-gray-700"
+                onClick={closeTermsModal}
+                aria-label="Close"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+
+            <div className="space-y-4 text-gray-700 text-sm">
+              <p className="font-medium text-base">
+                Last Updated:{" "}
+                {new Date().toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+
+              <p>
+                Welcome to ClaimPro Insurance! These Terms of Service outline
+                the rules and regulations for the use of our Insurance Claim
+                Processing System. By accessing or using our website, you agree
+                to comply with these terms. If you do not agree with these
+                terms, please do not use our website.
+              </p>
+              <h3 className="text-lg font-semibold text-gray-800 mt-4">
+                Acceptance of Terms
+              </h3>
+              <p>
+                By accessing or using our website, you agree to be bound by
+                these Terms of Service. If you do not agree with these terms,
+                please do not use our website.
+              </p>
+              <h3 className="text-lg font-semibold text-gray-800 mt-4">
+                Use of the Website
+              </h3>
+              <p>
+                You may use our website only for lawful purposes and in a manner
+                that does not infringe the rights of, or restrict or inhibit the
+                use and enjoyment of, our website. You agree not to use our
+                website for any illegal or unauthorized purpose.
+              </p>
+              <h3 className="text-lg font-semibold text-gray-800 mt-4">
+                Intellectual Property
+              </h3>
+              <p>
+                All content, materials, and features on our website, including
+                text, graphics, logos, images, and software, are the property of
+                ClaimPro Insurance or its licensors and are protected by
+                copyright, trademark, and other intellectual property laws. You
+                may not use, reproduce, modify, distribute, or create derivative
+                works of any content on our website without our prior written
+                consent.
+              </p>
+              <h3 className="text-lg font-semibold text-gray-800 mt-4">
+                Disclaimer of Warranties
+              </h3>
+              <p>
+                Our website is provided on an "as is" and "as available" basis.
+                We make no warranties, express or implied, regarding the
+                accuracy, completeness, or reliability of any information or
+                materials on our website. We do not warrant that our website
+                will be uninterrupted or error-free, or that any defects will be
+                corrected.
+              </p>
+              <h3 className="text-lg font-semibold text-gray-800 mt-4">
+                Limitation of Liability
+              </h3>
+              <p>
+                In no event shall ClaimPro Insurance, its affiliates, officers,
+                directors, employees, or agents be liable for any direct,
+                indirect, incidental, special, or consequential damages arising
+                out of or in connection with your use of our website, even if
+                ClaimPro Insurance has been advised of the possibility of such
+                damages.
+              </p>
+              <h3 className="text-lg font-semibold text-gray-800 mt-4">
+                Indemnification
+              </h3>
+              <p>
+                You agree to indemnify and hold harmless ClaimPro Insurance and
+                its affiliates, officers, directors, employees, and agents from
+                any claims, damages, losses, liabilities, costs, or expenses,
+                including reasonable attorneys' fees, arising out of or in
+                connection with your use of our website or your violation of
+                these Terms of Service.
+              </p>
+              <h3 className="text-lg font-semibold text-gray-800 mt-4">
+                Governing Law
+              </h3>
+              <p>
+                These Terms of Service shall be governed by and construed in
+                accordance with the laws of the jurisdiction in which ClaimPro
+                Insurance is located. Any disputes arising out of or in
+                connection with these Terms of Service shall be subject to the
+                exclusive jurisdiction of the courts located in the jurisdiction
+                in which ClaimPro Insurance is located.
+              </p>
+              <h3 className="text-lg font-semibold text-gray-800 mt-4">
+                Changes to Terms of Service
+              </h3>
+              <p>
+                ClaimPro Insurance reserves the right to modify or revise these
+                Terms of Service at any time. Your continued use of our website
+                after any changes to these Terms of Service constitutes your
+                acceptance of the revised terms.
+              </p>
+              <h3 className="text-lg font-semibold text-gray-800 mt-4">
+                Contact Us
+              </h3>
+              <p>
+                If you have any questions or concerns about these Terms of
+                Service, please contact us at:
+              </p>
+              <p className="mt-2">
+                <strong>Email:</strong> terms@claimpro.com
+                <br />
+                <strong>Address:</strong> 123 Insurance Avenue, Suite 500, New
+                York, NY 10001
+                <br />
+                <strong>Phone:</strong> (555) 123-4567
+              </p>
+            </div>
+
+            <div className="mt-6 flex justify-between items-center border-t pt-4">
+              <button
+                type="button"
+                className="text-gray-600 hover:text-gray-800"
+                onClick={closeTermsModal}
+              >
+                Decline
+              </button>
+              <button
+                type="button"
+                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                onClick={() => {
+                  setFormData((prev) => ({ ...prev, agreeToTerms: true }));
+                  closeTermsModal();
+                }}
+              >
+                I Accept
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showTermsModal && (
+        <div
+          className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
+          onClick={(e) => e.target === e.currentTarget && closeTermsModal()}
+        >
+          <div
+            className="bg-white p-8 rounded-lg max-w-3xl max-h-[80vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-semibold text-gray-800">
+                Terms of Service
+              </h2>
+              <button
+                type="button"
+                className="text-gray-500 hover:text-gray-700"
+                onClick={closeTermsModal}
+                aria-label="Close"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+
+            <div className="space-y-4 text-gray-700 text-sm">
+              <p className="font-medium text-base">
+                Last Updated:{" "}
+                {new Date().toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+
+              <p>
+                Welcome to ClaimPro Insurance! These Terms of Service outline
+                the rules and regulations for the use of our Insurance Claim
+                Processing System. By accessing or using our website, you agree
+                to comply with these terms. If you do not agree with these
+                terms, please do not use our website.
+              </p>
+              <h3 className="text-lg font-semibold text-gray-800 mt-4">
+                Acceptance of Terms
+              </h3>
+              <p>
+                By accessing or using our website, you agree to be bound by
+                these Terms of Service. If you do not agree with these terms,
+                please do not use our website.
+              </p>
+              <h3 className="text-lg font-semibold text-gray-800 mt-4">
+                Use of the Website
+              </h3>
+              <p>
+                You may use our website only for lawful purposes and in a manner
+                that does not infringe the rights of, or restrict or inhibit the
+                use and enjoyment of, our website. You agree not to use our
+                website for any illegal or unauthorized purpose.
+              </p>
+              <h3 className="text-lg font-semibold text-gray-800 mt-4">
+                Intellectual Property
+              </h3>
+              <p>
+                All content, materials, and features on our website, including
+                text, graphics, logos, images, and software, are the property of
+                ClaimPro Insurance or its licensors and are protected by
+                copyright, trademark, and other intellectual property laws. You
+                may not use, reproduce, modify, distribute, or create derivative
+                works of any content on our website without our prior written
+                consent.
+              </p>
+              <h3 className="text-lg font-semibold text-gray-800 mt-4">
+                Disclaimer of Warranties
+              </h3>
+              <p>
+                Our website is provided on an "as is" and "as available" basis.
+                We make no warranties, express or implied, regarding the
+                accuracy, completeness, or reliability of any information or
+                materials on our website. We do not warrant that our website
+                will be uninterrupted or error-free, or that any defects will be
+                corrected.
+              </p>
+              <h3 className="text-lg font-semibold text-gray-800 mt-4">
+                Limitation of Liability
+              </h3>
+              <p>
+                In no event shall ClaimPro Insurance, its affiliates, officers,
+                directors, employees, or agents be liable for any direct,
+                indirect, incidental, special, or consequential damages arising
+                out of or in connection with your use of our website, even if
+                ClaimPro Insurance has been advised of the possibility of such
+                damages.
+              </p>
+              <h3 className="text-lg font-semibold text-gray-800 mt-4">
+                Indemnification
+              </h3>
+              <p>
+                You agree to indemnify and hold harmless ClaimPro Insurance and
+                its affiliates, officers, directors, employees, and agents from
+                any claims, damages, losses, liabilities, costs, or expenses,
+                including reasonable attorneys' fees, arising out of or in
+                connection with your use of our website or your violation of
+                these Terms of Service.
+              </p>
+              <h3 className="text-lg font-semibold text-gray-800 mt-4">
+                Governing Law
+              </h3>
+              <p>
+                These Terms of Service shall be governed by and construed in
+                accordance with the laws of the jurisdiction in which ClaimPro
+                Insurance is located. Any disputes arising out of or in
+                connection with these Terms of Service shall be subject to the
+                exclusive jurisdiction of the courts located in the jurisdiction
+                in which ClaimPro Insurance is located.
+              </p>
+              <h3 className="text-lg font-semibold text-gray-800 mt-4">
+                Changes to Terms of Service
+              </h3>
+              <p>
+                ClaimPro Insurance reserves the right to modify or revise these
+                Terms of Service at any time. Your continued use of our website
+                after any changes to these Terms of Service constitutes your
+                acceptance of the revised terms.
+              </p>
+              <h3 className="text-lg font-semibold text-gray-800 mt-4">
+                Contact Us
+              </h3>
+              <p>
+                If you have any questions or concerns about these Terms of
+                Service, please contact us at:
+              </p>
+              <p className="mt-2">
+                <strong>Email:</strong> terms@claimpro.com
+                <br />
+                <strong>Address:</strong> 123 Insurance Avenue, Suite 500, New
+                York, NY 10001
+                <br />
+                <strong>Phone:</strong> (555) 123-4567
+              </p>
+            </div>
+
+            <div className="mt-6 flex justify-between items-center border-t pt-4">
+              <button
+                type="button"
+                className="text-gray-600 hover:text-gray-800"
+                onClick={closeTermsModal}
+              >
+                Decline
+              </button>
+              <button
+                type="button"
+                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                onClick={() => {
+                  setFormData((prev) => ({ ...prev, agreeToTerms: true }));
+                  closeTermsModal();
+                }}
+              >
+                I Accept
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

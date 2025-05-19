@@ -5,7 +5,7 @@ import { useTheme } from "../Context/ThemeContext";
 import AppSidebar from "../components/layout/AppSidebar";
 import ProfilePictureUpload from "../components/user/ProfilePictureUpload";
 import axios from "axios";
-import { FaUser, FaCheck, FaSpinner } from "react-icons/fa";
+import { FaCheck, FaSpinner } from "react-icons/fa";
 import PageMeta from "../components/common/PageMeta";
 
 const EditProfilePage: React.FC = () => {
@@ -13,7 +13,7 @@ const EditProfilePage: React.FC = () => {
   const { theme } = useTheme();
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    firstName: "",
+    fullName: "",
     lastName: "",
     email: "",
   });
@@ -40,7 +40,7 @@ const EditProfilePage: React.FC = () => {
   useEffect(() => {
     if (user) {
       setForm({
-        firstName: user.firstName || "",
+        fullName: user.fullName || "",
         lastName: "", // Assuming lastName might be added to the user object
         email: user.email || "",
       });
@@ -61,7 +61,7 @@ const EditProfilePage: React.FC = () => {
       await axios.put(
         `http://localhost:3000/api/users/profile`,
         {
-          firstName: form.firstName,
+          firstName: form.fullName,
           lastName: form.lastName,
         },
         {
@@ -158,7 +158,7 @@ const EditProfilePage: React.FC = () => {
                       type="text"
                       id="firstName"
                       name="firstName"
-                      value={form.firstName}
+                      value={form.fullName}
                       onChange={handleChange}
                       className={`w-full px-4 py-2 rounded-lg border ${getInputBorderColor()} ${getInputBgColor()} ${getInputTextColor()} focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors`}
                       required

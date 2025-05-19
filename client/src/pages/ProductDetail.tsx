@@ -6,7 +6,6 @@ import { useTheme } from "../Context/ThemeContext";
 import {
   FaArrowLeft,
   FaShieldAlt,
-  FaMoneyBillWave,
   FaCheckCircle,
   FaInfoCircle,
   FaFileAlt,
@@ -34,8 +33,7 @@ const ProductDetail: React.FC = () => {
     theme === "dark" ? "text-gray-300" : "text-gray-600";
   const getBorderColor = () =>
     theme === "dark" ? "border-gray-700" : "border-gray-200";
-  const getHeaderBgColor = () =>
-    theme === "dark" ? "bg-gray-700" : "bg-gray-50";
+
   const getIconColor = () =>
     theme === "dark" ? "text-brand-400" : "text-brand-500";
 

@@ -3,6 +3,10 @@ import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { useAuth } from "../../Context/AuthContext";
 
+export interface profilePicture {
+  data: Buffer;
+  contentType: string;
+}
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useAuth();
@@ -35,7 +39,7 @@ export default function UserDropdown() {
     if (user?.profilePicture) {
       // If the profile picture is a buffer stored in base64 format
       const base64String = btoa(
-        new Uint8Array(user.profilePicture.data).reduce(
+        new Uint8Array((user.profilePicture as any).data).reduce(
           (data, byte) => data + String.fromCharCode(byte),
           ""
         )

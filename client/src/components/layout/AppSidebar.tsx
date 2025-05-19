@@ -86,7 +86,7 @@ const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
   const [products, setProducts] = useState<Product[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  // const [searchTerm, setSearchTerm] = useState("");
   // const [productsOpen, setProductsOpen] = useState(false);
 
   const [openSubmenu, setOpenSubmenu] = useState<{
@@ -109,7 +109,7 @@ const AppSidebar: React.FC = () => {
 
         // Update the Products menu item with the fetched products
         if (response.data.length > 0) {
-          const productSubItems = response.data.map((product: Product) => ({
+          const productSubItems = products.map((product: Product) => ({
             name: product.productName || "",
             path: `/products/${product.productId}`,
             pro: false,

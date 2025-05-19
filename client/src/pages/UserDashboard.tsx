@@ -129,7 +129,7 @@ const UserDashboard = () => {
                   theme === "dark" ? "text-white" : "text-gray-800"
                 }`}
               >
-                {greeting}, {user?.firstName || "User"}
+                {greeting}, {user?.fullName || "User"}
               </h1>
               <p
                 className={`mt-1 ${

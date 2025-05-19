@@ -5,9 +5,9 @@ import axios from "axios";
 export interface User {
   userId: number;
   email: string;
-  firstName: string;
+  fullName: string;
   isAdmin: boolean;
-  profilePicture: Buffer;
+  profilePicture: object;
   profilePictureType: string;
 }
 
