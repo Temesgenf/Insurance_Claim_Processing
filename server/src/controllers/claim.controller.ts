@@ -1,19 +1,55 @@
 import { Request, Response } from "express";
 import { ClaimService } from "../services/claim.service";
 import { CreateClaimDto } from "../common/dtos/create-claim.dto";
-
+import { NotificationService } from "../services/notification.service";
 // Create a new claim
 export async function createClaim(
   req: Request,
   res: Response
 ): Promise<Response> {
   try {
+    req.body.user = req.user;
     const claimData = CreateClaimDto.fromRequestBody(req.body);
     const newClaim = await ClaimService.createClaim(claimData);
+    // Sendconst userId = socket.handshake.auth.userId;
+    const userids = req.body.user.userId;
+    console.log("userids", userids);
+
+
+
+    NotificationService.emitToUser(req.body.user.userId, {
+      type: "claim",
+      message: "Your claim has been created.",
+      data: {
+    
+        timestamp: new Date().toISOString(),
+        path:`user/claims/${newClaim.claimId}`
+        
+      }
+    });
+
+    
+    console.log("claim created successfully", newClaim);
     return res.status(201).json(newClaim);
   } catch (error) {
     console.error("Error creating claim:", error);
     return res.status(500).json({ message: "Failed to create claim" });
+  }
+}
+
+export async function getUserClaims(
+  req: Request,
+  res: Response
+
+): Promise<Response> {
+  try {
+    const userId = req?.user?.userId;
+    const claims = await ClaimService.getClaimsByUserId(userId!);
+    return res.status(200).json(claims);
+  }
+  catch (error) {
+    console.error("Error fetching claims:", error);
+    return res.status(500).json({ message: "Failed to fetch claims" });
   }
 }
 

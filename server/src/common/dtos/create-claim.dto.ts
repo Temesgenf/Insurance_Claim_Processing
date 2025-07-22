@@ -68,7 +68,7 @@ export class CreateClaimDto {
   })
   @IsObject()
   @IsNotEmpty()
-  readonly user: object;
+  readonly userId: number;
 
   @ApiPropertyOptional({
     description: "The current status of the claim",
@@ -104,7 +104,7 @@ export class CreateClaimDto {
     amountRequested: number,
     lossDate: Date,
     lossTime: Date,
-    user: object,
+    userId: number,
     status: ApplicationStatus = ApplicationStatus.PENDING,
     claimDocument?: ClaimDocument,
     claimNumber?: string
@@ -114,7 +114,7 @@ export class CreateClaimDto {
     this.amountRequested = amountRequested;
     this.lossDate = lossDate;
     this.lossTime = lossTime;
-    this.user = user;
+    this.userId = userId;
     this.status = status;
     this.claimDocument = claimDocument;
     this.claimNumber = claimNumber;
@@ -135,7 +135,7 @@ export class CreateClaimDto {
       req.amountRequested,
       req.lossDate ? new Date(req.lossDate) : new Date(),
       req.lossTime ? new Date(req.lossTime) : new Date(),
-      req.user,
+      req.user.userId,
       req.status || ApplicationStatus.PENDING,
       req.claimDocument,
       claimNumber

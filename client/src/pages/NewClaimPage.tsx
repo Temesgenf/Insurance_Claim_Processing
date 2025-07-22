@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 import { useTheme } from "../Context/ThemeContext";
 import { createClaim } from "../services/claimService";
@@ -23,12 +23,15 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSocket } from "../Context/SocketContext";
 const NewClaimPage = () => {
   const [showDetails, setShowDetails] = useState(false);
   const { user } = useAuth();
   const { theme } = useTheme();
   const navigate = useNavigate();
-  console.log(user);
+ const socket = useSocket();
+ const location = useLocation();
+ console.log(location)
 
   const [form, setForm] = useState({
     policyId: "",
@@ -71,8 +74,15 @@ const NewClaimPage = () => {
   //     minimumFractionDigits: 2,
   //   }).format(amount);
   // };
+  
+useEffect(() => {
+  if (location.state?.policyNumber) {
+    setForm({ ...form, policyNumber: location.state.policyNumber });
+    handlePolicySearch();
+  }
+}, [location.state?.policyNumber]);
 
-  const getStatusColor = (status: string) => {
+const getStatusColor = (status: string) => {
     const statusLower = status?.toLowerCase() || "";
     if (theme === "dark") {
       switch (statusLower) {
@@ -104,6 +114,7 @@ const NewClaimPage = () => {
     setError("");
     setPolicy(null);
     setProduct(null);
+    console.log(form);
     if (!form.policyNumber) {
       setError("Please enter a policy number.");
       return;
@@ -200,8 +211,9 @@ const NewClaimPage = () => {
         lossTime: form.lossTime as Date,
         treatmentDetails: form.treatmentDetails,
       });
-
       setSuccess(true);
+    
+     
       setTimeout(() => {
         navigate("/user/claims");
       }, 2000);
@@ -979,3 +991,4 @@ const NewClaimPage = () => {
 };
 
 export default NewClaimPage;
+

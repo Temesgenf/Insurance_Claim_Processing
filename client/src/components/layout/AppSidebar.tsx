@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import React from "react";
+import logoImage from "../../assets/insurance.svg";
 import {
   HomeIcon,
   BuildingStorefrontIcon,
@@ -8,7 +9,8 @@ import {
   ClipboardDocumentListIcon,
 } from "@heroicons/react/24/outline";
 
-// Assume these icons are imported from an icon library
+// Assume thes
+// e icons are imported from an icon library
 import {
   BoxCubeIcon,
   ChevronDownIcon,
@@ -20,6 +22,8 @@ import { useSidebar } from "../../Context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
 import { getAllProducts } from "../../services/productService";
 import type { Product } from "../../../../types/product.enum";
+import { useAuth } from "../../Context/AuthContext";
+
 
 type NavItem = {
   name: string;
@@ -28,7 +32,7 @@ type NavItem = {
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
 };
 
-const navItems: NavItem[] = [
+const navItemsUser: NavItem[] = [
   {
     icon: <HomeIcon className="h-5 w-5" />,
     name: "Dashboard",
@@ -50,6 +54,44 @@ const navItems: NavItem[] = [
     path: "/user/claims",
   },
 ];
+const navItemsAdmin: NavItem[] = [
+  {
+    icon: <HomeIcon className="h-5 w-5" />,
+    name: "Dashboard",
+    path: "/admin/dashboard",
+  },
+  {
+    icon: <BuildingStorefrontIcon className="h-5 w-5" />,
+    name: "Users",
+    path: "/admin/users", // Will be populated dynamically
+  },
+  {
+    icon: <BuildingStorefrontIcon className="h-5 w-5" />,
+    name: "Products",
+    path: "/admin/products", // Will be populated dynamically
+  },
+  {
+    icon: <DocumentTextIcon className="h-5 w-5" />,
+    name: "Policies",
+    path: "/admin/policies",
+  },
+  {
+    icon: <ClipboardDocumentListIcon className="h-5 w-5" />,
+    name: "Claims",
+    path: "/admin/claims",
+  },
+  {
+    icon: <PieChartIcon className="h-5 w-5" />,
+    name: "Analytics",
+    path: "/admin/analytics",
+  },
+  {
+    icon: <HorizontaLDots className="h-5 w-5" />,
+    name: "Settings",
+    path: "/admin/settings",
+  },
+
+]
 
 const othersItems: NavItem[] = [
   {
@@ -86,6 +128,8 @@ const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
   const [products, setProducts] = useState<Product[]>([]);
+  const {user} = useAuth();
+  const navItems = user?.isAdmin ? navItemsAdmin : navItemsUser;
   // const [searchTerm, setSearchTerm] = useState("");
   // const [productsOpen, setProductsOpen] = useState(false);
 
@@ -101,35 +145,35 @@ const AppSidebar: React.FC = () => {
   // Filter products based on search term
 
   // Fetch products
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await getAllProducts();
-        setProducts(response.data);
+  // useEffect(() => {
+  //   const fetchProducts = async () => {
+  //     try {
+  //       const response = await getAllProducts();
+  //       setProducts(response.data);
 
-        // Update the Products menu item with the fetched products
-        if (response.data.length > 0) {
-          const productSubItems = products.map((product: Product) => ({
-            name: product.productName || "",
-            path: `/products/${product.productId}`,
-            pro: false,
-            new: false,
-          }));
+  //       // Update the Products menu item with the fetched products
+  //       if (response.data.length > 0) {
+  //         const productSubItems = products.map((product: Product) => ({
+  //           name: product.productName || "",
+  //           path: `/products/${product.productId}`,
+  //           pro: false,
+  //           new: false,
+  //         }));
 
-          // Find the Products menu item and update its subItems
-          const productsIndex = navItems.findIndex(
-            (item) => item.name === "Products"
-          );
-          if (productsIndex !== -1) {
-            navItems[productsIndex].subItems = productSubItems;
-          }
-        }
-      } catch (error) {
-        console.error("Failed to fetch products:", error);
-      }
-    };
-    fetchProducts();
-  }, []);
+  //         // Find the Products menu item and update its subItems
+  //         const productsIndex = navItems.findIndex(
+  //           (item) => item.name === "Products"
+  //         );
+  //         if (productsIndex !== -1) {
+  //           navItems[productsIndex].subItems = productSubItems;
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error("Failed to fetch products:", error);
+  //     }
+  //   };
+  //   fetchProducts();
+  // }, []);
 
   const isActive = useCallback(
     (path: string) => location.pathname === path,
@@ -138,6 +182,7 @@ const AppSidebar: React.FC = () => {
 
   useEffect(() => {
     let submenuMatched = false;
+    
     ["main", "others"].forEach((menuType) => {
       const items = menuType === "main" ? navItems : othersItems;
       items.forEach((nav, index) => {
@@ -195,7 +240,7 @@ const AppSidebar: React.FC = () => {
   //   }
   // };
 
-  const renderMenuItems = (items: NavItem[], menuType: "main" | "others") => (
+  const renderMenuItems = useCallback((items: NavItem[], menuType: "main" | "others") => (
     <ul className="flex flex-col gap-4">
       {items.map((nav, index) => (
         <li key={nav.name}>
@@ -388,7 +433,7 @@ const AppSidebar: React.FC = () => {
         </li>
       ))}
     </ul>
-  );
+  ), [isActive, handleSubmenuToggle]);
 
   return (
     <aside
@@ -410,33 +455,36 @@ const AppSidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
-        <Link to="/">
-          {isExpanded || isHovered || isMobileOpen ? (
-            <>
-              <img
-                className="dark:hidden"
-                src="../../assets/c.png"
-                alt="Logo"
-                width={150}
-                height={40}
-              />
-              <img
-                className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
-                alt="Logo"
-                width={150}
-                height={40}
-              />
-            </>
-          ) : (
-            <img
-              src="/images/logo/logo-icon.svg"
-              alt="Logo"
-              width={32}
-              height={32}
-            />
-          )}
-        </Link>
+     <Link to="/" className="flex items-center">
+  {isExpanded || isHovered || isMobileOpen ? (
+    <>
+      <img
+        className="dark:hidden"
+        src={logoImage}
+        alt="Logo"
+        // width={150}
+        height={40}
+      />
+      <img
+        className="hidden dark:block"
+        src={logoImage}
+        alt="Logo"
+        // width={150}
+        height={40}
+      />
+      <span className="ml-2 text-xl font-semibold text-gray-800 dark:text-white">
+        ClaimPro
+      </span>
+    </>
+  ) : (
+    <img
+      src={logoImage}
+      alt="Logo"
+      width={32}
+      height={32}
+    />
+  )}
+</Link>
       </div>
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
         <nav className="mb-6">
@@ -481,4 +529,4 @@ const AppSidebar: React.FC = () => {
   );
 };
 
-export default AppSidebar;
+export default React.memo(AppSidebar);

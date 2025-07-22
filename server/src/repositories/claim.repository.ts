@@ -11,6 +11,13 @@ export class ClaimRepository extends Repository<Claim> {
       where: { status },
     });
   }
+  static async findByUserId(userId:number): Promise<Claim[]> {
+    return AppDataSource.getRepository(Claim).find({
+      where: {
+        userId: userId
+      }
+    });
+  }
 
   // Find claims by policy ID
   static async findByPolicyId(policyId: string): Promise<Claim[]> {

@@ -16,6 +16,16 @@ export class PolicyRepository {
     });
   }
 
+  static async findByUserId(userId: number): Promise<Policy[]> {
+    return AppDataSource.getRepository(Policy).find({
+      where: {
+        userId: userId
+      }
+    });
+  }
+
+
+
   static async findByPolicyNumber(
     policyNumber: string
   ): Promise<Policy | null> {
@@ -28,6 +38,7 @@ export class PolicyRepository {
     // Create a policy entity from the DTO
     const policyEntity = {
       productId: policyDto.productId,
+      userId:policyDto.userId,
       policyNumber: policyDto.policyNumber,
       startDate: policyDto.startDate,
       endDate: policyDto.endDate,

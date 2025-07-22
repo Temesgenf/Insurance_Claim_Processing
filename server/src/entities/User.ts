@@ -41,4 +41,17 @@ export class User {
 
   @Column()
   readonly updatedAt!: Date;
+
+  @Column({type:Boolean, default: false})
+  readonly isVerified!: boolean;
+
+  @Column()
+  readonly verificationToken!: string;
+
+  @Column()
+  readonly verificationCode!: string;
+
+  @Column({ type: "timestamp", nullable: true })
+  readonly verificationExpiresAt!: Date;
+
 }

@@ -2,7 +2,7 @@ import bgImage from "../../assets/bg-3.png";
 
 const Callout = () => {
   return (
-    <div className="fancy-short-banner-one lg:mt-[170px] mt-[120px] px-4 sm:px-0">
+    <div className="fancy-short-banner-one lg:mt-[170px] mt-[120px] px-4 sm:px-0 " id="contact">
       <div className="container mx-auto">
         <div
           className={`bg-wrapper relative bg-cover z-[1] lg:p-20 p-8 rounded-3xl md:rounded-[40px] bg-center bg-no-repeat`}

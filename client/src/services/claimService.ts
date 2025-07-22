@@ -11,7 +11,7 @@ interface Claim {
 }
 
 export const getAllClaims = async () => {
-  const response = await axios.get(`${API_BASE_URL}/api/claims`);
+  const response = await axios.get(`${API_BASE_URL}/api/claims/userclaims`);
   return response;
 };
 

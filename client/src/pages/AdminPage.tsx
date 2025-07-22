@@ -164,7 +164,7 @@ const AdminPage: React.FC = () => {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      <AdminSidebar />
+      {/* <AdminSidebar /> */}
       <main className="flex-1 p-8 md:p-12 ml-64">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">

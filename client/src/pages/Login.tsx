@@ -6,6 +6,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 import { motion } from "framer-motion";
+import { Navigate } from "react-router-dom";
 
 interface LocationState {
   from?: { pathname: string };
@@ -16,7 +17,16 @@ const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
+
+  if (user) {
+    // Redirect based on role
+    if (user.isAdmin) {
+      return <Navigate to="/admin/dashboard" replace />;
+    } else {
+      return <Navigate to="/user/dashboard" replace />;
+    }
+  }
 
   const [formData, setFormData] = useState({
     email: "",

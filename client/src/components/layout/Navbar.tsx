@@ -51,7 +51,7 @@ export default function Navbar() {
               className="relative group"
             >
               <a
-                href={item.link}
+                href={`#${item.link}`}
                 className="text-gray-700 font-medium hover:text-blue-600 transition"
               >
                 {item.title}

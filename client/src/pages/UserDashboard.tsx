@@ -12,7 +12,7 @@ import {
   FiActivity,
   FiList,
 } from "react-icons/fi";
-import AppSidebar from "../components/layout/AppSidebar";
+
 import ClaimStatusPieChart from "../components/layout/ClaimStatusPieChart";
 import ClaimTrendsChart from "../components/layout/ClaimTrendsChart";
 import UserGrowthBarChart from "../components/layout/UserGrowthBarChart";
@@ -42,6 +42,7 @@ const UserDashboard = () => {
           getAllClaims(),
           getAllPolicies(),
         ]);
+        console.log(claimsRes.data)
         setClaims(claimsRes.data);
         setPolicies(policiesRes.data);
       } catch (error) {
@@ -54,16 +55,18 @@ const UserDashboard = () => {
   }, []);
 
   // Calculate metrics
-  const totalPolicies = policies.length;
-  const activePolicies = policies.filter(
-    (policy: any) => policy.status === "approved"
-  ).length;
+  const totalPolicies = policies?.length | 0;
+  const activePolicies = Array.isArray(policies) 
+  ? policies.filter((policy: any) => policy.status === "approved").length 
+  : 0;
   const pendingClaims = claims.filter(
-    (claim: any) => claim.status === "Pending"
+    (claim: any) => claim.status === "pending"
   ).length;
+
+  console.log(pendingClaims);
   const approvedClaims = claims.filter(
     (claim: any) => claim.status === "Approved"
-  ).length;
+  ).length ;
 
   // Navigation handlers
   const navigateToPolicies = () => {
@@ -115,7 +118,7 @@ const UserDashboard = () => {
         description="User dashboard for insurance policy management and claims tracking"
       />
       <div className="flex">
-        <AppSidebar />
+        {/* <AppSidebar /> */}
         <div
           className={`flex-1 p-6 md:p-8 ${
             theme === "dark" ? "bg-gray-900" : "bg-gray-50"
@@ -156,235 +159,573 @@ const UserDashboard = () => {
           </div>
 
           <div className="grid grid-cols-12 gap-5 md:gap-6">
-            <div className="col-span-12 space-y-6 xl:col-span-7">
-              {/* User Metrics */}
-              <div
-                className={`rounded-2xl border ${
-                  theme === "dark"
-                    ? "border-gray-700 bg-gray-800"
-                    : "border-gray-200 bg-white"
-                } p-5 sm:p-6 shadow-md hover:shadow-lg transition-shadow duration-300`}
-              >
-                <h3
-                  className={`text-lg font-semibold ${
-                    theme === "dark" ? "text-white" : "text-gray-800"
-                  } mb-5 flex items-center`}
-                >
-                  <FiActivity className="mr-2" /> Your Insurance Overview
-                </h3>
-                <div className="grid grid-cols-2 gap-5">
-                  <div
-                    onClick={navigateToPolicies}
-                    className={`${
-                      theme === "dark"
-                        ? "bg-gradient-to-br from-blue-900 to-blue-800 border-blue-700"
-                        : "bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200"
-                    } rounded-xl p-5 flex flex-col gap-3 border cursor-pointer hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden`}
-                  >
-                    <div className="absolute top-0 right-0 w-16 h-16 opacity-10">
-                      <FiFileText className="w-full h-full" />
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span
-                        className={`${
-                          theme === "dark" ? "text-blue-300" : "text-blue-700"
-                        } font-semibold`}
-                      >
-                        Total Policies
-                      </span>
-                      <span
-                        className={`text-3xl font-bold ${
-                          theme === "dark" ? "text-blue-200" : "text-blue-800"
-                        }`}
-                      >
-                        {totalPolicies}
-                      </span>
-                    </div>
-                    <div
-                      className={`text-xs ${
-                        theme === "dark" ? "text-blue-400" : "text-blue-600"
-                      } mt-1 flex items-center`}
-                    >
-                      <FiFileText className="mr-1" /> Click to view all policies
-                    </div>
-                  </div>
-                  <div
-                    onClick={navigateToPolicies}
-                    className={`${
-                      theme === "dark"
-                        ? "bg-gradient-to-br from-green-900 to-green-800 border-green-700"
-                        : "bg-gradient-to-br from-green-50 to-green-100 border-green-200"
-                    } rounded-xl p-5 flex flex-col gap-3 border cursor-pointer hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden`}
-                  >
-                    <div className="absolute top-0 right-0 w-16 h-16 opacity-10">
-                      <FiCheckCircle className="w-full h-full" />
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span
-                        className={`${
-                          theme === "dark" ? "text-green-300" : "text-green-700"
-                        } font-semibold`}
-                      >
-                        Active Policies
-                      </span>
-                      <span
-                        className={`text-3xl font-bold ${
-                          theme === "dark" ? "text-green-200" : "text-green-800"
-                        }`}
-                      >
-                        {activePolicies}
-                      </span>
-                    </div>
-                    <div
-                      className={`text-xs ${
-                        theme === "dark" ? "text-green-400" : "text-green-600"
-                      } mt-1 flex items-center`}
-                    >
-                      <FiCheckCircle className="mr-1" /> Click to view active
-                      policies
-                    </div>
-                  </div>
-                  <div
-                    onClick={navigateToClaims}
-                    className={`${
-                      theme === "dark"
-                        ? "bg-gradient-to-br from-yellow-900 to-yellow-800 border-yellow-700"
-                        : "bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200"
-                    } rounded-xl p-5 flex flex-col gap-3 border cursor-pointer hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden`}
-                  >
-                    <div className="absolute top-0 right-0 w-16 h-16 opacity-10">
-                      <FiClock className="w-full h-full" />
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span
-                        className={`${
-                          theme === "dark"
-                            ? "text-yellow-300"
-                            : "text-yellow-700"
-                        } font-semibold`}
-                      >
-                        Pending Claims
-                      </span>
-                      <span
-                        className={`text-3xl font-bold ${
-                          theme === "dark"
-                            ? "text-yellow-200"
-                            : "text-yellow-800"
-                        }`}
-                      >
-                        {pendingClaims}
-                      </span>
-                    </div>
-                    <div
-                      className={`text-xs ${
-                        theme === "dark" ? "text-yellow-400" : "text-yellow-600"
-                      } mt-1 flex items-center`}
-                    >
-                      <FiClock className="mr-1" /> Click to view pending claims
-                    </div>
-                  </div>
-                  <div
-                    onClick={navigateToClaims}
-                    className={`${
-                      theme === "dark"
-                        ? "bg-gradient-to-br from-indigo-900 to-indigo-800 border-indigo-700"
-                        : "bg-gradient-to-br from-indigo-50 to-indigo-100 border-indigo-200"
-                    } rounded-xl p-5 flex flex-col gap-3 border cursor-pointer hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden`}
-                  >
-                    <div className="absolute top-0 right-0 w-16 h-16 opacity-10">
-                      <FiThumbsUp className="w-full h-full" />
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span
-                        className={`${
-                          theme === "dark"
-                            ? "text-indigo-300"
-                            : "text-indigo-700"
-                        } font-semibold`}
-                      >
-                        Approved Claims
-                      </span>
-                      <span
-                        className={`text-3xl font-bold ${
-                          theme === "dark"
-                            ? "text-indigo-200"
-                            : "text-indigo-800"
-                        }`}
-                      >
-                        {approvedClaims}
-                      </span>
-                    </div>
-                    <div
-                      className={`text-xs ${
-                        theme === "dark" ? "text-indigo-400" : "text-indigo-600"
-                      } mt-1 flex items-center`}
-                    >
-                      <FiThumbsUp className="mr-1" /> Click to view approved
-                      claims
-                    </div>
-                  </div>
-                </div>
+          <div className="col-span-12 space-y-8 xl:col-span-7">
+  {/* User Metrics */}
+  <div
+      className={`rounded-lg border ${
+        theme === "dark"
+          ? "border-gray-700 bg-gray-800"
+          : "border-gray-200 bg-white"
+      } p-6 shadow-sm`}
+    >
+      <div className="flex items-center justify-between mb-6">
+        <h3
+          className={`text-xl font-semibold ${
+            theme === "dark" ? "text-white" : "text-gray-900"
+          } flex items-center`}
+        >
+          <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center mr-3">
+            <FiActivity className="text-white text-sm" />
+          </div>
+          Insurance Overview
+        </h3>
+        <div className={`px-3 py-1 rounded-md text-xs font-medium ${
+          theme === "dark" 
+            ? "bg-blue-900 text-blue-200" 
+            : "bg-blue-50 text-blue-700"
+        }`}>
+          Live Data
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Total Policies Card */}
+        <div
+          onClick={navigateToPolicies}
+          className={`${
+            theme === "dark"
+              ? "bg-gray-750 border-gray-600 hover:bg-gray-700"
+              : "bg-gray-50 border-gray-200 hover:bg-gray-100"
+          } rounded-lg p-4 border cursor-pointer transition-colors duration-200`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                theme === "dark" 
+                  ? "bg-blue-900 text-blue-300" 
+                  : "bg-blue-100 text-blue-600"
+              }`}>
+                <FiFileText className="text-lg" />
               </div>
-
-              {/* Claims Trend Chart */}
-              <div
-                className={`rounded-2xl border ${
-                  theme === "dark"
-                    ? "border-gray-700 bg-gray-800"
-                    : "border-gray-200 bg-white"
-                } p-5 sm:p-6 shadow-md`}
-              >
-                <h3
-                  className={`text-lg font-semibold ${
-                    theme === "dark" ? "text-white" : "text-gray-800"
-                  } mb-4 flex items-center`}
-                >
-                  <FiTrendingUp className="mr-2" /> Claims Trends
-                </h3>
-                <ClaimTrendsChart />
+              <div className="ml-3">
+                <p className={`text-sm font-medium ${
+                  theme === "dark" ? "text-gray-300" : "text-gray-600"
+                }`}>
+                  Total Policies
+                </p>
+                <p className={`text-2xl font-bold ${
+                  theme === "dark" ? "text-white" : "text-gray-900"
+                }`}>
+                  {totalPolicies}
+                </p>
               </div>
             </div>
+            <svg className={`w-5 h-5 ${
+              theme === "dark" ? "text-gray-400" : "text-gray-500"
+            }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </div>
 
-            <div className="col-span-12 xl:col-span-5">
-              {/* Claim Status Distribution */}
-              <div
-                className={`rounded-2xl border ${
-                  theme === "dark"
-                    ? "border-gray-700 bg-gray-800"
-                    : "border-gray-200 bg-white"
-                } p-5 sm:p-6 h-full shadow-md`}
-              >
-                <h3
-                  className={`text-lg font-semibold ${
-                    theme === "dark" ? "text-white" : "text-gray-800"
-                  } mb-4 flex items-center`}
-                >
-                  <FiPieChart className="mr-2" /> Claim Status Distribution
-                </h3>
-                <div className="flex items-center justify-center h-[300px]">
-                  <ClaimStatusPieChart />
-                </div>
+        {/* Active Policies Card */}
+        <div
+          onClick={navigateToPolicies}
+          className={`${
+            theme === "dark"
+              ? "bg-gray-750 border-gray-600 hover:bg-gray-700"
+              : "bg-gray-50 border-gray-200 hover:bg-gray-100"
+          } rounded-lg p-4 border cursor-pointer transition-colors duration-200`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                theme === "dark" 
+                  ? "bg-green-900 text-green-300" 
+                  : "bg-green-100 text-green-600"
+              }`}>
+                <FiCheckCircle className="text-lg" />
+              </div>
+              <div className="ml-3">
+                <p className={`text-sm font-medium ${
+                  theme === "dark" ? "text-gray-300" : "text-gray-600"
+                }`}>
+                  Active Policies
+                </p>
+                <p className={`text-2xl font-bold ${
+                  theme === "dark" ? "text-white" : "text-gray-900"
+                }`}>
+                  {activePolicies}
+                </p>
               </div>
             </div>
+            <svg className={`w-5 h-5 ${
+              theme === "dark" ? "text-gray-400" : "text-gray-500"
+            }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </div>
+
+        {/* Pending Claims Card */}
+        <div
+          onClick={navigateToClaims}
+          className={`${
+            theme === "dark"
+              ? "bg-gray-750 border-gray-600 hover:bg-gray-700"
+              : "bg-gray-50 border-gray-200 hover:bg-gray-100"
+          } rounded-lg p-4 border cursor-pointer transition-colors duration-200`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                theme === "dark" 
+                  ? "bg-yellow-900 text-yellow-300" 
+                  : "bg-yellow-100 text-yellow-600"
+              }`}>
+                <FiClock className="text-lg" />
+              </div>
+              <div className="ml-3">
+                <p className={`text-sm font-medium ${
+                  theme === "dark" ? "text-gray-300" : "text-gray-600"
+                }`}>
+                  Pending Claims
+                </p>
+                <p className={`text-2xl font-bold ${
+                  theme === "dark" ? "text-white" : "text-gray-900"
+                }`}>
+                  {pendingClaims}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center">
+              {pendingClaims > 0 && (
+                <div className="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
+              )}
+              <svg className={`w-5 h-5 ${
+                theme === "dark" ? "text-gray-400" : "text-gray-500"
+              }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Approved Claims Card */}
+        <div
+          onClick={navigateToClaims}
+          className={`${
+            theme === "dark"
+              ? "bg-gray-750 border-gray-600 hover:bg-gray-700"
+              : "bg-gray-50 border-gray-200 hover:bg-gray-100"
+          } rounded-lg p-4 border cursor-pointer transition-colors duration-200`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                theme === "dark" 
+                  ? "bg-indigo-900 text-indigo-300" 
+                  : "bg-indigo-100 text-indigo-600"
+              }`}>
+                <FiThumbsUp className="text-lg" />
+              </div>
+              <div className="ml-3">
+                <p className={`text-sm font-medium ${
+                  theme === "dark" ? "text-gray-300" : "text-gray-600"
+                }`}>
+                  Approved Claims
+                </p>
+                <p className={`text-2xl font-bold ${
+                  theme === "dark" ? "text-white" : "text-gray-900"
+                }`}>
+                  {approvedClaims}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+              <svg className={`w-5 h-5 ${
+                theme === "dark" ? "text-gray-400" : "text-gray-500"
+              }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {/* Claims Trend Chart */}
+  <div
+  className={`
+    group relative overflow-hidden rounded-3xl border transition-all duration-700 hover:shadow-4xl
+    ${theme === "dark"
+      ? "border-gray-700/40 bg-gradient-to-br from-gray-800/90 via-gray-850/90 to-gray-900/90 backdrop-blur-md shadow-2xl hover:border-gray-600/50"
+      : "border-gray-200/40 bg-gradient-to-br from-white/95 via-gray-50/90 to-white/95 backdrop-blur-md shadow-2xl hover:border-gray-300/50"
+    }
+    p-6 sm:p-8 hover:scale-[1.01] transform-gpu
+  `}
+>
+  {/* Animated background elements */}
+  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className={`absolute -top-6 -right-6 w-32 h-32 rounded-full opacity-5 animate-pulse ${
+      theme === "dark" ? "bg-emerald-400" : "bg-emerald-500"
+    }`} />
+    <div className={`absolute -bottom-8 -left-8 w-40 h-40 rounded-full opacity-3 animate-pulse delay-1000 ${
+      theme === "dark" ? "bg-teal-400" : "bg-teal-500"
+    }`} />
+    <div className={`absolute top-1/2 left-1/4 w-24 h-24 rounded-full opacity-2 animate-pulse delay-500 ${
+      theme === "dark" ? "bg-cyan-400" : "bg-cyan-500"
+    }`} />
+  </div>
+
+  {/* Header section with enhanced design */}
+  <div className="relative z-10 mb-8">
+    <div className="flex items-center justify-between">
+      <div className="flex items-center space-x-4">
+        {/* Enhanced icon container */}
+        <div className="relative">
+          <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+            <FiTrendingUp className="text-white text-xl" />
+          </div>
+          <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full animate-ping opacity-75"></div>
+        </div>
+        
+        {/* Title with enhanced typography */}
+        <div>
+          <h3 className={`
+            text-2xl font-bold tracking-tight transition-all duration-300
+            ${theme === "dark" ? "text-white" : "text-gray-900"}
+            group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-emerald-600 group-hover:to-teal-600
+          `}>
+            Claims Trends
+          </h3>
+          <p className={`
+            text-sm mt-1 transition-colors duration-300
+            ${theme === "dark" ? "text-gray-400" : "text-gray-500"}
+          `}>
+            Performance analytics & insights
+          </p>
+        </div>
+      </div>
+      
+      {/* Enhanced controls section */}
+      <div className="flex items-center space-x-4">
+        {/* Time period selector */}
+        <div className={`
+          px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105
+          ${theme === "dark" 
+            ? "bg-gradient-to-r from-emerald-900/60 to-teal-900/60 text-emerald-300 border border-emerald-700/50 hover:border-emerald-600/70" 
+            : "bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 border border-emerald-200/50 hover:border-emerald-300/70"
+          }
+          backdrop-blur-sm
+        `}>
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+            <span>Last 12 months</span>
+          </div>
+        </div>
+        
+        {/* Settings dropdown */}
+        <div className={`
+          relative w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110
+          ${theme === "dark" 
+            ? "bg-gray-800/80 hover:bg-gray-700/80 border border-gray-700/50 hover:border-gray-600/70" 
+            : "bg-white/80 hover:bg-gray-50/80 border border-gray-200/50 hover:border-gray-300/70"
+          }
+          backdrop-blur-sm group/btn
+        `}>
+          <svg className={`w-5 h-5 transition-all duration-300 group-hover/btn:rotate-90 ${
+            theme === "dark" ? "text-gray-400 group-hover/btn:text-gray-300" : "text-gray-600 group-hover/btn:text-gray-700"
+          }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
+        
+        {/* Export button */}
+        <div className={`
+          relative w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110
+          ${theme === "dark" 
+            ? "bg-gray-800/80 hover:bg-gray-700/80 border border-gray-700/50 hover:border-gray-600/70" 
+            : "bg-white/80 hover:bg-gray-50/80 border border-gray-200/50 hover:border-gray-300/70"
+          }
+          backdrop-blur-sm group/btn
+        `}>
+          <svg className={`w-5 h-5 transition-all duration-300 group-hover/btn:-translate-y-0.5 ${
+            theme === "dark" ? "text-gray-400 group-hover/btn:text-gray-300" : "text-gray-600 group-hover/btn:text-gray-700"
+          }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  {/* Chart section with enhanced container */}
+  <div className="relative z-10">
+    <div className={`
+      relative rounded-3xl p-6 transition-all duration-500 hover:scale-[1.01] transform-gpu
+      ${theme === "dark" 
+        ? "bg-gradient-to-br from-gray-900/70 via-gray-800/70 to-gray-900/70 border border-gray-700/40 shadow-inner" 
+        : "bg-gradient-to-br from-gray-50/70 via-white/70 to-gray-50/70 border border-gray-200/40 shadow-inner"
+      }
+      backdrop-blur-sm
+    `}>
+      {/* Chart loading shimmer */}
+      <div className={`
+        absolute inset-6 rounded-2xl animate-pulse opacity-30
+        ${theme === "dark" 
+          ? "bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800" 
+          : "bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200"
+        }
+      `} />
+      
+      {/* Chart component */}
+      <div className="relative z-10 min-h-[400px]">
+        <ClaimTrendsChart claims={claims} />
+      </div>
+      
+      {/* Chart insights overlay */}
+      <div className={`
+        absolute bottom-6 left-6 right-6 rounded-2xl p-4 transition-all duration-300 opacity-0 hover:opacity-100
+        ${theme === "dark" 
+          ? "bg-gray-800/90 border border-gray-700/50" 
+          : "bg-white/90 border border-gray-200/50"
+        }
+        backdrop-blur-md
+      `}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className={`text-sm font-medium ${
+              theme === "dark" ? "text-gray-300" : "text-gray-600"
+            }`}>
+              Avg. Processing Time
+            </div>
+            <div className={`text-lg font-bold ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}>
+              2.3 days
+            </div>
+          </div>
+          <div className="flex items-center space-x-4">
+            <div className={`text-sm font-medium ${
+              theme === "dark" ? "text-gray-300" : "text-gray-600"
+            }`}>
+              Success Rate
+            </div>
+            <div className="text-lg font-bold text-emerald-500">
+              94.2%
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  {/* Gradient overlay for hover effect */}
+  <div className={`
+    absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none
+    ${theme === "dark" 
+      ? "bg-gradient-to-br from-emerald-600/5 via-teal-600/5 to-cyan-600/5" 
+      : "bg-gradient-to-br from-emerald-500/5 via-teal-500/5 to-cyan-500/5"
+    }
+  `} />
+</div>
+</div>
+
+<div className="col-span-12 xl:col-span-5">
+  {/* Claim Status Distribution */}
+  <div
+    className={`
+      group relative overflow-hidden rounded-3xl border transition-all duration-300 hover:shadow-2xl
+      ${theme === "dark" 
+        ? "border-gray-700/50 bg-gradient-to-br from-gray-800/90 to-gray-900/90 hover:border-gray-600/50" 
+        : "border-gray-200/60 bg-gradient-to-br from-white to-gray-50/50 hover:border-gray-300/60"
+      } 
+      p-6 sm:p-8 h-full shadow-lg backdrop-blur-sm
+    `}
+  >
+    {/* Decorative background elements */}
+    <div className="absolute inset-0 overflow-hidden">
+      <div className={`absolute -top-4 -right-4 w-24 h-24 rounded-full opacity-5 ${
+        theme === "dark" ? "bg-blue-400" : "bg-blue-500"
+      }`} />
+      <div className={`absolute -bottom-6 -left-6 w-32 h-32 rounded-full opacity-3 ${
+        theme === "dark" ? "bg-purple-400" : "bg-purple-500"
+      }`} />
+    </div>
+    
+    {/* Header with enhanced styling */}
+    <div className="relative z-10 mb-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <div className={`
+            p-2.5 rounded-xl transition-all duration-300 group-hover:scale-110
+            ${theme === "dark" 
+              ? "bg-gradient-to-r from-blue-600/20 to-purple-600/20 text-blue-400" 
+              : "bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-600"
+            }
+          `}>
+            <FiPieChart className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className={`
+              text-xl font-bold tracking-tight transition-colors duration-300
+              ${theme === "dark" ? "text-white" : "text-gray-900"}
+            `}>
+              Claim Status Distribution
+            </h3>
+            <p className={`
+              text-sm mt-0.5 transition-colors duration-300
+              ${theme === "dark" ? "text-gray-400" : "text-gray-500"}
+            `}>
+              Current period overview
+            </p>
+          </div>
+        </div>
+        
+        {/* Optional status indicator */}
+        <div className={`
+          px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300
+          ${theme === "dark" 
+            ? "bg-green-900/30 text-green-300 border border-green-700/50" 
+            : "bg-green-50 text-green-700 border border-green-200"
+          }
+        `}>
+          Live Data
+        </div>
+      </div>
+    </div>
+    
+    {/* Chart container with enhanced styling */}
+    <div className="relative z-10">
+      <div className={`
+        relative rounded-2xl p-4 transition-all duration-300 hover:scale-[1.02]
+        ${theme === "dark" 
+          ? "bg-gray-900/50 border border-gray-700/30" 
+          : "bg-gray-50/50 border border-gray-200/30"
+        }
+      `}>
+        <div className="flex items-center justify-center h-[320px] relative">
+          {/* Loading shimmer effect placeholder */}
+          <div className={`
+            absolute inset-4 rounded-xl animate-pulse
+            ${theme === "dark" ? "bg-gray-700/20" : "bg-gray-200/30"}
+          `} />
+          
+          {/* Actual chart component */}
+          <div className="relative z-10 w-full h-full">
+            <ClaimStatusPieChart />
+          </div>
+        </div>
+        
+        {/* Chart insights footer */}
+        <div className={`
+          mt-4 pt-4 border-t transition-colors duration-300
+          ${theme === "dark" ? "border-gray-700/50" : "border-gray-200/50"}
+        `}>
+          <div className="flex items-center justify-between text-sm">
+            <span className={`
+              font-medium transition-colors duration-300
+              ${theme === "dark" ? "text-gray-300" : "text-gray-600"}
+            `}>
+              Total Claims Processed
+            </span>
+            <span className={`
+              font-bold transition-colors duration-300
+              ${theme === "dark" ? "text-white" : "text-gray-900"}
+            `}>
+              12,847
+            </span>
+          </div>
+          <div className="flex items-center justify-between text-sm mt-2">
+            <span className={`
+              font-medium transition-colors duration-300
+              ${theme === "dark" ? "text-gray-300" : "text-gray-600"}
+            `}>
+              Processing Rate
+            </span>
+            <span className={`
+              font-bold text-green-500 transition-colors duration-300
+            `}>
+              +5.2%
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    {/* Hover effect overlay */}
+    <div className={`
+      absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none
+      ${theme === "dark" 
+        ? "bg-gradient-to-r from-blue-600/5 to-purple-600/5" 
+        : "bg-gradient-to-r from-blue-500/5 to-purple-500/5"
+      }
+    `} />
+  </div>
+</div>
 
             <div className="col-span-12">
               {/* User Growth Chart */}
               <div
-                className={`rounded-2xl border ${
-                  theme === "dark"
-                    ? "border-gray-700 bg-gray-800"
-                    : "border-gray-200 bg-white"
-                } p-5 sm:p-6 shadow-md`}
-              >
-                <h3
-                  className={`text-lg font-semibold ${
-                    theme === "dark" ? "text-white" : "text-gray-800"
-                  } mb-4 flex items-center`}
-                >
-                  <FiTrendingUp className="mr-2" /> Policy Growth
-                </h3>
-                <UserGrowthBarChart />
-              </div>
+  className={`
+    rounded-xl 
+    p-6 
+    shadow-lg 
+    transition-all 
+    duration-300 
+    hover:shadow-xl
+    ${
+      theme === "dark"
+        ? "bg-gray-900 border-t-4 border-emerald-500"
+        : "bg-white border-t-4 border-emerald-400"
+    }
+  `}
+>
+  {/* Card Header */}
+  <div className="flex items-start justify-between mb-6">
+    {/* Title and Subtitle */}
+    <div>
+      <h3
+        className={`
+          text-xl 
+          font-bold 
+          tracking-tight
+          ${theme === "dark" ? "text-gray-100" : "text-gray-800"}
+        `}
+      >
+        Policy Growth
+      </h3>
+      <p className={`text-sm mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+        New policies created this month
+      </p>
+    </div>
+    
+    {/* Icon */}
+    <div
+      className={`
+        flex
+        items-center
+        justify-center
+        p-2 
+        rounded-lg
+        ${
+          theme === "dark" 
+            ? "bg-gray-800 text-emerald-400" 
+            : "bg-emerald-50 text-emerald-500"
+        }
+      `}
+    >
+      <FiTrendingUp className="w-6 h-6" />
+    </div>
+  </div>
+  
+  {/* Chart Component */}
+  <UserGrowthBarChart />
+</div>
+
             </div>
 
             <div className="col-span-12 xl:col-span-5">
@@ -570,7 +911,7 @@ const UserDashboard = () => {
                   >
                     <FiList className="mr-2" /> Your Policies
                   </h3>
-                  {policies.length > 5 && (
+                  {policies?.length > 5 && (
                     <button
                       onClick={navigateToPolicies}
                       className={`text-xs px-3 py-1 rounded-full ${
@@ -656,9 +997,9 @@ const UserDashboard = () => {
                             </div>
                           </td>
                         </tr>
-                      ) : policies.length > 0 ? (
+                      ) : policies?.length > 0 ? (
                         policies
-                          .slice(0, 5)
+                          ?.slice(0, 5)
                           .map((policy: any, index: number) => (
                             <tr
                               key={index}

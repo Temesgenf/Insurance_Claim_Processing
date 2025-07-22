@@ -987,7 +987,7 @@ const Register: React.FC = () => {
         confirmButtonColor: "#3b82f6",
       });
 
-      navigate("/login");
+      navigate("/email-verified");
     } catch (error: any) {
       console.error("Registration error:", error);
 

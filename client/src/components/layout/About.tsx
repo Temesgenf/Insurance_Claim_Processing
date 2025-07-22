@@ -39,7 +39,7 @@ export default function About() {
   };
 
   return (
-    <section className="relative bg-white py-20 overflow-hidden">
+    <section className="relative bg-white py-20 overflow-hidden" id="about-us">
       <motion.div
         className="container mx-auto px-6 md:px-12 lg:px-24 grid grid-cols-1 md:grid-cols-2 gap-10 items-center"
         variants={section}

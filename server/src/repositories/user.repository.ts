@@ -35,6 +35,7 @@ import { User } from "../entities/User";
 export const userRepository = {
   createUser: async (userData: Partial<User>): Promise<User> => {
     const user = AppDataSource.getRepository(User).create(userData);
+    console.log("still working in user repository")
     return await AppDataSource.getRepository(User).save(user);
   },
 
@@ -54,6 +55,7 @@ export const userRepository = {
       where: { userId },
     });
   },
+  
   updateUser: async (userId: number, userData: Partial<User>): Promise<User | null> => {
     const repo = AppDataSource.getRepository(User);
     const user = await repo.findOne({ where: { userId } });
@@ -62,4 +64,12 @@ export const userRepository = {
     const updatedUser = repo.merge(user, userData);
     return await repo.save(updatedUser);
   },
+
+  findByIdAndUpdateVerification : async (userId: any, userData: Partial<User>): Promise<User | null> => {
+    const repo = AppDataSource.getRepository(User);
+    const user = await repo.findOne({where:{userId}});
+    if (!user) return null;
+    const updatedUser = repo.merge(user, userData);
+    return await repo.save(updatedUser);
+  }
 };

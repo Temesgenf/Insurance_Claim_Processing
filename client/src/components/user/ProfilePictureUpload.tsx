@@ -9,6 +9,8 @@ interface ProfilePictureUploadProps {
   onError?: (error: string) => void;
 }
 
+const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL || "http://localhost:3000";
+
 const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
   onSuccess,
   onError,
@@ -53,7 +55,7 @@ const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
 
     try {
       await axios.post(
-        `http://localhost:3000/api/users/profile-picture`,
+        `${API_BASE_URL}/api/users/profile-picture`,
         formData,
         {
           headers: {

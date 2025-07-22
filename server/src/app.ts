@@ -1,19 +1,14 @@
+
 import express from "express";
 import cors from "cors";
-import { errorHandler } from "./middleware/errorHandler";
 import { registerRoutes } from "./routes";
-const bodyParser = require("body-parser");
+import { errorHandler } from "./middleware/errorHandler";
+import { env } from "./utils/env";
 
 const app = express();
-app.use(bodyParser.json());
+const API_BASE_URL = env.API_BASE_URL;
 
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true,
-  })
-);
+app.use(cors({ origin: API_BASE_URL, credentials: true }));
 app.use(express.json());
 
 registerRoutes(app);

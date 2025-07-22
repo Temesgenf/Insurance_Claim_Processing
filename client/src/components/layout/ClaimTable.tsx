@@ -1,5 +1,8 @@
+import React, { useMemo, useCallback } from "react";
+
 const ClaimTable = () => {
-  const policies = [
+  // Memoize static data
+  const policies = useMemo(() => [
     {
       policyNumber: "Q-2020-139",
       namedInsured: "Joe Insured",
@@ -64,20 +67,17 @@ const ClaimTable = () => {
       effectiveDate: "03/24/2020",
       reviewState: "Not Requested",
     },
-  ];
+  ], []);
 
-  const getStatusColor = (status: string) => {
+  // Memoize status color function
+  const getStatusColor = useCallback((status: string) => {
     switch (status.toLowerCase()) {
-      case "active":
-        return "bg-green-100 text-green-800";
-      case "submitted":
-        return "bg-blue-100 text-blue-800";
-      case "unsubmitted":
-        return "bg-gray-100 text-gray-800";
-      default:
-        return "bg-gray-100 text-gray-800";
+      case "active": return "bg-green-100 text-green-800";
+      case "submitted": return "bg-blue-100 text-blue-800";
+      case "unsubmitted": return "bg-gray-100 text-gray-800";
+      default: return "bg-gray-100 text-gray-800";
     }
-  };
+  }, []);
 
   return (
     <div className="p-4">
@@ -167,4 +167,4 @@ const ClaimTable = () => {
   );
 };
 
-export default ClaimTable;
+export default React.memo(ClaimTable);

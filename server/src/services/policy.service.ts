@@ -7,7 +7,7 @@ class PolicyService {
   static async getAllPolicies() {
     return PolicyRepository.findAll();
   }
-
+  
   static async createPolicy(policyDto: CreatePolicyDto) {
     // Use the DTO's built-in policy number generator instead of custom logic
     if (!policyDto.policyNumber) {
@@ -31,7 +31,9 @@ class PolicyService {
   static async getPolicyById(id: number) {
     return PolicyRepository.findById(id);
   }
-
+static async getUserPolicy(userId:number){
+  return PolicyRepository.findByUserId(userId);
+}
   static async getPolicyByPolicyNumber(policyNumber: string) {
     return PolicyRepository.findByPolicyNumber(policyNumber);
   }
