@@ -1,4 +1,4 @@
-import React, { Suspense, Component, ReactNode } from 'react';
+import React, { Suspense, Component, type ReactNode } from 'react';
 import { usePerformanceMonitor } from '../../hooks/usePerformance';
 
 interface ErrorBoundaryState {

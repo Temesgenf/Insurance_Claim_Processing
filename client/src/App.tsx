@@ -21,7 +21,6 @@ const AdminSettingsPage = lazy(() => import("./pages/AdminSettingsPage"));
 const AdminProductPage = lazy(() => import("./pages/AdminProductPage"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 const Login = lazy(() => import("./pages/Login"));
-const Register = lazy(() => import("./pages/Register"));
 const PoliciesPage = lazy(() => import("./pages/PoliciesPage"));
 const NewPolicyPage = lazy(() => import("./pages/NewPolicyPage"));
 const DetailPolicy = lazy(() => import("./pages/DetailPolicy"));

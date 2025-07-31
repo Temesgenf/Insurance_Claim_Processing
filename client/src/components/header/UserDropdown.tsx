@@ -28,12 +28,6 @@ export default function UserDropdown() {
     logout();
   }
 
-  // Get user initials for avatar fallback
-  const getUserInitials = () => {
-    if (!user) return "U";
-    return `${user.fullName?.charAt(0) || ""}) || ""}`;
-  };
-
   // Convert buffer to image URL when user changes
   useEffect(() => {
     if (user?.profilePicture) {

@@ -20,8 +20,6 @@ import {
 } from "../icons";
 import { useSidebar } from "../../Context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
-import { getAllProducts } from "../../services/productService";
-import type { Product } from "../../../../types/product.enum";
 import { useAuth } from "../../Context/AuthContext";
 
 
@@ -127,7 +125,6 @@ const othersItems: NavItem[] = [
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
-  const [products, setProducts] = useState<Product[]>([]);
   const {user} = useAuth();
   const navItems = user?.isAdmin ? navItemsAdmin : navItemsUser;
   // const [searchTerm, setSearchTerm] = useState("");

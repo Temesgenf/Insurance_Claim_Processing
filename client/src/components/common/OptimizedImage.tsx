@@ -31,8 +31,6 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   onError,
   priority = false,
   sizes,
-  quality = 85,
-  format = 'webp',
 }) => {
   const [imageSrc, setImageSrc] = useState(placeholder);
   const [isLoaded, setIsLoaded] = useState(false);

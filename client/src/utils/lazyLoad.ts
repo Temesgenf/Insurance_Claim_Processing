@@ -8,7 +8,7 @@ export function createLazyComponent<T extends ComponentType<any>>(
   retryDelay = 1000
 ): LazyExoticComponent<T> {
   return lazy(() => {
-    return new Promise((resolve, reject) => {
+    return new Promise<{ default: T }>((resolve, reject) => {
       let attempts = 0;
 
       const attemptImport = () => {
