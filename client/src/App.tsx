@@ -4,6 +4,7 @@ import { useEffect, lazy, Suspense } from "react";
 import { useAuth } from "./Context/AuthContext";
 import AppLayout from "./components/layout/AppLayout";
 import { useSocket } from "./Context/SocketContext";
+import AccountSettingsPage from "./pages/AccountSettingsPage";
 
 // Lazy load all large page components
 const HomePage = lazy(() => import("./pages/HomePage"));
@@ -101,6 +102,7 @@ const socket = useSocket();
         <Route element={<PrivateRoute />}>
           <Route element={<UserRoute />}>
             <Route element={<AppLayout />}>
+            <Route path="/user/account-settings" element={<AccountSettingsPage />} />
               <Route path="user/products" element={<ProductsPage />} />
               <Route path="/user/profilepicture" element={<EditProfilePage />} />
               {/* <Route path="/products" element={<HomePage />} /> */}

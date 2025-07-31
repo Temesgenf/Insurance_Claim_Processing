@@ -1,11 +1,12 @@
-import { lazy, ComponentType } from 'react';
+import { lazy, type LazyExoticComponent } from 'react';
+import type { ComponentType } from "react";
 
 // Enhanced lazy loading with retry mechanism
 export function createLazyComponent<T extends ComponentType<any>>(
   importFunc: () => Promise<{ default: T }>,
   retries = 3,
   retryDelay = 1000
-): T {
+): LazyExoticComponent<T> {
   return lazy(() => {
     return new Promise((resolve, reject) => {
       let attempts = 0;
@@ -102,7 +103,7 @@ export function setupRoutePreloading() {
 export function createTrackedLazyComponent<T extends ComponentType<any>>(
   importFunc: () => Promise<{ default: T }>,
   componentName: string
-): T {
+): LazyExoticComponent<T> {
   return lazy(() => {
     const startTime = performance.now();
     

@@ -13,5 +13,4 @@ app.use(express.json());
 
 registerRoutes(app);
 app.use(errorHandler);
-
 export default app;

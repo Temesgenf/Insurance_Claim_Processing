@@ -4,7 +4,6 @@ import { createPolicy } from "../services/policyService";
 import { getAllProducts } from "../services/productService";
 import { useNavigate } from "react-router-dom";
 import type { Product } from "../../../types/product.enum";
-import type { Policy } from "./PoliciesPage";
 import { motion } from "framer-motion";
 import { FaShieldAlt, FaCalendarAlt, FaInfoCircle } from "react-icons/fa";
 import { useTheme } from "../Context/ThemeContext";

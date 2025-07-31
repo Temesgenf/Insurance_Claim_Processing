@@ -49,6 +49,15 @@ const Sidebar: React.FC = () => {
               Dashboard
             </Link>
           </li>
+          <li>
+            <Link
+              to="/user/account-settings"
+              className={`flex items-center px-6 py-3 rounded-lg transition-colors duration-200 font-medium ${location.pathname === "/user/account-settings" ? "bg-[#0a393f] text-blue-300" : "hover:bg-[#0a393f]"}`}
+            >
+              <span className="material-icons h-5 w-5 mr-3">settings</span>
+              Account Settings
+            </Link>
+          </li>
           <li className="relative">
             <button
               className="flex items-center w-full px-6 py-3 rounded-lg hover:bg-[#0a393f] transition-colors duration-200 font-medium focus:outline-none"

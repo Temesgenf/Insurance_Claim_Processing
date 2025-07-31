@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../Context/AuthContext";
 import { useTheme } from "../Context/ThemeContext";
 import { createClaim } from "../services/claimService";
 import { getPolicyByPolicyNumber } from "../services/policyService";
@@ -23,13 +22,10 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSocket } from "../Context/SocketContext";
 const NewClaimPage = () => {
   const [showDetails, setShowDetails] = useState(false);
-  const { user } = useAuth();
   const { theme } = useTheme();
   const navigate = useNavigate();
- const socket = useSocket();
  const location = useLocation();
  console.log(location)
 

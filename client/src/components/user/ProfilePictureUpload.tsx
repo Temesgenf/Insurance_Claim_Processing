@@ -158,7 +158,7 @@ const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
           )}
 
           <p className="mt-3 text-xs text-center text-gray-500">
-            Maximum file size: 2MB. Supported formats: JPG, PNG, GIF.
+            Maximum file size: 2MB. Supported formats: JPG, PNG
           </p>
         </div>
       </div>
