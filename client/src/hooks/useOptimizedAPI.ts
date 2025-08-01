@@ -1,4 +1,5 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { useDebounce } from './usePerformance';
 
 interface CacheEntry<T> {
   data: T;
@@ -29,6 +30,7 @@ export function useOptimizedAPI<T>(
 ) {
   const {
     cacheTime = 5 * 60 * 1000, // 5 minutes
+    staleTime = 1 * 60 * 1000, // 1 minute
     retryCount = 3,
     retryDelay = 1000,
     deduplicate = true,
@@ -78,6 +80,9 @@ export function useOptimizedAPI<T>(
     };
     cache.current.set(key, entry);
   }, [cacheTime]);
+
+  // Debounced API call
+  const debouncedAPICall = useDebounce(apiCall, 300);
 
   // Execute API call with retry logic
   const executeAPICall = useCallback(async (): Promise<T> => {

@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 export default function NotificationDropdown() {
   const { notifications, clearNotifications, connectionError } = useNotifications();
   const [isOpen, setIsOpen] = useState(false);
+  const [notifying, setNotifying] = useState(true);
   const Navigate = useNavigate();
 
   function toggleDropdown() {
@@ -19,6 +20,7 @@ export default function NotificationDropdown() {
 
   const handleClick = () => {
     toggleDropdown();
+    setNotifying(false);
   };
 
   if (connectionError) {

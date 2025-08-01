@@ -1,4 +1,5 @@
-import { lazy, type LazyExoticComponent } from 'react';
+import { lazy } from 'react';
+import type {LazyExoticComponent} from 'react';
 import type { ComponentType } from "react";
 
 // Enhanced lazy loading with retry mechanism
@@ -8,7 +9,7 @@ export function createLazyComponent<T extends ComponentType<any>>(
   retryDelay = 1000
 ): LazyExoticComponent<T> {
   return lazy(() => {
-    return new Promise<{ default: T }>((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       let attempts = 0;
 
       const attemptImport = () => {

@@ -15,7 +15,7 @@ const EmailVerify: React.FC = () => {
     setStatus("loading");
     
     try {
-      await axios.post(`${API_BASE_URL}/api/users/verifyEmail`, {
+      const response = await axios.post(`${API_BASE_URL}/api/users/verifyEmail`, {
         code: verificationCode
       });
       

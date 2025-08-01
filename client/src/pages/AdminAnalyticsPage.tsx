@@ -6,25 +6,6 @@ import UserGrowthBarChart from "../components/layout/UserGrowthBarChart";
 
 
 const AdminAnalyticsPage: React.FC = () => {
-  // Mock claims data for the chart
-  const mockClaims = [
-    {
-      claimId: 1,
-      status: 'approved',
-      createdAt: '2024-01-15T10:30:00Z'
-    },
-    {
-      claimId: 2,
-      status: 'rejected',
-      createdAt: '2024-01-16T14:20:00Z'
-    },
-    {
-      claimId: 3,
-      status: 'approved',
-      createdAt: '2024-01-17T09:15:00Z'
-    }
-  ];
-
   return (
     <div className="flex min-h-screen">
       <AdminSidebar />
@@ -34,7 +15,7 @@ const AdminAnalyticsPage: React.FC = () => {
           <div className="bg-white rounded-xl shadow p-8">
             <h2 className="text-xl font-semibold mb-4 text-gray-800">Claim Trends Over Time</h2>
             <div className="w-full h-96">
-              <ClaimTrendsChart claims={mockClaims} />
+              <ClaimTrendsChart />
             </div>
           </div>
           <div className="bg-white rounded-xl shadow p-8">

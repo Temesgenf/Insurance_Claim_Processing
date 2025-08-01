@@ -111,6 +111,11 @@ const UserDashboard = () => {
     }).format(date);
   };
 
+  // Add a button to navigate to Account Settings
+  const navigateToAccountSettings = () => {
+    navigate("/user/account-settings");
+  };
+
   return (
     <>
       <PageMeta
