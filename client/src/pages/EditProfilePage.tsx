@@ -4,7 +4,7 @@ import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
 import AppSidebar from "../components/layout/AppSidebar";
 import PageMeta from "../components/common/PageMeta";
 import { 
-  FaShield, 
+  FaShieldAlt, 
   FaKey, 
   FaHistory, 
   FaBell, 
@@ -228,7 +228,7 @@ const AccountSettingsPage: React.FC = () => {
               {/* Security Settings */}
               <section className={`${getCardBgColor()} rounded-3xl shadow-xl p-8 border ${getBorderColor()}`}>
                 <h2 className={`text-2xl font-bold ${getTextColor()} mb-6 flex items-center`}>
-                  <FaShield className="mr-3 text-blue-500" />
+                  <FaShieldAlt className="mr-3 text-blue-500" />
                   Security
                 </h2>
 

@@ -29,10 +29,10 @@ export default function UserDropdown() {
   }
 
   // Get user initials for avatar fallback
-  const getUserInitials = () => {
-    if (!user) return "U";
-    return `${user.fullName?.charAt(0) || ""}) || ""}`;
-  };
+  // const getUserInitials = () => {
+  //   if (!user) return "U";
+  //   return `${user.fullName?.charAt(0) || ""}) || ""}`;
+  // };
 
   // Convert buffer to image URL when user changes
   useEffect(() => {

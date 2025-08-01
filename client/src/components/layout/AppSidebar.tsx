@@ -9,8 +9,7 @@ import {
   ClipboardDocumentListIcon,
 } from "@heroicons/react/24/outline";
 
-// Assume thes
-// e icons are imported from an icon library
+// Assume these icons are imported from an icon library
 import {
   BoxCubeIcon,
   ChevronDownIcon,
@@ -20,9 +19,9 @@ import {
 } from "../icons";
 import { useSidebar } from "../../Context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
-import { getAllProducts } from "../../services/productService";
-import type { Product } from "../../../../types/product.enum";
 import { useAuth } from "../../Context/AuthContext";
+// import { getAllProducts } from "../../services/productService";
+// import type { Product } from "../../../../types/product.enum";
 
 
 type NavItem = {
@@ -127,7 +126,7 @@ const othersItems: NavItem[] = [
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
-  const [products, setProducts] = useState<Product[]>([]);
+  // const [products, setProducts] = useState<Product[]>([]);
   const {user} = useAuth();
   const navItems = user?.isAdmin ? navItemsAdmin : navItemsUser;
   // const [searchTerm, setSearchTerm] = useState("");

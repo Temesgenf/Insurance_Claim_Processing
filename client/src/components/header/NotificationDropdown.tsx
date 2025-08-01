@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 export default function NotificationDropdown() {
   const { notifications, clearNotifications, connectionError } = useNotifications();
   const [isOpen, setIsOpen] = useState(false);
+  // Fix: Properly destructure the useState hook
   const [notifying, setNotifying] = useState(true);
   const Navigate = useNavigate();
 
@@ -39,7 +40,7 @@ export default function NotificationDropdown() {
       >
         <span
           className={`absolute right-0 top-0.5 z-10 h-2 w-2 rounded-full bg-orange-400 ${
-            notifications.length === 0 ? 'hidden' : 'flex'
+            notifications.length === 0 || !notifying ? 'hidden' : 'flex'
           }`}
         >
           <span className="absolute inline-flex w-full h-full bg-orange-400 rounded-full opacity-75 animate-ping"></span>

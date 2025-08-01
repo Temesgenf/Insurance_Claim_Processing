@@ -14,8 +14,7 @@ interface OptimizedImageProps {
   onError?: () => void;
   priority?: boolean; // For above-the-fold images
   sizes?: string; // For responsive images
-  quality?: number; // Image quality (1-100)
-  format?: 'webp' | 'avif' | 'jpeg' | 'png'; // Preferred format
+  // Removed unused props
 }
 
 const OptimizedImage: React.FC<OptimizedImageProps> = ({
@@ -31,8 +30,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   onError,
   priority = false,
   sizes,
-  quality = 85,
-  format = 'webp',
+  // Removed unused parameters
 }) => {
   const [imageSrc, setImageSrc] = useState(placeholder);
   const [isLoaded, setIsLoaded] = useState(false);

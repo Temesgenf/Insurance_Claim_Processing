@@ -6,6 +6,26 @@ import UserGrowthBarChart from "../components/layout/UserGrowthBarChart";
 
 
 const AdminAnalyticsPage: React.FC = () => {
+  // Define claims array properly for ClaimTrendsChart
+  const claims = [
+    {
+      claimId: 10,
+      status: "approved",
+      createdAt: "2023-01-01"
+      // other claim properties...
+    },
+    {
+      claimId: 11,
+      status: "pending",
+      createdAt: "2023-01-15"
+    },
+    {
+      claimId: 12,
+      status: "rejected",
+      createdAt: "2023-02-01"
+    }
+  ];
+
   return (
     <div className="flex min-h-screen">
       <AdminSidebar />
@@ -15,7 +35,7 @@ const AdminAnalyticsPage: React.FC = () => {
           <div className="bg-white rounded-xl shadow p-8">
             <h2 className="text-xl font-semibold mb-4 text-gray-800">Claim Trends Over Time</h2>
             <div className="w-full h-96">
-              <ClaimTrendsChart />
+              <ClaimTrendsChart claims={claims} />
             </div>
           </div>
           <div className="bg-white rounded-xl shadow p-8">
