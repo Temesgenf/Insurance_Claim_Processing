@@ -172,6 +172,7 @@ export default defineConfig(({ mode }) => {
       hmr: {
         overlay: false, // Disable HMR overlay for better performance
       },
+      
     },
   };
 });
