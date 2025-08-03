@@ -122,7 +122,7 @@ const socket = useSocket();
         </Route>
 
         {/* Protected Admin Routes */}
-        <Route element={<PrivateRoute />}>
+        {/* <Route element={<PrivateRoute />}>
           <Route element={<AdminRoute />}>
           <Route element={<AppLayout />}>
           <Route path="/admin/dashboard" element={<AdminPage />} />
@@ -134,7 +134,7 @@ const socket = useSocket();
             <Route path="/admin/products" element={<AdminProductPage />} />
           </Route>
           </Route>
-        </Route>
+        </Route> */}
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
