@@ -13,13 +13,13 @@ const ClaimsPage = lazy(() => import("./pages/ClaimsPage"));
 const ClaimDetailPage = lazy(() => import("./pages/ClaimDetailPage"));
 const NewClaimPage = lazy(() => import("./pages/NewClaimPage"));
 const UserDashboard = lazy(() => import("./pages/UserDashboard"));
-const AdminPage = lazy(() => import("./pages/AdminPage"));
-const AdminUsersPage = lazy(() => import("./pages/AdminUsersPage"));
-const AdminPoliciesPage = lazy(() => import("./pages/AdminPoliciesPage"));
-const AdminClaimsPage = lazy(() => import("./pages/AdminClaimsPage"));
-const AdminAnalyticsPage = lazy(() => import("./pages/AdminAnalyticsPage"));
-const AdminSettingsPage = lazy(() => import("./pages/AdminSettingsPage"));
-const AdminProductPage = lazy(() => import("./pages/AdminProductPage"));
+// const AdminPage = lazy(() => import("./pages/AdminPage"));
+// const AdminUsersPage = lazy(() => import("./pages/AdminUsersPage"));
+// const AdminPoliciesPage = lazy(() => import("./pages/AdminPoliciesPage"));
+// const AdminClaimsPage = lazy(() => import("./pages/AdminClaimsPage"));
+// const AdminAnalyticsPage = lazy(() => import("./pages/AdminAnalyticsPage"));
+// const AdminSettingsPage = lazy(() => import("./pages/AdminSettingsPage"));
+// const AdminProductPage = lazy(() => import("./pages/AdminProductPage"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 const Login = lazy(() => import("./pages/Login"));
 const PoliciesPage = lazy(() => import("./pages/PoliciesPage"));
@@ -51,16 +51,16 @@ const PrivateRoute = () => {
   );
 };
 
-const AdminRoute = () => {
-  const { user } = useAuth();
-  const location = useLocation();
-  console.log("User:", user);
+// const AdminRoute = () => {
+//   const { user } = useAuth();
+//   const location = useLocation();
+//   console.log("User:", user);
 
-  if (!user?.isAdmin) {
-    return <Navigate to="/" state={{ from: location }} replace />;
-  }
-  return <Outlet />;
-};
+//   if (!user?.isAdmin) {
+//     return <Navigate to="/" state={{ from: location }} replace />;
+//   }
+//   return <Outlet />;
+// };
 
 const UserRoute = () => {
   const { user } = useAuth();
