@@ -486,7 +486,7 @@ console.log("user dashboard running");
       
       {/* Chart component */}
       <div className="relative z-10 min-h-[400px]">
-        <ClaimTrendsChart  />
+        <ClaimTrendsChart claims={claims} />
       </div>
       
       {/* Chart insights overlay */}

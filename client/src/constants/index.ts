@@ -2,22 +2,23 @@ const navbarMenuItems = [
   {
     id: 1,
     title: "Home",
-    link: "/",
+    link: "#",
   },
   {
     id: 2,
-    title: "How it works",
-    link: "/howitworks",
+   
+    title: "About us",
+    link: "about-us",
   },
   {
     id: 3,
-    title: "Features",
-    link: "/features",
+    title: "Products",
+    link: "products",
   },
   {
     id: 4,
-    title: "About us",
-    link: "/about",
+    title: "Contact Us",
+    link: "contact",
   },
 ];
 

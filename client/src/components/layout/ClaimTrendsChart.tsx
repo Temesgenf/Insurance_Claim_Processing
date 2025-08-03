@@ -27,12 +27,31 @@ const ClaimTrendsChart: React.FC<ClaimTrendsChartProps> = ({ claims }) => {
   // Memoize expensive data processing
   const processedData = useMemo(() => {
     const dailyData: Record<string, { submitted: number; approved: number; rejected: number }> = {};
-    const daysSet = new Set<string>();
+    const dateMap: Record<string, Date> = {};
+    
+    // Handle empty claims array
+    if (!claims || claims.length === 0) {
+      return {
+        labels: [],
+        submittedData: [],
+        approvedData: [],
+        rejectedData: [],
+      };
+    }
     
     claims.forEach(claim => {
+      // Safely parse the date
+      if (!claim.createdAt) return;
+      
       const date = new Date(claim.createdAt);
+      
+      // Check if date is valid
+      if (isNaN(date.getTime())) return;
+      
       const dayMonthYear = `${date.getDate()} ${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`;
-      daysSet.add(dayMonthYear);
+      
+      // Store the actual date object for sorting
+      dateMap[dayMonthYear] = date;
       
       if (!dailyData[dayMonthYear]) {
         dailyData[dayMonthYear] = { submitted: 0, approved: 0, rejected: 0 };
@@ -40,15 +59,18 @@ const ClaimTrendsChart: React.FC<ClaimTrendsChartProps> = ({ claims }) => {
       
       dailyData[dayMonthYear].submitted += 1;
       
-      if (claim.status === 'approved') {
+      // Handle different status formats (case-insensitive)
+      const status = claim.status?.toLowerCase();
+      if (status === 'approved') {
         dailyData[dayMonthYear].approved += 1;
-      } else if (claim.status === 'rejected') {
+      } else if (status === 'rejected') {
         dailyData[dayMonthYear].rejected += 1;
       }
     });
     
-    const sortedDays = Array.from(daysSet).sort((a, b) => {
-      return new Date(a).getTime() - new Date(b).getTime();
+    // Sort by actual date objects instead of string comparison
+    const sortedDays = Object.keys(dailyData).sort((a, b) => {
+      return dateMap[a].getTime() - dateMap[b].getTime();
     });
     
     return {
