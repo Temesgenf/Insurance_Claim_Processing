@@ -1,0 +1,6 @@
+# .htaccess
+<IfModule mod_mime.c>
+    AddType application/javascript .js
+    AddType application/javascript .mjs
+    AddType text/javascript .js
+    Ad
