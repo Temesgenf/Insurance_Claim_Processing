@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import { createPolicy } from "../services/policyService";
 import { getAllProducts } from "../services/productService";
 import { useNavigate } from "react-router-dom";
-import type { Product } from "../enums/product.enum";
-import { motion, type Variants } from "framer-motion"; // Add Variants import
+import type { Product } from "../../../types/product.enum";
+import { motion } from "framer-motion";
 import { FaShieldAlt, FaCalendarAlt, FaInfoCircle } from "react-icons/fa";
 import { useTheme } from "../Context/ThemeContext";
 
@@ -108,8 +108,8 @@ const NewPolicyPage = () => {
     }
   };
 
-  // Animation variants with proper typing
-  const containerVariants: Variants = {
+  // Animation variants
+  const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -120,12 +120,12 @@ const NewPolicyPage = () => {
     },
   };
 
-  const itemVariants: Variants = {
+  const itemVariants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
-      transition: { type: "spring" as const, stiffness: 100 }, // Fix: Add 'as const'
+      transition: { type: "spring", stiffness: 100 },
     },
   };
 
@@ -291,7 +291,7 @@ const NewPolicyPage = () => {
                 >
                   <h4 className={`font-medium ${getInfoTextColor()}`}>Product Benefits:</h4>
                   <ul className={`text-sm ${getInfoTextColor()} space-y-1 pl-6 list-disc mt-2`}>
-                    {selectedProduct?.keyBenefits?.map((benefit:string, i:number) => (
+                    {selectedProduct?.keyBenefits?.map((benefit, i) => (
                       <li key={i}>{benefit}</li>
                     ))}
                   </ul>

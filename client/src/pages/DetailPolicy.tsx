@@ -338,8 +338,8 @@ const DetailPolicy: React.FC = () => {
             </div>
 
             <div className="mt-8 flex justify-center space-x-4">
-              <Link
-                to={`/policies/${policy.policyId}/file-claim`}
+              
+                <Link to="/user/new-claim" state={{ policyNumber: policy.policyNumber }}
                 className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
                   theme === "dark"
                     ? "bg-brand-600 hover:bg-brand-500"

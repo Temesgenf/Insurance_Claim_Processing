@@ -3,7 +3,8 @@ import axios from "axios";
 const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 export const getAllPolicies = async () => {
-  const response = await axios.get(`${API_BASE_URL}/api/policies/`);
+  console.log("comeoon to the policies")
+  const response = await axios.get(`${API_BASE_URL}/api/policies/userpolicy`);
   return response;
 };
 
@@ -12,7 +13,7 @@ export const getPolicyById = async (id: string) => {
   return response;
 };
 
-export const createPolicy = async (policy: any) => {
+export const createPolicy = async (policy: object) => {
   const response = await axios.post(`${API_BASE_URL}/api/policies`, policy);
   return response;
 };
@@ -35,3 +36,8 @@ export const getPolicyByPolicyNumber = async (policyNumber: string) => {
   );
   return response;
 };
+
+export const getUserPolicy  = async ()=>{
+  const response = await axios.get(`${API_BASE_URL}/api/policies/userpolicy`);
+  return response
+}

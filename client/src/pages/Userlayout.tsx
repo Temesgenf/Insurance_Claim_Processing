@@ -1,6 +1,7 @@
 // src/layouts/UserLayout.tsx
 import React from "react";
 import { Outlet } from "react-router-dom";
+// Sidebar here refers to the user sidebar, not AppSidebar
 import Sidebar from "../components/layout/Sidebar";
 
 const UserLayout: React.FC = () => (
