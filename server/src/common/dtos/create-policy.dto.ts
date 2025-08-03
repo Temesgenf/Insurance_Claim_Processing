@@ -62,6 +62,16 @@ export class CreatePolicyDto {
   @Type(() => Date)
   readonly startDate?: Date;
 
+  @ApiProperty({
+    description:"the owner of the policy",
+    example:"34",
+    type:Number
+  })
+  @IsNumber({ allowNaN: false, allowInfinity: false })
+  @IsPositive()
+  @IsNotEmpty()
+  readonly userId: number;
+
   @ApiPropertyOptional({
     description: 'The date when the policy coverage ends',
     example: '2024-06-14T23:59:59.999Z',
@@ -105,6 +115,7 @@ export class CreatePolicyDto {
 
   constructor(
     productId: number,
+    userId:number,
     status: ApplicationStatus = ApplicationStatus.PENDING,
     policyNumber?: string,
     startDate?: Date,
@@ -121,6 +132,7 @@ export class CreatePolicyDto {
     this.premiumAmount = premiumAmount;
     this.deductibleAmount = deductibleAmount;
     this.coverageLimit = coverageLimit;
+    this.userId = userId;
   }
 
   /**
@@ -135,6 +147,8 @@ export class CreatePolicyDto {
     // Set default dates if not provided
     const now = new Date();
     const startDate = req.startDate ? new Date(req.startDate) : now;
+    const userId = req.user?.userId;
+    console.log("user request",req.user)
     
     // Default end date to 1 year from start date if not provided
     const endDate = req.endDate ? new Date(req.endDate) : new Date(startDate);
@@ -143,8 +157,11 @@ export class CreatePolicyDto {
     }
     
     return new CreatePolicyDto(
-      req.productId,
+      req.productId
+      ,
+      userId,
       req.status || ApplicationStatus.PENDING,
+    
       policyNumber,
       startDate,
       endDate,

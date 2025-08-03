@@ -1,24 +1,66 @@
-import "dotenv/config";
-import "reflect-metadata";
-import express from "express";
+// index.ts
+import http from "http";
+import { Server } from "socket.io";
 import { AppDataSource } from "./config/data-source";
-import { registerRoutes } from "./routes";
-import cors from "cors";
+import app from "./app"; // import the Express app
+import { NotificationService } from "./services/notification.service";
+import { env } from "./utils/env";
 
-const app = express();
-app.use(express.json());
-app.use(cors());
+const API_BASE_URL = env.API_BASE_URL;
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: API_BASE_URL,
+    methods: ["GET", "POST"]
+  }
+});
 
-registerRoutes(app);
+// io.on("connection", (socket) => {
+//   console.log("User connected:", socket.id);
+//   socket.on("send_message", (data) => {
+//     console.log("Message received:", data);
+//     io.emit("receive_message", data);
+//   });
+// });
+// Remove this line:
+// const userSocketMap = new Map<string, string>(); // userId -> socketId
 
-const PORT = parseInt(process.env.PORT || "3000", 10);
+NotificationService.initialize(io);
+io.on("connection", (socket) => {
+  const userId = socket.handshake.auth.userId;
+
+  if (userId) {
+    // Use NotificationService's socket map instead of local one
+    NotificationService.registerUserSocket(userId, socket.id);
+    console.log(`User ${userId} connected with socket ${socket.id}`);
+    
+    // Emit welcome notification when user connects/refreshes
+    NotificationService.emitToUser(userId, {
+      type: "welcome",
+      message: "Welcome back! You're now connected.",
+      data: { timestamp: new Date().toISOString() }
+    });
+  }
+
+  socket.on("notification", (data) => {
+    console.log("Notification received:", data);
+  });
+
+  socket.on("disconnect", () => {
+    if (userId) {
+      // Remove from NotificationService's map
+      NotificationService.removeUserSocket(userId);
+    }
+  });
+});
+
 
 AppDataSource.initialize()
   .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+    server.listen(process.env.PORT || 3000, () => {
+      console.log("Server is running on port 3000");
     });
   })
-  .catch((error) => {
-    console.error("Database connection failed:", error);
+  .catch((err) => {
+    console.error("Database connection failed:", err);
   });

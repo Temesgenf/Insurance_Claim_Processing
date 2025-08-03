@@ -190,7 +190,7 @@ const AdminProductPage: React.FC = () => {
   )}
   <form onSubmit={handleSubmit} className="space-y-5">
     <div>
-      <label className="block font-semibold mb-1 text-blue-900 flex items-center gap-1">
+      <label className=" font-semibold mb-1 text-blue-900 flex items-center gap-1">
         <span>Product Code</span>
         <span className="text-blue-400" title="Unique identifier for the product">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 01-8 0m8 0a4 4 0 10-8 0m8 0V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m8 0a4 4 0 01-8 0" /></svg>
@@ -208,7 +208,7 @@ const AdminProductPage: React.FC = () => {
       <span className="text-xs text-gray-400 ml-1">Unique code for this product.</span>
     </div>
     <div>
-      <label className="block font-semibold mb-1 text-blue-900 flex items-center gap-1">
+      <label className="font-semibold mb-1 text-blue-900 flex items-center gap-1">
         <span>Product Name</span>
         <span className="text-blue-400" title="Enter a descriptive name">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-3-3v6m9-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -226,7 +226,7 @@ const AdminProductPage: React.FC = () => {
       <span className="text-xs text-gray-400 ml-1">Name as seen by customers.</span>
     </div>
     <div>
-      <label className="block font-semibold mb-1 text-blue-900 flex items-center gap-1">
+      <label className="font-semibold mb-1 text-blue-900 flex items-center gap-1">
         <span>Sum Insured</span>
         <span className="text-blue-400" title="Maximum coverage amount">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-3.866 0-7 1.343-7 3v2c0 1.657 3.134 3 7 3s7-1.343 7-3v-2c0-1.657-3.134-3-7-3z" /></svg>
@@ -245,7 +245,7 @@ const AdminProductPage: React.FC = () => {
       <span className="text-xs text-gray-400 ml-1">Maximum amount covered by this product.</span>
     </div>
     <div>
-      <label className="block font-semibold mb-1 text-blue-900 flex items-center gap-1">
+      <label className="font-semibold mb-1 text-blue-900 flex items-center gap-1">
         <span>Base Premium</span>
         <span className="text-blue-400" title="Base cost for this product">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-3.866 0-7 1.343-7 3v2c0 1.657 3.134 3 7 3s7-1.343 7-3v-2c0-1.657-3.134-3-7-3z" /></svg>
@@ -264,7 +264,7 @@ const AdminProductPage: React.FC = () => {
       <span className="text-xs text-gray-400 ml-1">Base premium for this policy.</span>
     </div>
     <div>
-      <label className="block font-semibold mb-1 text-blue-900 flex items-center gap-1">
+      <label className="font-semibold mb-1 text-blue-900 flex items-center gap-1">
         <span>Premium Rate</span>
         <span className="text-blue-400" title="Select payment frequency">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 17l4 4 4-4m0-5a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -285,7 +285,7 @@ const AdminProductPage: React.FC = () => {
       <span className="text-xs text-gray-400 ml-1">How often is the premium paid?</span>
     </div>
     <div>
-      <label className="block font-semibold mb-1 text-blue-900 flex items-center gap-1">
+      <label className="font-semibold mb-1 text-blue-900 flex items-center gap-1">
         <span>Description</span>
         <span className="text-blue-400" title="Short summary of the product">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 20h9" /></svg>
@@ -303,7 +303,7 @@ const AdminProductPage: React.FC = () => {
       <span className="text-xs text-gray-400 ml-1">Briefly describe this product.</span>
     </div>
     <div>
-      <label className="block font-semibold mb-1 text-blue-900 flex items-center gap-1">
+      <label className="font-semibold mb-1 text-blue-900 flex items-center gap-1">
         <span>Key Benefits</span>
         <span className="text-blue-400" title="Add multiple benefits">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
@@ -333,7 +333,7 @@ const AdminProductPage: React.FC = () => {
       <span className="text-xs text-gray-400 ml-1">Add as many benefits as you like.</span>
     </div>
     <div>
-      <label className="block font-semibold mb-1 text-blue-900 flex items-center gap-1">
+      <label className="font-semibold mb-1 text-blue-900 flex items-center gap-1">
         <span>Coverages</span>
         <span className="text-blue-400" title="Add multiple coverages">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>

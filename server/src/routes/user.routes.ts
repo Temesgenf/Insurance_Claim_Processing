@@ -9,7 +9,11 @@
 import express from "express";
 import {
   deleteUser,
+  forgotPassword,
+  resendVerification,
+  resetPassword,
   updateProfilePicture,
+  verifyEmail,
 } from "../controllers/user.controller";
 import {
   registerUser,
@@ -33,5 +37,10 @@ userRouter.post(
   updateProfilePictureMiddleware,
   updateProfilePicture
 );
+
+userRouter.post("/verifyEmail", verifyEmail);
+userRouter.post("/resend-verification", resendVerification);
+userRouter.post("/forgot-password", forgotPassword);
+userRouter.post('/reset-password', resetPassword)
 
 export default userRouter;

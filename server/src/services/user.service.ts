@@ -21,4 +21,9 @@ export const UserService = {
   updateUser: async (userId: number, userData: Partial<User>) => {
     return await userRepository.updateUser(userId, userData);
   },
+  verifyUser : async (userId: string) => {
+  return await userRepository.findByIdAndUpdateVerification(
+    userId, {isVerified : true}
+  ); // Exclude password from the returned user
+  }
 };

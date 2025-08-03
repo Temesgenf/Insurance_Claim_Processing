@@ -43,6 +43,10 @@ export class ClaimService {
     });
   }
 
+  static async getClaimsByUserId(userId: number) {
+    return ClaimRepository.findByUserId(userId);
+  }
+
   static async deleteClaim(claimId: number) {
     return ClaimRepository.deleteClaim(claimId);
   }

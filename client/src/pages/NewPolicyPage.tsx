@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { createPolicy } from "../services/policyService";
 import { getAllProducts } from "../services/productService";
 import { useNavigate } from "react-router-dom";
-import type { Product } from "../../../server/src/common/enums/product.enum";
+import type { Product } from "../enums/product.enum";
 import { motion, type Variants } from "framer-motion"; // Add Variants import
 import { FaShieldAlt, FaCalendarAlt, FaInfoCircle } from "react-icons/fa";
 import { useTheme } from "../Context/ThemeContext";

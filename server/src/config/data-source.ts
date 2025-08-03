@@ -5,7 +5,11 @@ import { Policy } from "../entities/Policy";
 import { Claim } from "../entities/Claim";
 import { ClaimDocument } from "../entities/Claim-Document";
 import { Product } from "../entities/Product";
+import dotenv from "dotenv";
 
+dotenv.config({
+  path: ".env",
+});
 export const AppDataSource = new DataSource({
   type: "mysql",
   host: process.env.DB_HOST,

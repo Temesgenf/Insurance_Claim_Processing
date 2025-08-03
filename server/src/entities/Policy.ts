@@ -7,6 +7,9 @@ export class Policy {
   @PrimaryGeneratedColumn()
   readonly policyId!: number;
 
+  @Column({name:"userId"})
+  readonly userId!:number;
+
   @Column({ name: "productId" })
   readonly productId!: number;
 
