@@ -35,6 +35,15 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins,
+    // Add resolve configuration to fix React issues
+    resolve: {
+      dedupe: ['react', 'react-dom'],
+      alias: {
+        // Ensure single React instance
+        'react': 'react',
+        'react-dom': 'react-dom'
+      }
+    },
     build: {
       // Enable source maps for debugging
       sourcemap: false, // Set to true for development debugging
@@ -42,11 +51,11 @@ export default defineConfig(({ mode }) => {
       chunkSizeWarningLimit: 1000,
       rollupOptions: {
         output: {
-          // Enhanced manual chunk splitting for better caching and dynamic imports
+          // Fixed manual chunk splitting to avoid React conflicts
           manualChunks: (id) => {
-            // React core
-            if (id.includes('react') && !id.includes('react-')) {
-              return 'react-core';
+            // Keep React core together - DON'T split react and react-dom
+            if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
+              return 'react-vendor';
             }
             
             // Router
@@ -69,7 +78,7 @@ export default defineConfig(({ mode }) => {
               return 'forms';
             }
             
-            // Animations
+            // Animations - Keep framer-motion separate but ensure it uses same React
             if (id.includes('framer-motion')) {
               return 'animations';
             }
@@ -82,6 +91,11 @@ export default defineConfig(({ mode }) => {
             // Utilities
             if (id.includes('axios') || id.includes('sweetalert2')) {
               return 'utils';
+            }
+            
+            // Other vendor libraries
+            if (id.includes('node_modules')) {
+              return 'vendor';
             }
             
             // Page-specific chunks for better dynamic imports
@@ -122,6 +136,11 @@ export default defineConfig(({ mode }) => {
             return `assets/[name]-[hash].${ext}`;
           },
         },
+        // Add external configuration for better React handling
+        external: (id) => {
+          // Don't externalize anything in production build
+          return false;
+        }
       },
       // Enable minification with advanced options
       minify: 'terser',
@@ -143,8 +162,13 @@ export default defineConfig(({ mode }) => {
       cssCodeSplit: true,
       // Optimize assets
       assetsInlineLimit: 4096, // 4kb
+      // Add commonjs options for better compatibility
+      commonjsOptions: {
+        include: [/react/, /react-dom/, /framer-motion/],
+        transformMixedEsModules: true
+      }
     },
-    // Optimize dependencies
+    // Optimize dependencies - Fixed to prevent React conflicts
     optimizeDeps: {
       include: [
         'react',
@@ -166,13 +190,19 @@ export default defineConfig(({ mode }) => {
         'react-helmet-async',
       ],
       exclude: ['@vite/client', '@vite/env'],
+      // Force React to be pre-bundled to avoid conflicts
+      force: true
     },
     // Server optimizations
     server: {
       hmr: {
         overlay: false, // Disable HMR overlay for better performance
       },
-      
     },
+    // Add esbuild configuration for better React handling
+    esbuild: {
+      jsx: 'automatic',
+      jsxDev: mode === 'development'
+    }
   };
 });
