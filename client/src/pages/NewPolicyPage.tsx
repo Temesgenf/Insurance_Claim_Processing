@@ -4,7 +4,7 @@ import { createPolicy } from "../services/policyService";
 import { getAllProducts } from "../services/productService";
 import { useNavigate } from "react-router-dom";
 import type { Product } from "../../../server/src/common/enums/product.enum";
-import { motion } from "framer-motion";
+import { motion,type Variants } from "framer-motion"; // Add Variants import
 import { FaShieldAlt, FaCalendarAlt, FaInfoCircle } from "react-icons/fa";
 import { useTheme } from "../Context/ThemeContext";
 
@@ -108,8 +108,8 @@ const NewPolicyPage = () => {
     }
   };
 
-  // Animation variants
-  const containerVariants = {
+  // Animation variants with proper typing
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -120,12 +120,12 @@ const NewPolicyPage = () => {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
-      transition: { type: "spring", stiffness: 100 },
+      transition: { type: "spring" as const, stiffness: 100 }, // Fix: Add 'as const'
     },
   };
 
