@@ -7,7 +7,7 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 import { getAllProducts } from "../../services/productService";
-import type { Product } from "../../../../types/product.enum";
+import type { Product } from "../../../../server/src/common/enums/product.enum";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 

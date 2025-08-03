@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getAllProducts } from "../services/productService";
-import type { Product } from "../../../types/product.enum";
+import type { Product } from "../../../server/src/common/enums/product.enum";
 import { useTheme } from "../Context/ThemeContext";
 import {
   FaShieldAlt,

@@ -5,7 +5,7 @@ import {
   FaListUl,
   FaCheckCircle,
 } from "react-icons/fa";
-import type { Product } from "../../../../types/product.enum";
+import type { Product } from "../../../../server/src/common/enums/product.enum";
 
 const TAB_LIST = [
   { key: "overview", label: "Overview" },
