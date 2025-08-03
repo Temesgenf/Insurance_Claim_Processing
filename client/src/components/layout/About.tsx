@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { motion, useAnimation,type Variants } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 import aboutImage from "../../assets/companypeople.jpg";
 import { FaBolt, FaUsers, FaShieldAlt } from "react-icons/fa";
 
@@ -10,7 +10,7 @@ export default function About() {
     controls.start("visible");
   }, [controls]);
 
-  const section: Variants = {
+  const section = {
     hidden: { opacity: 0, y: 50 },
     visible: {
       opacity: 1,
@@ -23,14 +23,14 @@ export default function About() {
     },
   };
 
-  const item: Variants = {
+  const item = {
     hidden: { opacity: 0, y: 30, scale: 0.95 },
     visible: {
       opacity: 1,
       y: 0,
       scale: 1,
       transition: {
-        type: "spring" as const, // Fix: Use 'as const' assertion
+        type: "spring",
         stiffness: 150,
         damping: 12,
         duration: 0.4,

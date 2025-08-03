@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 
 type TableProps = {
   columns: string[];
@@ -6,20 +6,28 @@ type TableProps = {
 };
 
 const Table: React.FC<TableProps> = ({ columns, data }) => {
-  const getStatusColor = (status: string) => {
+  // Memoize status color function
+  const getStatusColor = useCallback((status: string) => {
     switch (status.toLowerCase()) {
-      case "approved":
-        return "bg-green-100 text-green-800";
-      case "submitted":
-        return "bg-blue-100 text-blue-800";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "rejected":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
+      case "approved": return "bg-green-100 text-green-800";
+      case "submitted": return "bg-blue-100 text-blue-800";
+      case "pending": return "bg-yellow-100 text-yellow-800";
+      case "rejected": return "bg-red-100 text-red-800";
+      default: return "bg-gray-100 text-gray-800";
     }
-  };
+  }, []);
+
+  // Memoize processed data
+  const processedData = useMemo(() => 
+    data.map(row => ({
+      ...row,
+      processedRow: columns.map(col => ({
+        key: col,
+        value: row[col.toLowerCase().replace(/ /g, "_")],
+        isStatus: col.toLowerCase() === "status",
+        isClaimId: col.toLowerCase() === "claim id"
+      }))
+    })), [data, columns]);
 
   return (
     <div className="overflow-x-auto mt-8">
@@ -37,29 +45,29 @@ const Table: React.FC<TableProps> = ({ columns, data }) => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {data.map((row, idx) => (
+          {processedData.map((row, idx) => (
             <tr key={idx}>
-              {columns.map((col) => (
+              {row.processedRow.map((item) => (
                 <td
-                  key={col}
+                  key={item.key}
                   className={`${
-                    col.toLowerCase() === "status"
+                    item.isStatus
                       ? `px-6 py-4 whitespace-nowrap`
-                      : col.toLowerCase() === "claim id"
+                      : item.isClaimId
                       ? "px-6 py-4 whitespace-nowrap text-sm font-medium text-[#099ab3]"
                       : "px-6 py-4 whitespace-nowrap text-sm text-gray-500"
                   }`}
                 >
-                  {col.toLowerCase() === "status" ? (
+                  {item.isStatus ? (
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                        row[col.toLowerCase().replace(/ /g, "_")]
+                        item.value
                       )}`}
                     >
-                      {row[col.toLowerCase().replace(/ /g, "_")]}
+                      {item.value}
                     </span>
                   ) : (
-                    row[col.toLowerCase().replace(/ /g, "_")]
+                    item.value
                   )}
                 </td>
               ))}
@@ -71,4 +79,4 @@ const Table: React.FC<TableProps> = ({ columns, data }) => {
   );
 };
 
-export default Table;
+export default React.memo(Table);

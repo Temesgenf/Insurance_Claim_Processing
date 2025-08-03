@@ -9,6 +9,8 @@ interface ProfilePictureUploadProps {
   onError?: (error: string) => void;
 }
 
+const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL || "http://localhost:3000";
+
 const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
   onSuccess,
   onError,
@@ -53,7 +55,7 @@ const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
 
     try {
       await axios.post(
-        `http://localhost:3000/api/users/profile-picture`,
+        `${API_BASE_URL}/api/users/profile-picture`,
         formData,
         {
           headers: {
@@ -156,7 +158,7 @@ const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
           )}
 
           <p className="mt-3 text-xs text-center text-gray-500">
-            Maximum file size: 2MB. Supported formats: JPG, PNG, GIF.
+            Maximum file size: 2MB. Supported formats: JPG, PNG
           </p>
         </div>
       </div>

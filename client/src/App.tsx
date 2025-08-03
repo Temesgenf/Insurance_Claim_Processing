@@ -7,7 +7,7 @@ import { useSocket } from "./Context/SocketContext";
 // import AccountSettingsPage from "./pages/AccountSettingsPage";
 
 // Lazy load all large page components
-// const AccountSettingsPage = lazy(() => import("./pages/AccountSettingsPage"));
+const AccountSettingsPage = lazy(() => import("./pages/AccountSettingsPage"));
 const HomePage = lazy(() => import("./pages/HomePage"));
 const ClaimsPage = lazy(() => import("./pages/ClaimsPage"));
 const ClaimDetailPage = lazy(() => import("./pages/ClaimDetailPage"));
@@ -28,9 +28,9 @@ const DetailPolicy = lazy(() => import("./pages/DetailPolicy"));
 const ProductsPage = lazy(() => import("./pages/ProductsPage"));
 const EditProfilePage = lazy(() => import("./pages/EditProfilePage"));
 const OnboardingRegister = lazy(() => import("./pages/OnboardingRegister"));
-// const EmailVerify = lazy(() => import("./pages/EmailVerify"));
-// const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
-// const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const EmailVerify = lazy(() => import("./pages/EmailVerify"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 
 // Loading component
 const PageLoader = () => (
@@ -96,15 +96,15 @@ const socket = useSocket();
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<OnboardingRegister />} />
-        {/* <Route path="/email-verified" element={<EmailVerify />} />
+        <Route path="/email-verified" element={<EmailVerify />} />
         <Route path="/forgot-password" element={<ForgotPassword />}/>
-        <Route path="/reset-password" element={<ResetPassword />}/> */}
+        <Route path="/reset-password" element={<ResetPassword />}/>
         <Route element={<PrivateRoute />}>
           <Route element={<UserRoute />}>
             <Route element={<AppLayout />}>
               <Route path="user/products" element={<ProductsPage />} />
               <Route path="/user/profilepicture" element={<EditProfilePage />} />
-            {/* <Route path="/user/accountsettings" element={<AccountSettingsPage />} /> */}
+            <Route path="/user/accountsettings" element={<AccountSettingsPage />} />
               {/* <Route path="/products" element={<HomePage />} /> */}
               <Route path="/products/:productId" element={<ProductDetail />} />
               <Route path="/user/dashboard" element={<UserDashboard />} />

@@ -3,20 +3,20 @@ import { navbarMenuItems } from "../../constants/index";
 import type { NavbarMenuItem } from "../../types/navbar-menu-item";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { motion, AnimatePresence,type Variants } from "framer-motion"; // Add Variants import
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
-  const menuVariants: Variants = {
+  const menuVariants = {
     hidden: { opacity: 0, x: 50 },
     visible: (i: number) => ({
       opacity: 1,
       x: 0,
       transition: {
         delay: i * 0.1,
-        type: "spring" as const, // Fix: Add 'as const'
+        type: "spring",
         stiffness: 300,
         damping: 24,
       },
@@ -105,7 +105,7 @@ export default function Navbar() {
               initial={{ clipPath: "circle(0% at 90% 10%)" }}
               animate={{ clipPath: "circle(150% at 90% 10%)" }}
               exit={{ clipPath: "circle(0% at 90% 10%)" }}
-              transition={{ type: "spring" as const, stiffness: 80, damping: 20 }} // Fix: Add 'as const'
+              transition={{ type: "spring", stiffness: 80, damping: 20 }}
               className="fixed inset-0 bg-white z-30 flex flex-col p-8"
             >
               <div className="flex justify-between items-center mb-8">
@@ -128,7 +128,7 @@ export default function Navbar() {
                     animate={{
                       opacity: 1,
                       x: 0,
-                      transition: { delay: idx * 0.1 + 0.2, type: "spring" as const }, // Fix: Add 'as const'
+                      transition: { delay: idx * 0.1 + 0.2, type: "spring" },
                     }}
                     className="text-xl font-medium text-gray-700"
                     onClick={() => {

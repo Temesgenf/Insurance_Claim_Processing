@@ -28,7 +28,7 @@ const UserDashboard = () => {
   const [policies, setPolicies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [greeting, setGreeting] = useState("");
-
+console.log("user dashboard running");
   useEffect(() => {
     // Set greeting based on time of day
     const hour = new Date().getHours();

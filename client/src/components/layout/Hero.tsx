@@ -3,9 +3,11 @@ import { IoChevronForwardCircleOutline } from "react-icons/io5";
 import happyFamilyImage from "../../assets/c.png";
 import { AiFillLike } from "react-icons/ai";
 import { motion, useAnimation } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 export default function Hero() {
   const controls = useAnimation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     controls.start({
@@ -49,11 +51,12 @@ export default function Hero() {
 
           <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-6 ">
             <motion.button
+              onClick={() => navigate("/login")}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="flex items-center justify-center bg-blue-600 text-white font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              Start Free Trial
+              Get started
               <IoChevronForwardCircleOutline className="ml-3 text-2xl animate-pulse" />
             </motion.button>
             <motion.button
