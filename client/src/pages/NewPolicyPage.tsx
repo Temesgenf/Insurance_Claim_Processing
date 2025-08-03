@@ -3,25 +3,29 @@ import { useState, useEffect } from "react";
 import { createPolicy } from "../services/policyService";
 import { getAllProducts } from "../services/productService";
 import { useNavigate } from "react-router-dom";
-import type { Product } from "../../../types/product.enum";
-import type { Policy } from "./PoliciesPage";
-import { motion } from "framer-motion";
-import {
-  FaShieldAlt,
-  FaCalendarAlt,
-  FaInfoCircle,
-} from "react-icons/fa";
+import type { Product } from "../../../server/src/common/enums/product.enum";
+import { motion, type Variants } from "framer-motion"; // Add Variants import
+import { FaShieldAlt, FaCalendarAlt, FaInfoCircle } from "react-icons/fa";
 import { useTheme } from "../Context/ThemeContext";
+
+interface FormState {
+  productId: string;
+  sumInsured: string;
+  deductibleAmount: string;
+  basePremium: string;
+}
 
 const NewPolicyPage = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const [form, setForm] = useState({
+
+  const [form, setForm] = useState<FormState>({
     productId: "",
-    coverageLimit: "",
+    sumInsured: "",
     deductibleAmount: "",
-    premiumAmount: "",
+    basePremium: "",
   });
+
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -31,8 +35,8 @@ const NewPolicyPage = () => {
     async function fetchProducts() {
       try {
         const response = await getAllProducts();
-        setProducts(response.data);
-      } catch {
+        setProducts(response.data || []);
+      } catch (err) {
         setProducts([]);
         setError("Failed to load products. Please try again later.");
       }
@@ -43,16 +47,55 @@ const NewPolicyPage = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === "productId") {
+      if (!value) {
+        // Reset form if product is deselected
+        setForm({
+          productId: "",
+          sumInsured: "",
+          deductibleAmount: "",
+          basePremium: "",
+        });
+        return;
+      }
+
+      // Auto-fill if a product is selected
+      const selectedProduct = products.find((p) => p.productId.toString() === value);
+      if (selectedProduct) {
+        setForm({
+          productId: value,
+          sumInsured: selectedProduct.sumInsured.toString(),
+          deductibleAmount: "0", // Default deductible
+          basePremium: selectedProduct.basePremium.toString(),
+        });
+        return;
+      }
+    }
+
+    // Default behavior for other inputs
+    setForm({ ...form, [name]: value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!form.productId) {
+      setError("Please select a product");
+      return;
+    }
+
     setLoading(true);
     setError("");
 
     try {
-      await createPolicy({ productId: form.productId } as Policy);
+      await createPolicy({
+        productId: form.productId,
+        sumInsured: form.sumInsured,
+        deductibleAmount: form.deductibleAmount,
+        basePremium: form.basePremium,
+      });
       setSuccess(true);
       setTimeout(() => {
         navigate("/user/policies");
@@ -65,8 +108,8 @@ const NewPolicyPage = () => {
     }
   };
 
-  // Animation variants
-  const containerVariants = {
+  // Animation variants with proper typing
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -77,39 +120,31 @@ const NewPolicyPage = () => {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
-      transition: { type: "spring", stiffness: 100 },
+      transition: { type: "spring" as const, stiffness: 100 }, // Fix: Add 'as const'
     },
   };
 
-  // Get theme-specific colors
+  // Theme functions
   const getBgColor = () => (theme === "dark" ? "bg-gray-900" : "bg-gray-50");
   const getCardBgColor = () => (theme === "dark" ? "bg-gray-800" : "bg-white");
-  const getTextColor = () =>
-    theme === "dark" ? "text-gray-100" : "text-gray-800";
-  const getSubTextColor = () =>
-    theme === "dark" ? "text-gray-300" : "text-gray-600";
-  const getBorderColor = () =>
-    theme === "dark" ? "border-gray-700" : "border-gray-200";
-  const getHeaderBgColor = () =>
-    theme === "dark" ? "bg-gray-700" : "bg-gray-50";
+  const getTextColor = () => (theme === "dark" ? "text-gray-100" : "text-gray-800");
+  const getSubTextColor = () => (theme === "dark" ? "text-gray-300" : "text-gray-600");
+  const getBorderColor = () => (theme === "dark" ? "border-gray-700" : "border-gray-200");
+  const getHeaderBgColor = () => (theme === "dark" ? "bg-gray-700" : "bg-gray-50");
   const getInputBgColor = () => (theme === "dark" ? "bg-gray-700" : "bg-white");
-  const getInputBorderColor = () =>
-    theme === "dark" ? "border-gray-600" : "border-gray-300";
-  const getInputTextColor = () =>
-    theme === "dark" ? "text-gray-100" : "text-gray-900";
-  const getInputPlaceholderColor = () =>
-    theme === "dark" ? "placeholder-gray-400" : "placeholder-gray-500";
-  const getInfoBgColor = () =>
-    theme === "dark" ? "bg-blue-900" : "bg-blue-50";
-  const getInfoBorderColor = () =>
-    theme === "dark" ? "border-blue-800" : "border-blue-200";
-  const getInfoTextColor = () =>
-    theme === "dark" ? "text-blue-200" : "text-blue-700";
+  const getInputBorderColor = () => (theme === "dark" ? "border-gray-600" : "border-gray-300");
+  const getInputTextColor = () => (theme === "dark" ? "text-gray-100" : "text-gray-900");
+  const getInputPlaceholderColor = () => (theme === "dark" ? "placeholder-gray-400" : "placeholder-gray-500");
+  const getInfoBgColor = () => (theme === "dark" ? "bg-blue-900" : "bg-blue-50");
+  const getInfoBorderColor = () => (theme === "dark" ? "border-blue-800" : "border-blue-200");
+  const getInfoTextColor = () => (theme === "dark" ? "text-blue-200" : "text-blue-700");
+
+  const selectedProduct = products.find(p => p.productId.toString() === form.productId);
 
   return (
     <main className={`flex min-h-screen ${getBgColor()}`}>
@@ -134,9 +169,9 @@ const NewPolicyPage = () => {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-6 p-4 rounded-lg bg-green-50 border border-green-200 text-green-700 flex items-center"
+              className={`mb-6 p-4 rounded-lg ${theme === 'dark' ? 'bg-green-900' : 'bg-green-50'} border ${theme === 'dark' ? 'border-green-800' : 'border-green-200'} ${theme === 'dark' ? 'text-green-200' : 'text-green-700'} flex items-center`}
             >
-              <FaShieldAlt className="mr-3 text-green-500" />
+              <FaShieldAlt className="mr-3" />
               <div>
                 <p className="font-medium">Policy created successfully!</p>
                 <p className="text-sm">Redirecting to your policies...</p>
@@ -148,7 +183,7 @@ const NewPolicyPage = () => {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700"
+              className={`mb-6 p-4 rounded-lg ${theme === 'dark' ? 'bg-red-900' : 'bg-red-50'} border ${theme === 'dark' ? 'border-red-800' : 'border-red-200'} ${theme === 'dark' ? 'text-red-200' : 'text-red-700'}`}
             >
               <p className="font-medium">Error</p>
               <p className="text-sm">{error}</p>
@@ -159,11 +194,9 @@ const NewPolicyPage = () => {
             variants={itemVariants}
             className={`${getCardBgColor()} rounded-xl shadow-sm ${getBorderColor()} border overflow-hidden`}
           >
-            <div
-              className={`p-6 border-b ${getBorderColor()} ${getHeaderBgColor()}`}
-            >
+            <div className={`p-6 border-b ${getBorderColor()} ${getHeaderBgColor()}`}>
               <div className="flex items-center">
-                <FaShieldAlt className="text-[#154654] mr-3 text-xl" />
+                <FaShieldAlt className={`${theme === 'dark' ? 'text-blue-300' : 'text-[#154654]'} mr-3 text-xl`} />
                 <h2 className={`text-xl font-semibold ${getTextColor()}`}>
                   Policy Information
                 </h2>
@@ -173,9 +206,7 @@ const NewPolicyPage = () => {
             <form className="p-6 space-y-6" onSubmit={handleSubmit}>
               <div className="grid md:grid-cols-2 gap-6">
                 <motion.div variants={itemVariants} className="space-y-2">
-                  <label
-                    className={`block text-sm font-medium ${getSubTextColor()}`}
-                  >
+                  <label className={`block text-sm font-medium ${getSubTextColor()}`}>
                     Select Product <span className="text-red-500">*</span>
                   </label>
                   <select
@@ -199,29 +230,25 @@ const NewPolicyPage = () => {
                 </motion.div>
 
                 <motion.div variants={itemVariants} className="space-y-2">
-                  <label
-                    className={`block text-sm font-medium ${getSubTextColor()}`}
-                  >
-                    Coverage Limit
+                  <label className={`block text-sm font-medium ${getSubTextColor()}`}>
+                    Sum Insured
                   </label>
                   <input
                     type="text"
-                    name="coverageLimit"
-                    value={form.coverageLimit}
+                    name="sumInsured"
+                    value={form.sumInsured}
                     onChange={handleChange}
-                    placeholder="Optional"
+                    readOnly
                     className={`w-full px-4 py-3 rounded-lg border ${getInputBorderColor()} ${getInputBgColor()} ${getInputTextColor()} ${getInputPlaceholderColor()} focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors`}
                   />
                   <p className={`text-xs ${getSubTextColor()} mt-1`}>
                     <FaInfoCircle className="inline mr-1" />
-                    Maximum amount the policy will pay
+                    Maximum coverage amount for this policy
                   </p>
                 </motion.div>
 
                 <motion.div variants={itemVariants} className="space-y-2">
-                  <label
-                    className={`block text-sm font-medium ${getSubTextColor()}`}
-                  >
+                  <label className={`block text-sm font-medium ${getSubTextColor()}`}>
                     Deductible Amount
                   </label>
                   <input
@@ -229,7 +256,6 @@ const NewPolicyPage = () => {
                     name="deductibleAmount"
                     value={form.deductibleAmount}
                     onChange={handleChange}
-                    placeholder="Optional"
                     className={`w-full px-4 py-3 rounded-lg border ${getInputBorderColor()} ${getInputBgColor()} ${getInputTextColor()} ${getInputPlaceholderColor()} focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors`}
                   />
                   <p className={`text-xs ${getSubTextColor()} mt-1`}>
@@ -239,25 +265,43 @@ const NewPolicyPage = () => {
                 </motion.div>
 
                 <motion.div variants={itemVariants} className="space-y-2">
-                  <label
-                    className={`block text-sm font-medium ${getSubTextColor()}`}
-                  >
-                    Premium Amount
+                  <label className={`block text-sm font-medium ${getSubTextColor()}`}>
+                    Base Premium
                   </label>
                   <input
                     type="text"
-                    name="premiumAmount"
-                    value={form.premiumAmount}
+                    name="basePremium"
+                    value={form.basePremium}
                     onChange={handleChange}
-                    placeholder="Optional"
+                    readOnly
                     className={`w-full px-4 py-3 rounded-lg border ${getInputBorderColor()} ${getInputBgColor()} ${getInputTextColor()} ${getInputPlaceholderColor()} focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors`}
                   />
                   <p className={`text-xs ${getSubTextColor()} mt-1`}>
                     <FaInfoCircle className="inline mr-1" />
-                    Regular payment amount for your policy
+                    {selectedProduct?.premiumRate || 'Annual'} premium amount
                   </p>
                 </motion.div>
               </div>
+
+              {form.productId && (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className={`mt-4 p-4 rounded-lg ${getInfoBgColor()} border ${getInfoBorderColor()}`}
+                >
+                  <h4 className={`font-medium ${getInfoTextColor()}`}>Product Benefits:</h4>
+                  <ul className={`text-sm ${getInfoTextColor()} space-y-1 pl-6 list-disc mt-2`}>
+                    {selectedProduct?.keyBenefits?.map((benefit:string, i:number) => (
+                      <li key={i}>{benefit}</li>
+                    ))}
+                  </ul>
+                  {selectedProduct?.description && (
+                    <p className={`text-sm ${getInfoTextColor()} mt-2`}>
+                      {selectedProduct.description}
+                    </p>
+                  )}
+                </motion.div>
+              )}
 
               <div className={`pt-4 border-t ${getBorderColor()}`}>
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -271,9 +315,7 @@ const NewPolicyPage = () => {
                     type="submit"
                     disabled={loading}
                     className={`px-6 py-3 rounded-lg text-white font-medium transition-all flex items-center justify-center ${
-                      loading
-                        ? "bg-blue-400"
-                        : "bg-[#154654] hover:bg-[#0a393f]"
+                      loading ? "bg-blue-400" : "bg-[#154654] hover:bg-[#0a393f]"
                     }`}
                   >
                     {loading ? (
@@ -313,29 +355,16 @@ const NewPolicyPage = () => {
           </motion.div>
 
           <motion.div variants={itemVariants} className="mt-8">
-            <div
-              className={`${getInfoBgColor()} border ${getInfoBorderColor()} rounded-lg p-4`}
-            >
-              <h3
-                className={`font-medium ${getInfoTextColor()} mb-2 flex items-center`}
-              >
+            <div className={`${getInfoBgColor()} border ${getInfoBorderColor()} rounded-lg p-4`}>
+              <h3 className={`font-medium ${getInfoTextColor()} mb-2 flex items-center`}>
                 <FaInfoCircle className="mr-2" />
                 What happens next?
               </h3>
-              <ul
-                className={`text-sm ${getInfoTextColor()} space-y-1 pl-6 list-disc`}
-              >
-                <li>
-                  Your policy will be created with a unique policy number (e.g.,
-                  POL-20250517-97658)
-                </li>
-                <li>
-                  Initial status will be "pending" until approved by our team
-                </li>
+              <ul className={`text-sm ${getInfoTextColor()} space-y-1 pl-6 list-disc`}>
+                <li>Your policy will be created with a unique policy number</li>
+                <li>Initial status will be "pending" until approved by our team</li>
                 <li>You can view all your policies in the Policies section</li>
-                <li>
-                  Coverage begins on the start date and ends after one year
-                </li>
+                <li>Coverage begins on the start date and ends after one year</li>
               </ul>
             </div>
           </motion.div>
