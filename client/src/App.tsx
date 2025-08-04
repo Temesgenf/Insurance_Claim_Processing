@@ -4,9 +4,7 @@ import { useEffect, lazy, Suspense } from "react";
 import { useAuth } from "./Context/AuthContext";
 import AppLayout from "./components/layout/AppLayout";
 import { useSocket } from "./Context/SocketContext";
-// import AccountSettingsPage from "./pages/AccountSettingsPage";
 
-// Lazy load all large page components
 const AccountSettingsPage = lazy(() => import("./pages/AccountSettingsPage"));
 const HomePage = lazy(() => import("./pages/HomePage"));
 const ClaimsPage = lazy(() => import("./pages/ClaimsPage"));
@@ -32,7 +30,7 @@ const EmailVerify = lazy(() => import("./pages/EmailVerify"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 
-// Loading component
+
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-screen">
     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500"></div>
@@ -66,34 +64,52 @@ const UserRoute = () => {
   const { user } = useAuth();
   const location = useLocation();
 
-  // Only allow if user is logged in and NOT admin
+
   if (!user || user.isAdmin) {
     return <Navigate to="/" state={{ from: location }} replace />;
   }
   return <Outlet />;
 };
 
-// console.log(import.meta.env.REACT_APP_API_BASE_URL);
+
+const RootRedirect = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <PageLoader />;
+  }
+
+ 
+  if (user) {
+    if (user.isAdmin) {
+      return <Navigate to="/admin/dashboard" replace />;
+    } else {
+      return <Navigate to="/user/dashboard" replace />;
+    }
+  }
+
+ 
+  return <HomePage />;
+};
+
+
 function App() {
-const socket = useSocket();
- useEffect(() => {
-  if (!socket) return;
+  const socket = useSocket();
+  useEffect(() => {
+    if (!socket) return;
 
-  //emit notification
-  socket.emit("notification", { message: "Hello from client" });
+  
+    socket.emit("notification", { message: "Hello from client" });
 
-  return () => {
-    socket.off("notification");
-  };
-}, [socket]);
+    return () => {
+      socket.off("notification");
+    };
+  }, [socket]);
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
         {/* Public Routes */}
-       
-
-        {/* Protected User Routes */}
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<RootRedirect />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<OnboardingRegister />} />
         <Route path="/email-verified" element={<EmailVerify />} />

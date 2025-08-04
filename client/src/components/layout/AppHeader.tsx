@@ -1,15 +1,33 @@
 import { useEffect, useRef, useState } from "react";
-
+import { useNavigate, useLocation } from "react-router-dom";
 import { Link } from "react-router";
 import { useSidebar } from "../../Context/SidebarContext";
+import { useAuth } from "../../Context/AuthContext";
 import { ThemeToggleButton } from "../header/ThemeToggleButton";
 import NotificationDropdown from "../header/NotificationDropdown";
 import UserDropdown from "../header/UserDropdown";
 
+interface Command {
+  id: string;
+  title: string;
+  description: string;
+  route?: string;
+  action?: () => void;
+  icon: string;
+  category: 'navigation' | 'action' | 'admin';
+  adminOnly?: boolean;
+}
+
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleToggle = () => {
     if (window.innerWidth >= 1024) {
@@ -24,12 +42,119 @@ const AppHeader: React.FC = () => {
   };
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const commandPaletteRef = useRef<HTMLDivElement>(null);
+
+  // Define available commands
+  const commands: Command[] = [
+    // Navigation Commands
+    { id: 'dashboard', title: 'Dashboard', description: 'Go to dashboard', route: user?.isAdmin ? '/admin/dashboard' : '/user/dashboard', icon: '🏠', category: 'navigation' },
+    { id: 'products', title: 'View Products', description: 'Browse insurance products', route: '/user/products', icon: '📦', category: 'navigation' },
+    { id: 'claims', title: 'My Claims', description: 'View and manage claims', route: '/user/claims', icon: '📋', category: 'navigation' },
+    { id: 'policies', title: 'My Policies', description: 'View insurance policies', route: '/user/policies', icon: '📄', category: 'navigation' },
+    { id: 'profile', title: 'Edit Profile', description: 'Update profile information', route: '/user/profilepicture', icon: '👤', category: 'navigation' },
+    { id: 'settings', title: 'Account Settings', description: 'Manage account settings', route: '/user/accountsettings', icon: '⚙️', category: 'navigation' },
+    
+    // Action Commands
+    { id: 'new-claim', title: 'Create New Claim', description: 'Submit a new insurance claim', route: '/user/new-claim', icon: '➕', category: 'action' },
+    { id: 'new-policy', title: 'Get New Policy', description: 'Apply for a new insurance policy', route: '/user/new-policy', icon: '📝', category: 'action' },
+    
+    // Admin Commands (only for admins)
+    { id: 'admin-users', title: 'Manage Users', description: 'Admin: Manage system users', route: '/admin/users', icon: '👥', category: 'admin', adminOnly: true },
+    { id: 'admin-claims', title: 'Manage Claims', description: 'Admin: Review and process claims', route: '/admin/claims', icon: '📊', category: 'admin', adminOnly: true },
+    { id: 'admin-policies', title: 'Manage Policies', description: 'Admin: Manage insurance policies', route: '/admin/policies', icon: '📋', category: 'admin', adminOnly: true },
+    { id: 'admin-products', title: 'Manage Products', description: 'Admin: Create and edit products', route: '/admin/products', icon: '🛠️', category: 'admin', adminOnly: true },
+    { id: 'admin-analytics', title: 'Analytics', description: 'Admin: View system analytics', route: '/admin/analytics', icon: '📈', category: 'admin', adminOnly: true },
+    { id: 'admin-settings', title: 'System Settings', description: 'Admin: Configure system settings', route: '/admin/settings', icon: '🔧', category: 'admin', adminOnly: true },
+  ];
+
+  // Get current section based on route
+  const getCurrentSection = () => {
+    const path = location.pathname;
+    if (path.includes('/claims')) return 'claims';
+    if (path.includes('/policies')) return 'policies';
+    if (path.includes('/products')) return 'products';
+    if (path.includes('/profile')) return 'profile';
+    if (path.includes('/settings')) return 'settings';
+    if (path.includes('/users')) return 'admin-users';
+    if (path.includes('/analytics')) return 'admin-analytics';
+    if (path.includes('/admin')) return 'admin';
+    return 'dashboard';
+  };
+
+  // Filter and sort commands based on search query, user permissions, and current section
+  const filteredCommands = commands
+    .filter(command => {
+      if (command.adminOnly && !user?.isAdmin) return false;
+      return true;
+    })
+    .filter(command => {
+      if (!searchQuery) return true;
+      
+      const query = searchQuery.toLowerCase();
+      return (
+        command.title.toLowerCase().includes(query) ||
+        command.description.toLowerCase().includes(query)
+      );
+    })
+    .sort((a, b) => {
+      // If no search query, prioritize current section
+      if (!searchQuery) {
+        const currentSection = getCurrentSection();
+        const aIsCurrentSection = a.id === currentSection || 
+          (currentSection === 'admin' && a.category === 'admin') ||
+          (currentSection === 'dashboard' && a.id === 'dashboard');
+        const bIsCurrentSection = b.id === currentSection || 
+          (currentSection === 'admin' && b.category === 'admin') ||
+          (currentSection === 'dashboard' && b.id === 'dashboard');
+        
+        if (aIsCurrentSection && !bIsCurrentSection) return -1;
+        if (!aIsCurrentSection && bIsCurrentSection) return 1;
+      }
+      
+      // Otherwise maintain original order
+      return 0;
+    });
+
+  const executeCommand = (command: Command) => {
+    if (command.route) {
+      navigate(command.route);
+    } else if (command.action) {
+      command.action();
+    }
+    setIsCommandPaletteOpen(false);
+    setSearchQuery("");
+    setSelectedCommandIndex(0);
+  };
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === "k") {
         event.preventDefault();
-        inputRef.current?.focus();
+        setIsCommandPaletteOpen(true);
+        setTimeout(() => inputRef.current?.focus(), 100);
+      }
+      
+      if (isCommandPaletteOpen) {
+        if (event.key === "Escape") {
+          setIsCommandPaletteOpen(false);
+          setSearchQuery("");
+          setSelectedCommandIndex(0);
+        } else if (event.key === "ArrowDown") {
+          event.preventDefault();
+          setSelectedCommandIndex(prev => 
+            prev < filteredCommands.length - 1 ? prev + 1 : 0
+          );
+        } else if (event.key === "ArrowUp") {
+          event.preventDefault();
+          setSelectedCommandIndex(prev => 
+            prev > 0 ? prev - 1 : filteredCommands.length - 1
+          );
+        } else if (event.key === "Enter") {
+          event.preventDefault();
+          if (filteredCommands[selectedCommandIndex]) {
+            executeCommand(filteredCommands[selectedCommandIndex]);
+          }
+        }
       }
     };
 
@@ -38,7 +163,47 @@ const AppHeader: React.FC = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [isCommandPaletteOpen, filteredCommands, selectedCommandIndex]);
+
+  // Close command palette when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (commandPaletteRef.current && !commandPaletteRef.current.contains(event.target as Node)) {
+        setIsCommandPaletteOpen(false);
+        setSearchQuery("");
+        setSelectedCommandIndex(0);
+      }
+    };
+
+    if (isCommandPaletteOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isCommandPaletteOpen]);
+
+  // Reset selected index when search query changes
+  useEffect(() => {
+    setSelectedCommandIndex(0);
+  }, [searchQuery]);
+
+  // Group commands by category for better organization
+  const groupedCommands = filteredCommands.reduce((groups, command) => {
+    const category = command.category;
+    if (!groups[category]) {
+      groups[category] = [];
+    }
+    groups[category].push(command);
+    return groups;
+  }, {} as Record<string, Command[]>);
+
+  const categoryLabels = {
+    navigation: 'Navigation',
+    action: 'Actions',
+    admin: 'Administration'
+  };
 
   return (
     <header className="sticky top-0 flex w-full bg-white border-gray-200 z-99999 dark:border-gray-800 dark:bg-gray-900 lg:border-b">
@@ -116,12 +281,12 @@ const AppHeader: React.FC = () => {
             </svg>
           </button>
 
-          <div className="hidden lg:block">
+          <div className="hidden lg:block relative">
             <form>
               <div className="relative">
-                <span className="absolute -translate-y-1/2 pointer-events-none left-4 top-1/2">
+                <span className="absolute -translate-y-1/2 pointer-events-none left-4 top-1/2 z-10">
                   <svg
-                    className="fill-gray-500 dark:fill-gray-400"
+                    className="fill-gray-500 dark:fill-gray-400 transition-colors"
                     width="20"
                     height="20"
                     viewBox="0 0 20 20"
@@ -140,12 +305,134 @@ const AppHeader: React.FC = () => {
                   ref={inputRef}
                   type="text"
                   placeholder="Search or type command..."
-                  className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setIsCommandPaletteOpen(true)}
+                  className="h-11 w-full rounded-xl border border-gray-200 bg-white/70 backdrop-blur-sm py-2.5 pl-12 pr-16 text-sm text-gray-800 shadow-sm placeholder:text-gray-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:bg-white transition-all duration-200 dark:border-gray-700 dark:bg-gray-800/70 dark:text-white/90 dark:placeholder:text-white/40 dark:focus:border-blue-500 dark:focus:bg-gray-800 xl:w-[450px]"
                 />
 
-                <button className="absolute right-2.5 top-1/2 inline-flex -translate-y-1/2 items-center gap-0.5 rounded-lg border border-gray-200 bg-gray-50 px-[7px] py-[4.5px] text-xs -tracking-[0.2px] text-gray-500 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400">
-                  <span> ⌘ </span>
-                  <span> K </span>
+                {/* Command Palette Dropdown */}
+                {isCommandPaletteOpen && (
+                  <div 
+                    ref={commandPaletteRef}
+                    className="absolute top-full left-0 right-0 mt-3 bg-white/98 backdrop-blur-xl dark:bg-gray-800/90 border border-gray-200/70 dark:border-gray-600/50 rounded-2xl shadow-2xl z-50 max-h-[32rem] overflow-hidden"
+                    style={{
+                      animation: 'fadeInScale 0.15s ease-out forwards',
+                    }}
+                  >
+                    <style>{`
+                      @keyframes fadeInScale {
+                        from {
+                          opacity: 0;
+                          transform: translateY(-8px) scale(0.96);
+                        }
+                        to {
+                          opacity: 1;
+                          transform: translateY(0) scale(1);
+                        }
+                      }
+                    `}</style>
+                    
+                    {filteredCommands.length > 0 ? (
+                      <div className="relative">
+                        {/* Custom Scrollbar Container */}
+                        <div 
+                          className="max-h-80 overflow-y-auto py-3 px-1"
+                          style={{
+                            scrollbarWidth: 'none',
+                            msOverflowStyle: 'none',
+                          }}
+                        >
+                          <style>{`
+                            div::-webkit-scrollbar {
+                              display: none;
+                            }
+                          `}</style>
+                          
+                          {Object.entries(groupedCommands).map(([category, commands]) => (
+                            <div key={category} className="mb-4 last:mb-0">
+                              <div className="px-4 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                {categoryLabels[category as keyof typeof categoryLabels]}
+                              </div>
+                              <div className="space-y-1 px-2">
+                                {commands.map((command) => {
+                                  const commandIndex = filteredCommands.findIndex(c => c.id === command.id);
+                                  return (
+                                    <button
+                                      key={command.id}
+                                      onClick={() => executeCommand(command)}
+                                      className={`w-full text-left px-3 py-3 rounded-xl flex items-center gap-3 transition-all duration-150 ${
+                                        commandIndex === selectedCommandIndex 
+                                          ? 'bg-blue-50 dark:bg-blue-900/30 shadow-sm ring-1 ring-blue-200 dark:ring-blue-800 transform scale-[1.02]' 
+                                          : 'hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:scale-[1.01]'
+                                      }`}
+                                    >
+                                      <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700">
+                                        <span className="text-base">{command.icon}</span>
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                          {command.title}
+                                        </div>
+                                        <div className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                                          {command.description}
+                                        </div>
+                                      </div>
+                                      {commandIndex === selectedCommandIndex && (
+                                        <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center">
+                                          <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                          </svg>
+                                        </div>
+                                      )}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="py-12 text-center text-gray-500 dark:text-gray-400">
+                        <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                          </svg>
+                        </div>
+                        <div className="text-sm font-medium mb-1">No commands found</div>
+                        <div className="text-xs">Try a different search term</div>
+                      </div>
+                    )}
+                    
+                    {/* Enhanced Footer */}
+                    <div className="border-t border-gray-200/60 dark:border-gray-700/60 px-4 py-3 bg-gray-50/50 dark:bg-gray-800/30 backdrop-blur-sm">
+                      <div className="flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-4">
+                          <span className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400">
+                            <kbd className="px-2 py-1 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md text-xs font-mono shadow-sm">↑↓</kbd>
+                            Navigate
+                          </span>
+                          <span className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400">
+                            <kbd className="px-2 py-1 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md text-xs font-mono shadow-sm">↵</kbd>
+                            Select
+                          </span>
+                          <span className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400">
+                            <kbd className="px-2 py-1 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md text-xs font-mono shadow-sm">Esc</kbd>
+                            Close
+                          </span>
+                        </div>
+                        <span className="text-gray-400 dark:text-gray-500 font-medium">
+                          {filteredCommands.length} {filteredCommands.length === 1 ? 'command' : 'commands'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <button className="absolute right-3 top-1/2 inline-flex -translate-y-1/2 items-center gap-1 rounded-lg border border-gray-200 bg-gray-50/80 px-2 py-1.5 text-xs font-mono text-gray-500 backdrop-blur-sm transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800/80 dark:text-gray-400 dark:hover:bg-gray-700">
+                  <span>⌘</span>
+                  <span>K</span>
                 </button>
               </div>
             </form>

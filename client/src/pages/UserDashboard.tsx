@@ -28,9 +28,8 @@ const UserDashboard = () => {
   const [policies, setPolicies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [greeting, setGreeting] = useState("");
-console.log("user dashboard running");
   useEffect(() => {
-    // Set greeting based on time of day
+   
     const hour = new Date().getHours();
     if (hour < 12) setGreeting("Good Morning");
     else if (hour < 18) setGreeting("Good Afternoon");
@@ -54,7 +53,7 @@ console.log("user dashboard running");
     fetchData();
   }, []);
 
-  // Calculate metrics
+
   const totalPolicies = policies?.length | 0;
   const activePolicies = Array.isArray(policies) 
   ? policies.filter((policy: any) => policy.status === "approved").length 
@@ -68,7 +67,7 @@ console.log("user dashboard running");
     (claim: any) => claim.status === "Approved"
   ).length ;
 
-  // Navigation handlers
+
   const navigateToPolicies = () => {
     navigate("/user/policies");
   };

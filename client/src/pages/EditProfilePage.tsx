@@ -5,7 +5,7 @@ import { useTheme } from "../Context/ThemeContext";
 import AppSidebar from "../components/layout/AppSidebar";
 import ProfilePictureUpload from "../components/user/ProfilePictureUpload";
 import axios from "axios";
-import { FaCheck, FaSpinner, FaUser, FaEnvelope, FaCamera, FaEdit } from "react-icons/fa";
+import { FaCheck, FaSpinner, FaEnvelope, FaCamera, FaEdit } from "react-icons/fa";
 import PageMeta from "../components/common/PageMeta";
 
 const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL || "http://localhost:3000";
@@ -173,63 +173,11 @@ const EditProfilePage: React.FC = () => {
 
             {/* Main Content */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Profile Picture Section */}
-              <div className="lg:col-span-1">
-                <div className={`${getCardBgColor()} rounded-3xl shadow-xl p-8 border ${getBorderColor()} h-fit`}>
-                  <h3 className={`text-2xl font-bold ${getTextColor()} mb-6 text-center`}>
-                    Profile Picture
-                  </h3>
-                  
-                  <div className="flex flex-col items-center space-y-6">
-                    {/* Profile Picture Display */}
-                    <div 
-                      className="relative group cursor-pointer"
-                      onMouseEnter={() => setIsHoveringPicture(true)}
-                      onMouseLeave={() => setIsHoveringPicture(false)}
-                    >
-                      <div className="relative">
-                        {user?.profilePicture ? (
-                          <img
-                            src={`data:image/jpeg;base64,${btoa(
-                              new Uint8Array((user.profilePicture as any).data).reduce(
-                                (data, byte) => data + String.fromCharCode(byte),
-                                ""
-                              )
-                            )}`}
-                            alt="Current profile"
-                            className="w-40 h-40 rounded-full object-cover border-4 border-gradient-to-r from-blue-500 to-purple-500 shadow-2xl transition-all duration-300 group-hover:scale-105"
-                          />
-                        ) : (
-                          <img
-                            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                              form.firstName + (form.lastName ? " " + form.lastName : "") || "User"
-                            )}&background=0D8ABC&color=fff&size=160&rounded=true`}
-                            alt="Default avatar"
-                            className="w-40 h-40 rounded-full object-cover border-4 border-gradient-to-r from-blue-500 to-purple-500 shadow-2xl transition-all duration-300 group-hover:scale-105"
-                          />
-                        )}
-                        
-                        {/* Overlay */}
-                        <div className={`absolute inset-0 rounded-full bg-black bg-opacity-50 flex items-center justify-center transition-opacity duration-300 ${isHoveringPicture ? 'opacity-100' : 'opacity-0'}`}>
-                          <FaCamera className="text-white text-2xl" />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Upload Component */}
-                    <ProfilePictureUpload
-                      onSuccess={handlePictureSuccess}
-                      onError={handlePictureError}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Personal Information Form */}
-              <div className="lg:col-span-2">
+              {/* Personal Information Form - First on large screens */}
+              <div className="lg:col-span-2 lg:order-1 order-2">
                 <div className={`${getCardBgColor()} rounded-3xl shadow-xl p-8 border ${getBorderColor()}`}>
-                  <h3 className={`text-2xl font-bold ${getTextColor()} mb-6 flex items-center`}>
-                    <FaUser className="mr-3 text-blue-500" />
+                  <h3 className={`text-3xl font-bold ${getTextColor()} mb-8 flex items-center`}>
+                    <FaEdit className="mr-3 text-blue-500" />
                     Personal Information
                   </h3>
 
@@ -324,6 +272,60 @@ const EditProfilePage: React.FC = () => {
                       </button>
                     </div>
                   </form>
+                </div>
+              </div>
+
+              {/* Profile Picture Section - Second on large screens */}
+              <div className="lg:col-span-1 lg:order-2 order-1">
+                <div className={`${getCardBgColor()} rounded-3xl shadow-xl p-6 border ${getBorderColor()} h-fit`}>
+                  <h3 className={`text-2xl font-bold ${getTextColor()} mb-6 text-center`}>
+                    Profile Picture
+                  </h3>
+                  
+                  <div className="flex flex-col items-center space-y-4">
+                    {/* Profile Picture Display */}
+                    <div 
+                      className="relative group cursor-pointer"
+                      onMouseEnter={() => setIsHoveringPicture(true)}
+                      onMouseLeave={() => setIsHoveringPicture(false)}
+                    >
+                      <div className="relative">
+                        {user?.profilePicture ? (
+                          <img
+                            src={`data:image/jpeg;base64,${btoa(
+                              new Uint8Array((user.profilePicture as any).data).reduce(
+                                (data, byte) => data + String.fromCharCode(byte),
+                                ""
+                              )
+                            )}`}
+                            alt="Current profile"
+                            className="w-32 h-32 rounded-full object-cover border-4 border-gradient-to-r from-blue-500 to-purple-500 shadow-2xl transition-all duration-300 group-hover:scale-105"
+                          />
+                        ) : (
+                          <img
+                            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                              form.firstName + (form.lastName ? " " + form.lastName : "") || "User"
+                            )}&background=0D8ABC&color=fff&size=128&rounded=true`}
+                            alt="Default avatar"
+                            className="w-32 h-32 rounded-full object-cover border-4 border-gradient-to-r from-blue-500 to-purple-500 shadow-2xl transition-all duration-300 group-hover:scale-105"
+                          />
+                        )}
+                        
+                        {/* Overlay */}
+                        <div className={`absolute inset-0 rounded-full bg-black bg-opacity-50 flex items-center justify-center transition-opacity duration-300 ${isHoveringPicture ? 'opacity-100' : 'opacity-0'}`}>
+                          <FaCamera className="text-white text-xl" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Upload Component */}
+                    <div className="w-full">
+                      <ProfilePictureUpload
+                        onSuccess={handlePictureSuccess}
+                        onError={handlePictureError}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

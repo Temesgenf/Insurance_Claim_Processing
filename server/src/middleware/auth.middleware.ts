@@ -83,4 +83,4 @@ export const requireAdmin = (
   next();
 };
 
-export const updateProfilePictureMiddleware = upload.single("profilePicture");
+export const updateProfilePictureMiddleware = upload.single("profilePicture") as any;
