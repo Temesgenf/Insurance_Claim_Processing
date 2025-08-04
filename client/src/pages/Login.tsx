@@ -120,7 +120,8 @@ const Login: React.FC = () => {
           password: formData.password,
           remember: formData.remember,
         },
-        { headers: { "Content-Type": "application/json" } }
+        { headers: { "Content-Type": "application/json" } , 
+      withCredentials:true}
       );
 
       const token = response.data.token as string;

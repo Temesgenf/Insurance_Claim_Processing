@@ -80,13 +80,7 @@ const generateSixDigitCode = (): string => {
       verificationExpiresAt,
     });
 
-//     const verificationToken = jwt.sign(
-//       { userId: newUser.userId },
-//       env.JWT_VERIFICATION_SECRET,
-//       { expiresIn: 3600 } // 1 hour
-//     )
-// const verificationLink = `http://localhost:3000/api/users/verifyEmail/?token=${verificationToken}`;
-// console.log("verificationLink", verificationLink);
+
 
 
  await sendVerificationEmail({
