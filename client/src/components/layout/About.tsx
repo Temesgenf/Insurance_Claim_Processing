@@ -30,7 +30,7 @@ export default function About() {
       y: 0,
       scale: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 150,
         damping: 12,
         duration: 0.4,

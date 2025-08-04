@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useIntersectionObserver } from '../../hooks/usePerformance';
 
 interface OptimizedImageProps {
@@ -36,13 +36,12 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [isInView, setIsInView] = useState(loading === 'eager');
-  const imgRef = useRef<HTMLImageElement>(null);
 
   // Intersection Observer for lazy loading
-  const observer = useIntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
+  const observerRef = useIntersectionObserver(
+    (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry: IntersectionObserverEntry) => {
+        if (entry.isIntersecting) { 
           setIsInView(true);
         }
       });
@@ -54,22 +53,12 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   );
 
   useEffect(() => {
-    // For priority images, load immediately
-    if (priority) {
+    if (loading === 'eager' || priority) {
       setIsInView(true);
       return;
     }
-
-    if (imgRef.current && observer) {
-      observer.observe(imgRef.current);
-    }
-
-    return () => {
-      if (imgRef.current && observer) {
-        observer.unobserve(imgRef.current);
-      }
-    };
-  }, [observer, priority]);
+    // The intersection observer is handled by the useIntersectionObserver hook
+  }, [loading, priority]);
 
   useEffect(() => {
     if (isInView && !isLoaded && !hasError) {
@@ -90,7 +79,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
 
   return (
     <img
-      ref={imgRef}
+      ref={observerRef as React.RefObject<HTMLImageElement>}
       src={imageSrc}
       alt={alt}
       className={`transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-50'} ${className}`}
