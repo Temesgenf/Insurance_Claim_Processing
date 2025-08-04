@@ -158,8 +158,8 @@ const Login: React.FC = () => {
   };
 
   return (
-    <section className="min-h-screen bg-white flex items-start md:items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <section className="min-h-screen bg-white flex items-start items-center justify-center p-4">
+      <div className="w-full h-full max-w-md">
         {/* Logo and Title */}
         <motion.div
           initial={{ y: -20, opacity: 0 }}

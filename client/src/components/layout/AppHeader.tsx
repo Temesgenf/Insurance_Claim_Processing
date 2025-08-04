@@ -6,6 +6,7 @@ import { useAuth } from "../../Context/AuthContext";
 import { ThemeToggleButton } from "../header/ThemeToggleButton";
 import NotificationDropdown from "../header/NotificationDropdown";
 import UserDropdown from "../header/UserDropdown";
+import logoImage from "../../assets/insurance.svg";
 
 interface Command {
   id: string;
@@ -251,12 +252,12 @@ const AppHeader: React.FC = () => {
           <Link to="/" className="lg:hidden">
             <img
               className="dark:hidden"
-              src="./images/logo/logo.svg"
+              src={logoImage}
               alt="Logo"
             />
             <img
               className="hidden dark:block"
-              src="./images/logo/logo-dark.svg"
+              src={logoImage}
               alt="Logo"
             />
           </Link>
