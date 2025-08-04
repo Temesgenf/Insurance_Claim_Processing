@@ -189,6 +189,8 @@ export const loginUser = async (req: Request, res: Response) => {
       env.JWT_SECRET,
       { expiresIn: remember ? "7d" : "1h" }
     );
+console.log(token)
+
     res.cookie("token", token, {
       httpOnly: true,
       secure: env.NODE_ENV === "production",
