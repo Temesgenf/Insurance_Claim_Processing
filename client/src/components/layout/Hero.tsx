@@ -29,7 +29,7 @@ export default function Hero() {
         >
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="inline-flex items-center bg-blue-100 px-4 py-2 rounded-full shadow-sm"
+            className="hidden md:inline-flex items-center bg-blue-100 px-4 py-2 rounded-full shadow-sm"
           >
             <span className="bg-blue-600 text-white text-sm font-medium px-4 py-1 rounded-full">
               New Feature
@@ -142,7 +142,7 @@ export default function Hero() {
             </motion.div>
 
             {/* Animated Background Elements */}
-            <div className="absolute inset-0 flex justify-center items-center -z-10">
+            <div className="hidden absolute inset-0 md:flex justify-center items-center -z-10 ">
               <div className="absolute w-[700px] h-[700px] rounded-full bg-gray-100/40 animate-pulse"></div>
               <div className="absolute w-[500px] h-[500px] rounded-full bg-gray-100/30"></div>
             </div>

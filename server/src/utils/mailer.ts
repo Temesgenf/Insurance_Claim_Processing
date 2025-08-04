@@ -11,6 +11,9 @@ interface SendPasswordResetEmailParams {
   name: string;
   resetLink: string;
 }
+interface SubscribeToNewsLetterParams {
+  email: string;
+}
 export const sendVerificationEmail = async ({
   email,
   name,
@@ -225,5 +228,222 @@ console.log("email in sendPasswordResetEmail", email)
     throw new Error('Failed to send password reset email. Please try again later.');
   }
 };
+export const subscribeToNewsLetter = async ({
+  email
+}:SubscribeToNewsLetterParams): Promise<void> => {
+  if (!process.env.BREVO_API_KEY) {
+    throw new Error('Brevo API key is missing in environment variables');
+  }
+
+  const brevoApi = new TransactionalEmailsApi();
+  brevoApi.setApiKey(0, process.env.BREVO_API_KEY);
+  const sendSmtpEmail: SendSmtpEmail = {
+    sender: {
+      email: process.env.EMAIL_FROM || 'noreply@yourdomain.com',
+      name: 'ClaimPro',
+    },
+    to: [{ email }],
+    subject: 'Welcome to ClaimPro Newsletter! 🎉',
+    htmlContent: `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Welcome to ClaimPro Newsletter</title>
+        <style>
+          body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            line-height: 1.6;
+          }
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+          }
+          .header {
+            background: linear-gradient(135deg, #FF8C24 0%, #FF6B24 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+          }
+          .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+          .header p {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+          }
+          .content {
+            padding: 40px 30px;
+          }
+          .welcome-text {
+            font-size: 18px;
+            color: #1f2937;
+            margin-bottom: 20px;
+          }
+          .email-highlight {
+            color: #FF8C24;
+            font-weight: 600;
+          }
+          .benefits {
+            background-color: #f8fafc;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+          }
+          .benefits h3 {
+            color: #1f2937;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 20px;
+          }
+          .benefit-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            color: #4b5563;
+          }
+          .benefit-icon {
+            color: #FF8C24;
+            margin-right: 10px;
+            font-weight: bold;
+          }
+          .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #FF8C24 0%, #FF6B24 100%);
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 20px 0;
+            transition: transform 0.2s ease;
+          }
+          .cta-button:hover {
+            transform: translateY(-2px);
+          }
+          .footer {
+            background-color: #1f2937;
+            color: #9ca3af;
+            padding: 30px;
+            text-align: center;
+            font-size: 14px;
+          }
+          .footer a {
+            color: #FF8C24;
+            text-decoration: none;
+          }
+          .social-links {
+            margin: 20px 0;
+          }
+          .social-links a {
+            display: inline-block;
+            margin: 0 10px;
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 18px;
+          }
+          @media only screen and (max-width: 600px) {
+            .container {
+              margin: 10px;
+              border-radius: 8px;
+            }
+            .header, .content, .footer {
+              padding: 25px 20px;
+            }
+            .header h1 {
+              font-size: 24px;
+            }
+            .benefits {
+              padding: 20px;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🎉 Welcome to ClaimPro!</h1>
+            <p>Thank you for joining our newsletter community</p>
+          </div>
+          
+          <div class="content">
+            <p class="welcome-text">
+              Hi <span class="email-highlight">${email}</span>,
+            </p>
+            
+            <p>
+              Welcome aboard! We're thrilled to have you as part of the ClaimPro family. You've just taken the first step towards staying informed about the latest developments in claims management and industry insights.
+            </p>
+            
+            <div class="benefits">
+              <h3>What you can expect:</h3>
+              <div class="benefit-item">
+                <span class="benefit-icon">📧</span>
+                <span>Weekly industry insights and best practices</span>
+              </div>
+              <div class="benefit-item">
+                <span class="benefit-icon">🚀</span>
+                <span>Exclusive product updates and new features</span>
+              </div>
+              <div class="benefit-item">
+                <span class="benefit-icon">💡</span>
+                <span>Expert tips for optimizing your claims process</span>
+              </div>
+              <div class="benefit-item">
+                <span class="benefit-icon">🎁</span>
+                <span>Special offers and early access to resources</span>
+              </div>
+            </div>
+            
+            <p>
+              We respect your inbox and promise to deliver only valuable, relevant content. You can update your preferences or unsubscribe at any time.
+            </p>
+            
+            <div style="text-align: center;">
+              <a href="#" class="cta-button">Explore ClaimPro</a>
+            </div>
+            
+            <p style="margin-top: 30px; color: #6b7280;">
+              Have questions? We're here to help! Simply reply to this email and our team will get back to you shortly.
+            </p>
+          </div>
+          
+          <div class="footer">
+            <div class="social-links">
+              <a href="#">📘 Facebook</a>
+              <a href="#">🐦 Twitter</a>
+              <a href="#">💼 LinkedIn</a>
+            </div>
+            
+            <p>
+              © 2025 ClaimPro. All rights reserved.<br>
+              <a href="#">Privacy Policy</a> | <a href="#">Unsubscribe</a> | <a href="#">Contact Us</a>
+            </p>
+            
+            <p style="margin-top: 15px; font-size: 12px; opacity: 0.7;">
+              This email was sent to ${email}. If you no longer wish to receive these emails, you can unsubscribe at any time.
+            </p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  };
+
+  await brevoApi.sendTransacEmail(sendSmtpEmail);
+}
 
 

@@ -12,6 +12,7 @@ import {
   forgotPassword,
   resendVerification,
   resetPassword,
+  subscribeToNewsletter,
   updateProfilePicture,
   verifyEmail,
 } from "../controllers/user.controller";
@@ -41,6 +42,7 @@ userRouter.post(
 userRouter.post("/verifyEmail", verifyEmail);
 userRouter.post("/resend-verification", resendVerification);
 userRouter.post("/forgot-password", forgotPassword);
-userRouter.post('/reset-password', resetPassword)
+userRouter.post('/reset-password', resetPassword);
+userRouter.post('/subscribe-newsletter', subscribeToNewsletter);
 
 export default userRouter;

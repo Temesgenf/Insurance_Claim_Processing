@@ -6,7 +6,7 @@ import { env } from "../utils/env";
 import multer from "multer";
 import path from "path";
 import { NotificationService } from "../services/notification.service";
-import { sendPasswordResetEmail, sendVerificationEmail } from "../utils/mailer";
+import { sendPasswordResetEmail, sendVerificationEmail, subscribeToNewsLetter } from "../utils/mailer";
 import crypto from "crypto";
 // Add this interface to properly type the request with file
 interface RequestWithFile extends Request {
@@ -37,7 +37,7 @@ export async function createUser(req: Request, res: Response) {
 }
 
 export const registerUser = async (req: Request, res: Response) => {
-  console.log("req.body in controller before try catch", req.body);
+  
   try {
     const { firstName, lastName, dateOfBirth, email, password } = req.body;
 
@@ -67,7 +67,6 @@ const generateSixDigitCode = (): string => {
 
 // Example usage:
     const verificationCode = generateSixDigitCode();
-    console.log("verificationCode", verificationCode);
     
     // Create user
     const newUser = await UserService.createUser({
@@ -93,7 +92,7 @@ const generateSixDigitCode = (): string => {
     // const userResponse: Partial<Document> = newUser.toObject();
     // delete userResponse.password;
 
-    console.log("newUser in registerUser controller", newUser);
+   
 
     res.status(201).json(newUser);
   } catch (error: any) {
@@ -108,7 +107,7 @@ const generateSixDigitCode = (): string => {
 export const updateProfilePicture = async (req: RequestWithFile, res: Response) => {
   try {
     const userInfo = req.user;
-    console.log(userInfo);
+   
     const userId = userInfo?.userId;
 
     if (!userId) {
@@ -165,11 +164,10 @@ export const deleteUser = async (req: Request, res: Response) => {
 export const loginUser = async (req: Request, res: Response) => {
   try {
     const { email, password, remember } = req.body;
-    console.log("req.body in controller before try catch", req.body);
+    
     // Find the user by email
     const user = await UserService.findUserByEmail(email);
     
-    console.log(user);
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -178,7 +176,7 @@ export const loginUser = async (req: Request, res: Response) => {
     const passwordMatch = await bcrypt.compare(password, user.hashedPassword);
 
     if (!passwordMatch) {
-      console.log("password match");
+      
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
@@ -191,7 +189,7 @@ export const loginUser = async (req: Request, res: Response) => {
       env.JWT_SECRET,
       { expiresIn: remember ? "7d" : "1h" }
     );
-console.log(token)
+
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -214,14 +212,14 @@ console.log(token)
 export const verifyEmail = async (req: Request, res: Response) => {
   try {
     const {email, verificationCode} = req.body;
-    console.log(email, verificationCode)
+    
 
     if(!email || !verificationCode){
       return res.status(400).json({message: "Email and verification code are required"})
     }
 
     const user = await UserService.findUserByEmail(email);
-    console.log(user)
+    
 
     if(!user){
       return res.status(404).json({message: "User not found"})
@@ -294,7 +292,7 @@ export const resendVerification = async (req: Request, res: Response) => {
 export const forgotPassword = async (req: Request, res: Response) => {
   try{
     const {email} = req.body;
-    console.log("email in forgotPassword controller", email)
+    
     if(!email){
       return res.status(400).json({message: "Email is required"})
     }
@@ -347,3 +345,36 @@ export const resetPassword = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Failed to reset password", error: error.message });
   }
 }
+
+// Newsletter subscription controller
+export const subscribeToNewsletter = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+
+    // Validate email
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: "Please provide a valid email address" });
+    }
+
+    // Send newsletter subscription email
+    await subscribeToNewsLetter({ email });
+
+    res.status(200).json({ 
+      message: "Successfully subscribed to newsletter! Check your email for confirmation.",
+      success: true 
+    });
+  } catch (error: any) {
+    console.error("Error subscribing to newsletter:", error);
+    res.status(500).json({ 
+      message: "Failed to subscribe to newsletter. Please try again later.",
+      error: error.message,
+      success: false 
+    });
+  }
+};
