@@ -168,7 +168,8 @@ export const loginUser = async (req: Request, res: Response) => {
     console.log("req.body in controller before try catch", req.body);
     // Find the user by email
     const user = await UserService.findUserByEmail(email);
-
+    
+    console.log(user);
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
