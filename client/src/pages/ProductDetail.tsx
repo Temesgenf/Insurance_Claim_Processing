@@ -293,40 +293,69 @@ const ProductDetail: React.FC = () => {
             </div>
 
             {/* Key Benefits Section */}
-            <div className="mb-10">
-              <h2 className={`text-2xl font-semibold ${getTextColor()} mb-6`}>
-                Key Benefits
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {product.keyBenefits &&
-                  product.keyBenefits.map((benefit, index) => (
-                    <div
-                      key={index}
-                      className={`${
-                        theme === "dark"
-                          ? "bg-gray-700 hover:bg-gray-650"
-                          : "bg-white hover:bg-gray-50"
-                      } p-6 rounded-lg border ${getBorderColor()} shadow-sm transition-all duration-200 hover:shadow-md`}
-                    >
-                      <div
-                        className={`rounded-full w-12 h-12 flex items-center justify-center ${
-                          theme === "dark" ? "bg-brand-900" : "bg-brand-50"
-                        } mb-4`}
-                      >
-                        <FaCheckCircle
-                          className={`${getIconColor()} text-xl`}
-                        />
-                      </div>
-                      <h3
-                        className={`font-semibold ${getTextColor()} text-lg mb-2`}
-                      >
-                        Benefit {index + 1}
-                      </h3>
-                      <p className={`${getSubTextColor()}`}>{benefit}</p>
-                    </div>
-                  ))}
-              </div>
-            </div>
+            {/* Key Benefits Section */}
+<div className="mb-10">
+  <h2 className={`text-2xl font-semibold ${getTextColor()} mb-6`}>
+    Why Choose This Insurance
+  </h2>
+  
+  <div className="relative">
+    {/* Decorative background element */}
+    <div className="absolute inset-0 flex items-center justify-center">
+      <div className={`h-full w-full max-w-5xl mx-auto ${theme === "dark" ? "opacity-10" : "opacity-5"}`}>
+        <svg viewBox="0 0 500 200" className="w-full h-full">
+          <path 
+            d="M50,100 C150,0 350,200 450,100" 
+            stroke={theme === "dark" ? "#a5b4fc" : "#4f46e5"} 
+            strokeWidth="2" 
+            fill="none"
+            strokeDasharray="5,5"
+          />
+        </svg>
+      </div>
+    </div>
+    
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+      {product.keyBenefits && product.keyBenefits.map((benefit, index) => (
+        <div
+          key={index}
+          className={`group transform transition-all duration-300 hover:scale-[1.02] ${
+            theme === "dark" 
+              ? "bg-gradient-to-br from-gray-800 to-gray-750 hover:from-gray-750 hover:to-gray-700" 
+              : "bg-gradient-to-br from-white to-gray-50 hover:from-gray-50 hover:to-gray-100"
+          } p-6 rounded-xl border ${getBorderColor()} shadow-sm hover:shadow-md overflow-hidden relative`}
+        >
+          {/* Animated background element */}
+          <div className={`absolute -right-10 -top-10 w-32 h-32 rounded-full ${
+            theme === "dark" ? "bg-brand-900" : "bg-brand-100"
+          } opacity-20 group-hover:opacity-30 transition-all duration-500`}></div>
+          
+          {/* Benefit icon with gradient background */}
+          <div className={`w-14 h-14 rounded-2xl mb-5 flex items-center justify-center ${
+            theme === "dark" 
+              ? "bg-gradient-to-br from-brand-800 to-brand-600" 
+              : "bg-gradient-to-br from-brand-500 to-brand-400"
+          } shadow-md`}>
+            <FaCheckCircle className="text-white text-xl" />
+          </div>
+          
+          <h3 className={`font-semibold ${getTextColor()} text-lg mb-3 relative z-10`}>
+            { `Benefit ${index + 1}`}
+          </h3>
+          
+          <p className={`${getSubTextColor()} relative z-10`}>
+            {benefit}
+          </p>
+          
+          {/* Decorative corner */}
+          <div className={`absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 ${
+            theme === "dark" ? "border-brand-500" : "border-brand-400"
+          } rounded-bl-xl transition-all duration-300 group-hover:w-10 group-hover:h-10`}></div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
 
             {/* Coverage Details Section */}
             <div className="mb-10">

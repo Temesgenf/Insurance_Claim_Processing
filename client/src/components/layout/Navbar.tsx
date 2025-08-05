@@ -4,6 +4,7 @@ import type { NavbarMenuItem } from "../../types/navbar-menu-item";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { HiOutlineMenuAlt2 } from "react-icons/hi";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -84,18 +85,8 @@ export default function Navbar() {
             onClick={() => setOpen(!open)}
             className="focus:outline-none relative w-8 h-8"
           >
-            <motion.span
-              animate={open ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
-              className="absolute block w-full h-0.5 bg-gray-800"
-            />
-            <motion.span
-              animate={{ opacity: open ? 0 : 1 }}
-              className="absolute block w-full h-0.5 bg-gray-800 top-1/2 transform -translate-y-1/2"
-            />
-            <motion.span
-              animate={open ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
-              className="absolute block w-full h-0.5 bg-gray-800 bottom-0"
-            />
+           
+            <HiOutlineMenuAlt2 size={"2rem"}/>
           </button>
         </div>
 

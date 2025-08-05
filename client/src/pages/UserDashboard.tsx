@@ -163,199 +163,297 @@ const UserDashboard = () => {
           <div className="grid grid-cols-12 gap-5 md:gap-6">
           <div className="col-span-12 space-y-8 xl:col-span-7">
   {/* User Metrics */}
-  <div
-      className={`rounded-lg border ${
-        theme === "dark"
-          ? "border-gray-700 bg-gray-800"
-          : "border-gray-200 bg-white"
-      } p-6 shadow-sm`}
-    >
-      <div className="flex items-center justify-between mb-6">
-        <h3
-          className={`text-xl font-semibold ${
-            theme === "dark" ? "text-white" : "text-gray-900"
-          } flex items-center`}
-        >
-          <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center mr-3">
-            <FiActivity className="text-white text-sm" />
-          </div>
-          Insurance Overview
-        </h3>
-        <div className={`px-3 py-1 rounded-md text-xs font-medium ${
-          theme === "dark" 
-            ? "bg-blue-900 text-blue-200" 
-            : "bg-blue-50 text-blue-700"
-        }`}>
-          Live Data
+  {/* Enhanced User Metrics */}
+{/* Enhanced User Metrics */}
+<div
+  className={`group relative overflow-hidden rounded-2xl border transition-all duration-500 hover:shadow-xl ${
+    theme === "dark"
+      ? "border-gray-700/60 bg-gradient-to-br from-gray-800 via-gray-850 to-gray-900 shadow-2xl"
+      : "border-gray-200/60 bg-gradient-to-br from-white via-gray-50/50 to-white shadow-lg"
+  } p-8`}
+>
+  {/* Subtle background elements */}
+  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className={`absolute -top-6 -right-6 w-32 h-32 rounded-full opacity-3 ${
+      theme === "dark" ? "bg-blue-400" : "bg-blue-500"
+    }`} />
+    <div className={`absolute -bottom-8 -left-8 w-40 h-40 rounded-full opacity-2 ${
+      theme === "dark" ? "bg-purple-400" : "bg-purple-500"
+    }`} />
+  </div>
+
+  {/* Header */}
+  <div className="relative z-10 flex items-center justify-between mb-8">
+    <div className="flex items-center space-x-4">
+      <div className="relative">
+        <div className="w-12 h-12 bg-gradient-to-r from-blue-500 via-purple-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg">
+          <FiActivity className="text-white text-xl" />
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Total Policies Card */}
-        <div
-          onClick={navigateToPolicies}
-          className={`${
-            theme === "dark"
-              ? "bg-gray-750 border-gray-600 hover:bg-gray-700"
-              : "bg-gray-50 border-gray-200 hover:bg-gray-100"
-          } rounded-lg p-4 border cursor-pointer transition-colors duration-200`}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                theme === "dark" 
-                  ? "bg-blue-900 text-blue-300" 
-                  : "bg-blue-100 text-blue-600"
-              }`}>
-                <FiFileText className="text-lg" />
-              </div>
-              <div className="ml-3">
-                <p className={`text-sm font-medium ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-600"
-                }`}>
-                  Total Policies
-                </p>
-                <p className={`text-2xl font-bold ${
-                  theme === "dark" ? "text-white" : "text-gray-900"
-                }`}>
-                  {totalPolicies}
-                </p>
-              </div>
-            </div>
-            <svg className={`w-5 h-5 ${
-              theme === "dark" ? "text-gray-400" : "text-gray-500"
-            }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+      <div>
+        <h3 className={`text-2xl font-bold tracking-tight transition-all duration-300 ${
+          theme === "dark" ? "text-white" : "text-gray-900"
+        } group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600`}>
+          Insurance Overview
+        </h3>
+        <p className={`text-sm mt-1 transition-colors duration-300 ${
+          theme === "dark" ? "text-gray-400" : "text-gray-500"
+        }`}>
+          Real-time portfolio insights
+        </p>
+      </div>
+    </div>
+    
+    <div className={`px-4 py-2 rounded-full text-sm font-medium ${
+      theme === "dark" 
+        ? "bg-gradient-to-r from-blue-900/60 to-purple-900/60 text-blue-300 border border-blue-700/50" 
+        : "bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 border border-blue-200/50"
+    } backdrop-blur-sm`}>
+      <div className="flex items-center space-x-2">
+        <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+        <span>Live Data</span>
+      </div>
+    </div>
+  </div>
+  
+  {/* Metrics Grid */}
+  <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+    {/* Total Policies Card */}
+    <div
+      onClick={navigateToPolicies}
+      className={`group/card relative overflow-hidden rounded-2xl p-6 cursor-pointer transition-all duration-200 hover:shadow-lg ${
+        theme === "dark"
+          ? "bg-gradient-to-br from-gray-800/80 to-gray-900/80 border border-gray-700/50 hover:border-blue-500/50"
+          : "bg-gradient-to-br from-white/80 to-gray-50/80 border border-gray-200/50 hover:border-blue-400/50"
+      } backdrop-blur-sm`}
+    >
+      {/* Card background glow */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"></div>
+      
+      <div className="relative z-10 flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+            theme === "dark" 
+              ? "bg-gradient-to-br from-blue-600/20 to-blue-800/20 text-blue-400" 
+              : "bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600"
+          }`}>
+            <FiFileText className="text-xl" />
+          </div>
+          <div>
+            <p className={`text-sm font-medium transition-colors duration-300 ${
+              theme === "dark" ? "text-gray-300" : "text-gray-600"
+            }`}>
+              Total Policies
+            </p>
+            <p className={`text-3xl font-bold transition-all duration-300 ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            } group-hover/card:text-blue-500`}>
+              {totalPolicies}
+            </p>
+            <p className={`text-xs mt-1 ${
+              theme === "dark" ? "text-gray-500" : "text-gray-400"
+            }`}>
+              Portfolio size
+            </p>
           </div>
         </div>
-
-        {/* Active Policies Card */}
-        <div
-          onClick={navigateToPolicies}
-          className={`${
-            theme === "dark"
-              ? "bg-gray-750 border-gray-600 hover:bg-gray-700"
-              : "bg-gray-50 border-gray-200 hover:bg-gray-100"
-          } rounded-lg p-4 border cursor-pointer transition-colors duration-200`}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                theme === "dark" 
-                  ? "bg-green-900 text-green-300" 
-                  : "bg-green-100 text-green-600"
-              }`}>
-                <FiCheckCircle className="text-lg" />
-              </div>
-              <div className="ml-3">
-                <p className={`text-sm font-medium ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-600"
-                }`}>
-                  Active Policies
-                </p>
-                <p className={`text-2xl font-bold ${
-                  theme === "dark" ? "text-white" : "text-gray-900"
-                }`}>
-                  {activePolicies}
-                </p>
-              </div>
-            </div>
-            <svg className={`w-5 h-5 ${
-              theme === "dark" ? "text-gray-400" : "text-gray-500"
-            }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </div>
-        </div>
-
-        {/* Pending Claims Card */}
-        <div
-          onClick={navigateToClaims}
-          className={`${
-            theme === "dark"
-              ? "bg-gray-750 border-gray-600 hover:bg-gray-700"
-              : "bg-gray-50 border-gray-200 hover:bg-gray-100"
-          } rounded-lg p-4 border cursor-pointer transition-colors duration-200`}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                theme === "dark" 
-                  ? "bg-yellow-900 text-yellow-300" 
-                  : "bg-yellow-100 text-yellow-600"
-              }`}>
-                <FiClock className="text-lg" />
-              </div>
-              <div className="ml-3">
-                <p className={`text-sm font-medium ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-600"
-                }`}>
-                  Pending Claims
-                </p>
-                <p className={`text-2xl font-bold ${
-                  theme === "dark" ? "text-white" : "text-gray-900"
-                }`}>
-                  {pendingClaims}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center">
-              {pendingClaims > 0 && (
-                <div className="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
-              )}
-              <svg className={`w-5 h-5 ${
-                theme === "dark" ? "text-gray-400" : "text-gray-500"
-              }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        {/* Approved Claims Card */}
-        <div
-          onClick={navigateToClaims}
-          className={`${
-            theme === "dark"
-              ? "bg-gray-750 border-gray-600 hover:bg-gray-700"
-              : "bg-gray-50 border-gray-200 hover:bg-gray-100"
-          } rounded-lg p-4 border cursor-pointer transition-colors duration-200`}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                theme === "dark" 
-                  ? "bg-indigo-900 text-indigo-300" 
-                  : "bg-indigo-100 text-indigo-600"
-              }`}>
-                <FiThumbsUp className="text-lg" />
-              </div>
-              <div className="ml-3">
-                <p className={`text-sm font-medium ${
-                  theme === "dark" ? "text-gray-300" : "text-gray-600"
-                }`}>
-                  Approved Claims
-                </p>
-                <p className={`text-2xl font-bold ${
-                  theme === "dark" ? "text-white" : "text-gray-900"
-                }`}>
-                  {approvedClaims}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-              <svg className={`w-5 h-5 ${
-                theme === "dark" ? "text-gray-400" : "text-gray-500"
-              }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </div>
+        <div className="flex flex-col items-end">
+          <svg className={`w-6 h-6 ${
+            theme === "dark" ? "text-gray-400" : "text-gray-500"
+          }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+          <div className={`text-xs mt-2 px-2 py-1 rounded-full ${
+            theme === "dark" ? "bg-blue-900/30 text-blue-300" : "bg-blue-100 text-blue-700"
+          }`}>
+            View All
           </div>
         </div>
       </div>
     </div>
+
+    {/* Active Policies Card */}
+    <div
+      onClick={navigateToPolicies}
+      className={`group/card relative overflow-hidden rounded-2xl p-6 cursor-pointer transition-all duration-200 hover:shadow-lg ${
+        theme === "dark"
+          ? "bg-gradient-to-br from-gray-800/80 to-gray-900/80 border border-gray-700/50 hover:border-emerald-500/50"
+          : "bg-gradient-to-br from-white/80 to-gray-50/80 border border-gray-200/50 hover:border-emerald-400/50"
+      } backdrop-blur-sm`}
+    >
+      {/* Card background glow */}
+      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-green-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"></div>
+      
+      <div className="relative z-10 flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+            theme === "dark" 
+              ? "bg-gradient-to-br from-emerald-600/20 to-emerald-800/20 text-emerald-400" 
+              : "bg-gradient-to-br from-emerald-100 to-emerald-200 text-emerald-600"
+          }`}>
+            <FiCheckCircle className="text-xl" />
+          </div>
+          <div>
+            <p className={`text-sm font-medium transition-colors duration-300 ${
+              theme === "dark" ? "text-gray-300" : "text-gray-600"
+            }`}>
+              Active Policies
+            </p>
+            <p className={`text-3xl font-bold transition-all duration-300 ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            } group-hover/card:text-emerald-500`}>
+              {activePolicies}
+            </p>
+            <p className={`text-xs mt-1 ${
+              theme === "dark" ? "text-gray-500" : "text-gray-400"
+            }`}>
+              Currently active
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-col items-end">
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+            <svg className={`w-6 h-6 ${
+              theme === "dark" ? "text-gray-400" : "text-gray-500"
+            }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+          <div className={`text-xs mt-2 px-2 py-1 rounded-full ${
+            theme === "dark" ? "bg-emerald-900/30 text-emerald-300" : "bg-emerald-100 text-emerald-700"
+          }`}>
+            Manage
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Pending Claims Card */}
+    <div
+      onClick={navigateToClaims}
+      className={`group/card relative overflow-hidden rounded-2xl p-6 cursor-pointer transition-all duration-200 hover:shadow-lg ${
+        theme === "dark"
+          ? "bg-gradient-to-br from-gray-800/80 to-gray-900/80 border border-gray-700/50 hover:border-amber-500/50"
+          : "bg-gradient-to-br from-white/80 to-gray-50/80 border border-gray-200/50 hover:border-amber-400/50"
+      } backdrop-blur-sm`}
+    >
+      {/* Card background glow */}
+      <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-yellow-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"></div>
+      
+      <div className="relative z-10 flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+            theme === "dark" 
+              ? "bg-gradient-to-br from-amber-600/20 to-amber-800/20 text-amber-400" 
+              : "bg-gradient-to-br from-amber-100 to-amber-200 text-amber-600"
+          }`}>
+            <FiClock className="text-xl" />
+          </div>
+          <div>
+            <p className={`text-sm font-medium transition-colors duration-300 ${
+              theme === "dark" ? "text-gray-300" : "text-gray-600"
+            }`}>
+              Pending Claims
+            </p>
+            <p className={`text-3xl font-bold transition-all duration-300 ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            } group-hover/card:text-amber-500`}>
+              {pendingClaims}
+            </p>
+            <p className={`text-xs mt-1 ${
+              theme === "dark" ? "text-gray-500" : "text-gray-400"
+            }`}>
+              Awaiting review
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-col items-end">
+          <div className="flex items-center space-x-2">
+            {pendingClaims > 0 && (
+              <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+            )}
+            <svg className={`w-6 h-6 ${
+              theme === "dark" ? "text-gray-400" : "text-gray-500"
+            }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+          <div className={`text-xs mt-2 px-2 py-1 rounded-full ${
+            theme === "dark" ? "bg-amber-900/30 text-amber-300" : "bg-amber-100 text-amber-700"
+          }`}>
+            {pendingClaims > 0 ? 'Review' : 'None'}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Approved Claims Card */}
+    <div
+      onClick={navigateToClaims}
+      className={`group/card relative overflow-hidden rounded-2xl p-6 cursor-pointer transition-all duration-200 hover:shadow-lg ${
+        theme === "dark"
+          ? "bg-gradient-to-br from-gray-800/80 to-gray-900/80 border border-gray-700/50 hover:border-indigo-500/50"
+          : "bg-gradient-to-br from-white/80 to-gray-50/80 border border-gray-200/50 hover:border-indigo-400/50"
+      } backdrop-blur-sm`}
+    >
+      {/* Card background glow */}
+      <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"></div>
+      
+      <div className="relative z-10 flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+            theme === "dark" 
+              ? "bg-gradient-to-br from-indigo-600/20 to-indigo-800/20 text-indigo-400" 
+              : "bg-gradient-to-br from-indigo-100 to-indigo-200 text-indigo-600"
+          }`}>
+            <FiThumbsUp className="text-xl" />
+          </div>
+          <div>
+            <p className={`text-sm font-medium transition-colors duration-300 ${
+              theme === "dark" ? "text-gray-300" : "text-gray-600"
+            }`}>
+              Approved Claims
+            </p>
+            <p className={`text-3xl font-bold transition-all duration-300 ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            } group-hover/card:text-indigo-500`}>
+              {approvedClaims}
+            </p>
+            <p className={`text-xs mt-1 ${
+              theme === "dark" ? "text-gray-500" : "text-gray-400"
+            }`}>
+              Successfully processed
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-col items-end">
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+            <svg className={`w-6 h-6 ${
+              theme === "dark" ? "text-gray-400" : "text-gray-500"
+            }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+          <div className={`text-xs mt-2 px-2 py-1 rounded-full ${
+            theme === "dark" ? "bg-indigo-900/30 text-indigo-300" : "bg-indigo-100 text-indigo-700"
+          }`}>
+            History
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {/* Subtle gradient overlay */}
+  <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none ${
+    theme === "dark" 
+      ? "bg-gradient-to-br from-blue-600/3 via-purple-600/3 to-emerald-600/3" 
+      : "bg-gradient-to-br from-blue-500/3 via-purple-500/3 to-emerald-500/3"
+  }`} />
+</div>
 
   {/* Claims Trend Chart */}
   <div
