@@ -183,7 +183,7 @@ const UserDashboard = () => {
   </div>
 
   {/* Header */}
-  <div className="relative z-10 flex items-center justify-between mb-8">
+  <div className="relative flex items-center justify-between mb-8">
     <div className="flex items-center space-x-4">
       <div className="relative">
         <div className="w-12 h-12 bg-gradient-to-r from-blue-500 via-purple-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg">

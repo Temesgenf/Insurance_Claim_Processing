@@ -77,7 +77,7 @@ const RootRedirect = () => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <PageLoader />;
+    return <Loader />;
   }
 
  
