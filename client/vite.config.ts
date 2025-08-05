@@ -14,12 +14,6 @@
 //         // This will transform your SVG to a React component
 //         exportType: "named",
 //         namedExport: "ReactComponent",
-//       },
-//     }),
-//   ],
-// });
-
-
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
@@ -38,19 +32,30 @@ export default defineConfig({
     }),
   ],
   server: {
-    // Ensure proper MIME types during development
     fs: {
       strict: false,
     },
   },
   build: {
-    // Ensure proper file extensions in build
+    target: 'esnext',
+    minify: 'terser',
     rollupOptions: {
       output: {
         entryFileNames: '[name].[hash].js',
         chunkFileNames: '[name].[hash].js',
         assetFileNames: '[name].[hash].[ext]',
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          charts: ['apexcharts', 'react-apexcharts', 'chart.js', 'react-chartjs-2'],
+          ui: ['framer-motion', '@heroicons/react', 'lucide-react'],
+          socket: ['socket.io-client'],
+        },
       },
     },
+    chunkSizeWarningLimit: 1000,
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom'],
   },
 });
