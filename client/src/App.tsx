@@ -4,6 +4,7 @@ import { useEffect, lazy, Suspense } from "react";
 import { useAuth } from "./Context/AuthContext";
 import AppLayout from "./components/layout/AppLayout";
 import { useSocket } from "./Context/SocketContext";
+import Loader from "./components/ui/Loader";
 
 const AccountSettingsPage = lazy(() => import("./pages/AccountSettingsPage"));
 const HomePage = lazy(() => import("./pages/HomePage"));
@@ -41,7 +42,7 @@ const PrivateRoute = () => {
   const { user, loading } = useAuth();
   const location = useLocation();
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return (<Loader />);
   return user ? (
     <Outlet />
   ) : (
