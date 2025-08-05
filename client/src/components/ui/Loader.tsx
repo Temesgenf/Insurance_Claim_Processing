@@ -1,5 +1,3 @@
-import React from 'react';
-// import './styles.css';
 import Lottie from 'react-lottie';
 import animationData from '../../assets/Loading animation blue (1).json';
 
