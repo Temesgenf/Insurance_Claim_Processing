@@ -191,7 +191,7 @@ const ProductDetail: React.FC = () => {
         <Breadcrumb items={[{ label: "Products", href: "/products" }, { label: product.productName, href: "#" }]} />
         <div className="mb-6">
           <Link
-            to="/products"
+            to="/user/products"
             className={`inline-flex items-center ${theme === "dark" ? "text-brand-400" : "text-brand-500"} hover:${
               theme === "dark" ? "text-brand-300" : "text-brand-600"
             }`}
