@@ -4,8 +4,10 @@ import ProductService from "../services/product.service";
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
     const products = await ProductService.getAllProducts();
+    
     res.json(products);
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: "Failed to fetch products" });
   }
 };

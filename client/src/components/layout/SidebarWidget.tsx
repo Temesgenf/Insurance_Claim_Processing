@@ -1,5 +1,12 @@
 import { Link } from "react-router-dom";
+import { useSidebar } from "../../Context/SidebarContext";
 export default function SidebarWidget() {
+   const { isMobileOpen, toggleMobileSidebar } = useSidebar();
+   const handleMobileMenuClick = () => {
+    if (isMobileOpen && window.innerWidth < 768) {
+      toggleMobileSidebar();
+    }
+  };
   return (
     <div
       className={`
@@ -13,6 +20,7 @@ export default function SidebarWidget() {
       </p>
       <Link
         to="/user/products"
+        onClick={handleMobileMenuClick}
         className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-brand-500 text-theme-sm hover:bg-brand-600"
       >
         Purchase Plan
