@@ -894,18 +894,18 @@ const handleDateChange = (date: Date | null) => {
               aria-invalid={!!errors.country}
               aria-describedby={errors.country ? "country-error" : undefined}
             >
-              <option value="">Choose your country</option>
-              <option value="US">United States</option>
-              <option value="CA">Canada</option>
-              <option value="UK">United Kingdom</option>
-              <option value="AU">Australia</option>
-              <option value="DE">Germany</option>
-              <option value="FR">France</option>
-              <option value="JP">Japan</option>
-              <option value="CN">China</option>
-              <option value="IN">India</option>
-              <option value="BR">Brazil</option>
-              {/* Add more countries as needed */}
+              <option value="">Choose your Region</option>
+              <option value="US">Addis Ababa</option>
+              <option value="CA">Oromia</option>
+              <option value="UK">Amhara</option>
+              <option value="AU">Tigray</option>
+              <option value="DE">Harari</option>
+              <option value="FR">South Ethiopia</option>
+              <option value="JP">Somalia</option>
+              <option value="CN">Afar</option>
+              <option value="IN">BenishangulGumuz</option>
+              <option value="BR">Gambela</option>
+             
             </select>
           </div>
           {errors.country && (
@@ -926,8 +926,10 @@ const handleDateChange = (date: Date | null) => {
           </button>
           <button
             type="button"
+            disabled={isSubmitting}
+          
             onClick={nextStep}
-            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition"
+            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 hover:scale-[1.05] transition"
           >
             Next Step
           </button>

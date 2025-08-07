@@ -9,7 +9,7 @@ const plans = [
   {
     id: 1,
     icon: <MdHealthAndSafety className="w-8 h-8" />,
-    title: "Basic Health Plan",
+    title: "Claimpro Silver Plan",
     price: "$99/mo",
     features: [
       "Hospitalization up to $10k",
@@ -22,8 +22,8 @@ const plans = [
   {
     id: 2,
     icon: <MdFamilyRestroom className="w-8 h-8" />,
-    title: "Family Protection",
-    price: "$299/mo",
+    title: "Claimpro Gold Plan",
+    price: "$199/mo",
     features: [
       "Covers 4 family members",
       "Maternity & newborn care",
@@ -35,8 +35,8 @@ const plans = [
   {
     id: 3,
     icon: <MdElderly className="w-8 h-8" />,
-    title: "Senior Care Plan",
-    price: "$199/mo",
+    title: "ClaimPro Platinum Plan",
+    price: "$299/mo",
     features: [
       "Senior-focused coverage",
       "Chronic condition support",

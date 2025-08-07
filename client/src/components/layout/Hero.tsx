@@ -45,7 +45,7 @@ export default function Hero() {
           </h1>
 
           <p className="text-xl text-gray-700 max-w-2xl">
-            Revolutionize your claims experience with AI-powered solutions that
+            Revolutionize your Insurance experience with digital solutions that
             save time and reduce paperwork.
           </p>
 
@@ -160,7 +160,7 @@ export default function Hero() {
               alt="Doney"
             />
             <div>
-              <h3 className="font-bold text-gray-900">Sarah Johnson</h3>
+              <h3 className="font-bold text-gray-900">Mahlet Jenbere</h3>
               <p className="text-sm text-gray-600">
                 Claim approved in 2 hours! ⚡
               </p>
