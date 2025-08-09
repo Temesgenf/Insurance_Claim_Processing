@@ -3,7 +3,7 @@ import axios from "axios";
 const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
 
 export const getAllPolicies = async () => {
-  console.log("comeoon to the policies")
+ 
   const response = await axios.get(`${API_BASE_URL}/api/policies/userpolicy`);
   return response;
 };

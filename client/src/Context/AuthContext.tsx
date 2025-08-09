@@ -7,8 +7,8 @@ export interface User {
   email: string;
   fullName: string;
   isAdmin: boolean;
-  profilePicture: object;
-  profilePictureType: string;
+  profilePictureUrl:string;
+ 
 }
 
 type AuthContextType = {

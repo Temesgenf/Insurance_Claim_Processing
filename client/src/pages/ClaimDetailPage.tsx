@@ -10,11 +10,14 @@ import {
   FiCheckCircle,
   FiXCircle,
   FiAlertCircle,
+  FiDownload,
+  FiTrash2,
 } from "react-icons/fi";
 import AppSidebar from "../components/layout/AppSidebar";
-import { getClaimById } from "../services/claimService";
+import { getClaimById, getClaimDocuments, deleteClaimDocument } from "../services/claimService";
 import { useTheme } from "../Context/ThemeContext";
 import PageMeta from "../components/common/PageMeta";
+
 interface Claim {
   claimId: number;
   claimNumber: string;
@@ -28,10 +31,20 @@ interface Claim {
   updatedAt: string;
 }
 
+interface ClaimDocument {
+  claimDocumentId: number;
+  claimId: number;
+  fileUrl: string;
+  originalFileName: string;
+  createdAt: string;
+}
+
 const ClaimDetailPage = () => {
   const { claimNumber } = useParams<{ claimNumber: string }>();
   const [claim, setClaim] = useState<Claim | null | undefined>(null);
+  const [documents, setDocuments] = useState<ClaimDocument[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [documentsLoading, setDocumentsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
   const { theme } = useTheme();
 
@@ -42,7 +55,20 @@ const ClaimDetailPage = () => {
         if (!claimNumber) return setClaim(undefined);
         const { data } = await getClaimById(claimNumber);
         setClaim(data as Claim);
+        
+        // Fetch documents for the claim
+        try {
+          setDocumentsLoading(true);
+          const documentsResponse = await getClaimDocuments(data.claimId);
+          setDocuments(documentsResponse);
+        } catch (error) {
+          console.error("Error fetching claim documents:", error);
+          setDocuments([]);
+        } finally {
+          setDocumentsLoading(false);
+        }
       } catch (error) {
+        console.log(error)
         setClaim(undefined);
       } finally {
         setLoading(false);
@@ -102,6 +128,19 @@ const ClaimDetailPage = () => {
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  const handleDeleteDocument = async (documentId: number) => {
+    if (!claim) return;
+    
+    try {
+      await deleteClaimDocument(claim.claimId, documentId);
+      setDocuments((prevDocuments) =>
+        prevDocuments.filter((document) => document.claimDocumentId !== documentId)
+      );
+    } catch (error) {
+      console.error("Error deleting document:", error);
+    }
   };
 
   if (loading) {
@@ -545,6 +584,149 @@ const ClaimDetailPage = () => {
                       )}
                   </div>
                 </div>
+              </div>
+
+              {/* Documents Section */}
+              <div
+                className={`p-6 md:p-8 border-t ${
+                  theme === "dark" ? "border-gray-700" : "border-gray-200"
+                }`}
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h3
+                    className={`text-lg font-semibold ${
+                      theme === "dark" ? "text-white" : "text-gray-900"
+                    }`}
+                  >
+                    Supporting Documents
+                  </h3>
+                  <span
+                    className={`text-sm px-2 py-1 rounded-full ${
+                      theme === "dark"
+                        ? "bg-gray-700 text-gray-300"
+                        : "bg-gray-100 text-gray-800"
+                    }`}
+                  >
+                    {documents.length} file{documents.length !== 1 ? "s" : ""}
+                  </span>
+                </div>
+
+                {documentsLoading ? (
+                  <div className="flex justify-center py-8">
+                    <svg
+                      className="animate-spin h-8 w-8 text-blue-500"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                  </div>
+                ) : documents.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {documents.map((document) => (
+                      <div
+                        key={document.claimDocumentId}
+                        className={`rounded-lg border p-4 flex flex-col ${
+                          theme === "dark"
+                            ? "border-gray-600 bg-gray-800"
+                            : "border-gray-200 bg-white"
+                        }`}
+                      >
+                        <div className="flex items-start mb-3">
+                          <div
+                            className={`flex-shrink-0 w-10 h-10 rounded-md flex items-center justify-center ${
+                              theme === "dark"
+                                ? "bg-blue-900 text-blue-300"
+                                : "bg-blue-100 text-blue-600"
+                            }`}
+                          >
+                            <FiFileText className="w-5 h-5" />
+                          </div>
+                          <div className="ml-3 flex-1 min-w-0">
+                            <h4
+                              className={`text-sm font-medium truncate ${
+                                theme === "dark" ? "text-white" : "text-gray-900"
+                              }`}
+                            >
+                              {document.originalFileName}
+                            </h4>
+                            <p
+                              className={`text-xs mt-1 ${
+                                theme === "dark" ? "text-gray-400" : "text-gray-500"
+                              }`}
+                            >
+                              Uploaded on {formatDate(document.createdAt)}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2 mt-auto pt-3">
+                          <a
+                            href={document.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`flex-1 text-center text-sm py-2 px-3 rounded-md transition-colors ${
+                              theme === "dark"
+                                ? "bg-gray-700 hover:bg-gray-600 text-white"
+                                : "bg-gray-100 hover:bg-gray-200 text-gray-800"
+                            }`}
+                          >
+                            <FiDownload className="w-4 h-4 inline mr-1" />
+                            Download
+                          </a>
+                          <button
+                            onClick={() => handleDeleteDocument(document.claimDocumentId)}
+                            className={`p-2 rounded-md transition-colors ${
+                              theme === "dark"
+                                ? "bg-red-900/30 hover:bg-red-900/50 text-red-400"
+                                : "bg-red-100 hover:bg-red-200 text-red-600"
+                            }`}
+                          >
+                            <FiTrash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div
+                    className={`text-center py-8 rounded-lg ${
+                      theme === "dark" ? "bg-gray-800" : "bg-gray-50"
+                    }`}
+                  >
+                    <FiFileText
+                      className={`w-12 h-12 mx-auto mb-3 ${
+                        theme === "dark" ? "text-gray-600" : "text-gray-400"
+                      }`}
+                    />
+                    <h4
+                      className={`text-lg font-medium mb-1 ${
+                        theme === "dark" ? "text-gray-300" : "text-gray-700"
+                      }`}
+                    >
+                      No documents uploaded
+                    </h4>
+                    <p
+                      className={`text-sm ${
+                        theme === "dark" ? "text-gray-500" : "text-gray-500"
+                      }`}
+                    >
+                      No supporting documents have been uploaded for this claim.
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Action Buttons */}

@@ -36,17 +36,17 @@ export default function UserDropdown() {
 
   // Convert buffer to image URL when user changes
   useEffect(() => {
-    if (user?.profilePicture) {
+    if (user?.profilePictureUrl) {
       // If the profile picture is a buffer stored in base64 format
-      const base64String = btoa(
-        new Uint8Array((user.profilePicture as any).data).reduce(
-          (data, byte) => data + String.fromCharCode(byte),
-          ""
-        )
-      );
-      setProfileImageUrl(base64String);
+      // const base64String = btoa(
+      //   new Uint8Array((user.profilePicture as any).data).reduce(
+      //     (data, byte) => data + String.fromCharCode(byte),
+      //     ""
+      //   )
+      // );
+      setProfileImageUrl(user.profilePictureUrl);
     }
-  }, [user?.profilePicture]);
+  }, [user?.profilePictureUrl]);
 
   return (
     <div className="relative">
@@ -57,7 +57,7 @@ export default function UserDropdown() {
         {profileImageUrl ? (
           <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
             <img
-              src={`data:image/jpeg;base64,${profileImageUrl}`}
+              src={profileImageUrl}
               alt={`${user?.fullName || "User"}'s profile`}
               className="w-full h-full object-cover"
               onError={() => setProfileImageUrl(null)} // Handle image load errors

@@ -1,5 +1,6 @@
 import { userRepository } from "../repositories/user.repository";
 import { User } from "../entities/User";
+import { cloudinaryService } from "./cloudinary.service";
 
 export const UserService = {
   createUser: async (userData: Partial<User>): Promise<User> => {
@@ -21,7 +22,25 @@ export const UserService = {
   updateUser: async (userId: number, userData: Partial<User>) => {
     return await userRepository.updateUser(userId, userData);
   },
-  verifyUser : async (userId: string) => {
+
+  updateProfilePicture: async (userId: number, fileBuffer: Buffer): Promise<{ profilePictureUrl: string }> => {
+    try {
+      // Upload to Cloudinary
+      const { url } = await cloudinaryService.uploadProfilePicture(fileBuffer, userId);
+      
+      // Update user with the new Cloudinary URL
+      await userRepository.updateUser(userId, { 
+        profilePictureUrl: url 
+      });
+      
+      return { profilePictureUrl: url };
+    } catch (error) {
+      console.error('Error updating profile picture:', error);
+      throw new Error('Failed to update profile picture');
+    }
+  },
+
+  verifyUser: async (userId: string) => {
   return await userRepository.findByIdAndUpdateVerification(
     userId, {isVerified : true}
   ); // Exclude password from the returned user

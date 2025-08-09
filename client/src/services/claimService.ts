@@ -10,6 +10,16 @@ interface Claim {
   lossTime: Date;
 }
 
+// Define the ClaimDocument interface
+interface ClaimDocument {
+  claimDocumentId: number;
+  claimId: number;
+  fileUrl: string;
+  originalFileName: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const getAllClaims = async () => {
   const response = await axios.get(`${API_BASE_URL}/api/claims/userclaims`);
   return response;
@@ -41,4 +51,35 @@ export const rejectClaim = async (claimId: number) => {
 
 export const deleteClaim = async (claimId: number) => {
   return axios.delete(`${API_BASE_URL}/api/claims/${claimId}`);
+};
+
+// New functions for claim document management
+export const uploadClaimDocument = async (claimId: number, file: File) => {
+  const formData = new FormData();
+  formData.append('claimDocument', file);
+  
+  const response = await axios.post(
+    `${API_BASE_URL}/api/claims/${claimId}/documents`,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+  return response;
+};
+
+export const getClaimDocuments = async (claimId: number) => {
+  const response = await axios.get(
+    `${API_BASE_URL}/api/claims/${claimId}/documents`
+  );
+  return response.data as ClaimDocument[];
+};
+
+export const deleteClaimDocument = async (claimId: number, documentId: number) => {
+  const response = await axios.delete(
+    `${API_BASE_URL}/api/claims/${claimId}/documents/${documentId}`
+  );
+  return response;
 };

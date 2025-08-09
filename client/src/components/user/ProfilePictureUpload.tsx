@@ -46,6 +46,19 @@ const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
       return;
     }
 
+    // Check file size (max 5MB)
+    if (selectedFile.size > 5 * 1024 * 1024) {
+      setError("File size should be less than 5MB");
+      return;
+    }
+
+    // Check file type
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!validTypes.includes(selectedFile.type)) {
+      setError("Only JPG, PNG, and GIF files are allowed");
+      return;
+    }
+
     setUploading(true);
     setError(null);
 
@@ -53,7 +66,7 @@ const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
     formData.append("profilePicture", selectedFile);
 
     try {
-      await axios.post(
+      const response = await axios.post(
         `${API_BASE_URL}/api/users/profile-picture`,
         formData,
         {
@@ -64,17 +77,32 @@ const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
         }
       );
 
-      // Refresh user data in context to update profile picture immediately
+      // Update the preview with the new Cloudinary URL
+      if (response.data.profilePictureUrl) {
+        setPreview(null);
+        setSelectedFile(null)
+      }
+
+      // Refresh user data in context to update profile picture
       await refreshUser();
       
       setUploading(false);
       if (onSuccess) onSuccess();
     } catch (error) {
+      console.error('Upload error:', error);
       setUploading(false);
-      const errorMessage =
-        axios.isAxiosError(error) && error.response?.data?.message
-          ? error.response.data.message
-          : "Failed to upload profile picture";
+      
+      let errorMessage = "Failed to upload profile picture";
+      
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          // Server responded with an error
+          errorMessage = error.response.data?.message || errorMessage;
+        } else if (error.request) {
+          // Request was made but no response received
+          errorMessage = "No response from server. Please check your connection.";
+        }
+      }
 
       setError(errorMessage);
       if (onError) onError(errorMessage);

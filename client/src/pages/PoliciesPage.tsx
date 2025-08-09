@@ -44,6 +44,7 @@ const PoliciesPage = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+  console.log(location)
 
   // Helper to get status from query string
   const getStatusFromQuery = () => {

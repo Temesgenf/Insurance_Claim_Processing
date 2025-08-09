@@ -107,45 +107,49 @@ const generateSixDigitCode = (): string => {
 export const updateProfilePicture = async (req: RequestWithFile, res: Response) => {
   try {
     const userInfo = req.user;
-   
     const userId = userInfo?.userId;
 
     if (!userId) {
       return res.status(400).json({ message: "User ID is required" });
     }
 
-    // const userId = req.params.id;
-
     const file = req.file;
-
     if (!file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const user = await UserService.findUserById(userId);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    // Check file type
+    const validMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!validMimeTypes.includes(file.mimetype)) {
+      return res.status(400).json({ 
+        message: "Invalid file type. Only JPEG, PNG, and GIF are allowed." 
+      });
     }
 
-    // Update user with profile picture data
-    await UserService.updateUser(userId, {
-      profilePicture: file.buffer,
-      profilePictureType: file.mimetype,
+    // Upload to Cloudinary and update user
+    const { profilePictureUrl } = await UserService.updateProfilePicture(
+      userId, 
+      file.buffer
+    );
+
+    // Send notification
+    NotificationService.emitToUser(userId, {
+      type: "user_profile",
+      message: "Profile picture updated successfully",
+      data: {
+        profilePictureUrl
+      }
     });
-    NotificationService.emitToUser(user.userId, {
-      type:"user Profile",
-      message:"profile Picture succesfully updated",
-    })
 
     return res.status(200).json({
       message: "Profile picture uploaded successfully",
+      profilePictureUrl
     });
   } catch (error) {
     console.error("Error uploading profile picture:", error);
-    return res
-      .status(500)
-      .json({ message: "Failed to upload profile picture" });
+    return res.status(500).json({ 
+      message: error instanceof Error ? error.message : "Failed to upload profile picture" 
+    });
   }
 };
 

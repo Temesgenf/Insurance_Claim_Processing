@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTheme } from "../Context/ThemeContext";
-import { createClaim } from "../services/claimService";
+import { createClaim, uploadClaimDocument } from "../services/claimService";
 import { getPolicyByPolicyNumber } from "../services/policyService";
 import { getProductById } from "../services/productService";
 import type { Policy } from "./PoliciesPage";
@@ -9,6 +9,7 @@ import type { Product } from "../types/product";
 import AppSidebar from "../components/layout/AppSidebar";
 import ClaimInfoCard from "../components/layout/ClaimInfoCard";
 import PageMeta from "../components/common/PageMeta";
+import { getAllPolicies } from "../services/policyService";
 import {
   FiSearch,
   FiDollarSign,
@@ -17,18 +18,25 @@ import {
   FiCheckCircle,
   FiAlertCircle,
   FiFileText,
-  FiX,
+  FiXCircle,
+  FiFile,
 } from "react-icons/fi";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { motion, AnimatePresence } from "framer-motion";
+import { FileSpreadsheetIcon } from "lucide-react";
+import { AiFillFileText } from "react-icons/ai";
+
+
+
 const NewClaimPage = () => {
   const [showDetails, setShowDetails] = useState(false);
   const { theme } = useTheme();
   const navigate = useNavigate();
- const location = useLocation();
- console.log(location)
+  const location = useLocation();
+  console.log(location);
 
+  // Form state
   const [form, setForm] = useState({
     policyId: "",
     treatmentDetails: "",
@@ -37,48 +45,37 @@ const NewClaimPage = () => {
     lossTime: null as Date | null,
     policyNumber: "",
   });
+
+  // State for policies dropdown
+  const [policies, setPolicies] = useState<Array<{ policyNumber: string; policyId: string }>>([]);
   const [policy, setPolicy] = useState<Policy | null>(null);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [uploadedDocuments, setUploadedDocuments] = useState<File[]>([]);
 
   // Helper functions
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const files = Array.from(e.target.files);
-    setUploadedFiles((prev) => [...prev, ...files]);
-    setImagePreviews((prev) => [
-      ...prev,
-      ...files.map((file) => URL.createObjectURL(file)),
-    ]);
-    console.log(uploadedFiles);
+    console.log(files);
+    setUploadedDocuments(files);
   };
 
   const removeImage = (index: number) => {
-    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
-    setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
+    setUploadedDocuments((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // const formatCurrency = (amount: number) => {
-  //   return new Intl.NumberFormat("en-US", {
-  //     style: "currency",
-  //     currency: "USD",
-  //     minimumFractionDigits: 2,
-  //   }).format(amount);
-  // };
-  
-useEffect(() => {
-  if (location.state?.policyNumber) {
-    setForm({ ...form, policyNumber: location.state.policyNumber });
-    handlePolicySearch();
-  }
-}, [location.state?.policyNumber]);
+  useEffect(() => {
+    if (location.state?.policyNumber) {
+      setForm({ ...form, policyNumber: location.state.policyNumber });
+      handlePolicySearch();
+    }
+  }, [location.state?.policyNumber]);
 
-const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string) => {
     const statusLower = status?.toLowerCase() || "";
     if (theme === "dark") {
       switch (statusLower) {
@@ -105,7 +102,125 @@ const getStatusColor = (status: string) => {
     }
   };
 
-  // Fetch policy only when user searches
+  // useEffect(() => {
+  //   const fetchPolicies = async () => {
+  //     setLoading(true);
+  //     try {
+  //       const response = await getAllPolicies();
+  //       const policiesData = response.data;
+  //       console.log("Policies data:", policiesData);
+  //       const mappedPolicies = policiesData.map((policy: any) => ({
+  //         policyId: policy.policyId,
+  //         policyNumber: policy.policyNumber,
+  //         productId: policy.productId,
+  //         status: policy.status,
+  //         startDate: policy.startDate,
+  //         endDate: policy.endDate,
+  //       }));
+  //       setPolicies(mappedPolicies);
+  //     } catch (error) {
+  //       console.error("Error fetching policies:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchPolicies();
+  // }, []);
+
+  // Fetch user's policies when component mounts
+  useEffect(() => {
+    const fetchPolicies = async () => {
+      setLoading(true);
+      try {
+        const response = await getAllPolicies();
+        console.log(response.data)
+        if (response.data && Array.isArray(response.data)) {
+          const activePolicies = response.data
+            // .filter((policy: Policy) => policy.status?.toLowerCase() === "pending")
+            .map((policy: Policy) => ({
+              policyNumber: policy.policyNumber,
+              policyId: policy.policyId,
+              displayText: `${policy.policyNumber}`,
+            }));
+           
+          setPolicies(activePolicies);
+
+          // If coming from a specific policy, select it
+          if (location.state?.policyNumber) {
+            const policy = activePolicies.find((p: any) => p.policyNumber === location.state.policyNumber);
+            if (policy) {
+              setForm((prev) => ({
+                ...prev,
+                policyNumber: policy.policyNumber,
+                policyId: policy.policyId,
+              }));
+              fetchPolicyDetails(policy.policyNumber);
+            }
+          } else if (activePolicies.length > 0) {
+            // Auto-select first policy
+            setForm((prev) => ({
+              ...prev,
+              policyNumber: activePolicies[0].policyNumber,
+              policyId: activePolicies[0].policyId,
+            }));
+            fetchPolicyDetails(activePolicies[0].policyNumber);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching policies:", error);
+        setError("Failed to load your policies. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPolicies();
+  }, [location.state?.policyNumber]);
+
+  // Fetch policy details when selected policy changes
+  const fetchPolicyDetails = async (policyNumber: string) => {
+    if (!policyNumber) return;
+
+    setLoading(true);
+    try {
+      const response = await getPolicyByPolicyNumber(policyNumber);
+      if (response.data) {
+        setPolicy(response.data);
+
+        if (response.data && response.data.productId) {
+          try {
+            const prodRes = await getProductById(Number(response.data.productId));
+            setProduct(prodRes.data);
+          } catch {
+            setProduct(null);
+          }
+        } else {
+          setProduct(null);
+        }
+      } else {
+        setError("Failed to load policy details");
+      }
+    } catch (err) {
+      console.error("Error fetching policy details:", err);
+      setError("Error loading policy details");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle policy selection change
+  const handlePolicyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedPolicy = policies.find((p) => p.policyNumber === e.target.value);
+    if (selectedPolicy) {
+      setForm((prev) => ({
+        ...prev,
+        policyNumber: selectedPolicy.policyNumber,
+        policyId: selectedPolicy.policyId,
+      }));
+      fetchPolicyDetails(selectedPolicy.policyNumber);
+    }
+  };
+
   const handlePolicySearch = async () => {
     setError("");
     setPolicy(null);
@@ -148,9 +263,7 @@ const getStatusColor = (status: string) => {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -175,6 +288,12 @@ const getStatusColor = (status: string) => {
     setError("");
 
     // Validation
+    if (!form.policyNumber) {
+      setError("Please select a policy");
+      setSubmitting(false);
+      return;
+    }
+
     if (!form.treatmentDetails) {
       setError("Please provide treatment details.");
       setSubmitting(false);
@@ -200,16 +319,32 @@ const getStatusColor = (status: string) => {
     }
 
     try {
-      await createClaim({
+      // Create the claim first
+      const claimResponse = await createClaim({
         policyId: policy?.policyId || "",
         amountRequested: form.amountRequested,
         lossDate: form.lossDate as Date,
         lossTime: form.lossTime as Date,
         treatmentDetails: form.treatmentDetails,
       });
+      
+      const newClaim = claimResponse.data;
+      
+      // If we have documents, upload them
+      if (uploadedDocuments.length > 0) {
+        try {
+          for (const document of uploadedDocuments) {
+            await uploadClaimDocument(newClaim.claimId, document);
+          }
+          console.log("Documents uploaded successfully");
+        } catch (uploadError) {
+          console.error("Error uploading documents:", uploadError);
+          // Don't fail the whole process if document upload fails
+        }
+      }
+
       setSuccess(true);
-    
-     
+
       setTimeout(() => {
         navigate("/user/claims");
       }, 2000);
@@ -356,19 +491,34 @@ const getStatusColor = (status: string) => {
                         >
                           <FiFileText className="w-5 h-5" />
                         </div>
-                        <input
-                          type="text"
-                          placeholder="Enter Policy Number"
+                        <select
+                          id="policyNumber"
+                          value={form.policyNumber}
+                          onChange={handlePolicyChange}
                           className={`w-full pl-10 pr-4 py-3 rounded-lg ${
                             theme === "dark"
                               ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
                               : "bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-blue-600 focus:border-blue-600"
                           } border transition-colors`}
-                          value={form.policyNumber}
-                          onChange={(e) =>
-                            setForm({ ...form, policyNumber: e.target.value })
-                          }
-                        />
+                          required
+                          disabled={loading || policies.length === 0}
+                        >
+                          {policies.length === 0 ? (
+                            <option value="">No active policies found</option>
+                          ) : (
+                            policies.map((policy) => (
+                              <option key={policy.policyNumber} value={policy.policyNumber} className="pr-4">
+                                {policy.policyNumber}
+                              </option>
+                            ))
+                          )}
+                        </select>
+                        {policies.length === 0 && (
+                          <p className="mt-2 text-sm text-yellow-600 dark:text-yellow-400">
+                            You don't have any active policies to file a claim
+                            against.
+                          </p>
+                        )}
                       </div>
 
                       <motion.button
@@ -474,19 +624,34 @@ const getStatusColor = (status: string) => {
                           >
                             <FiFileText className="w-4 h-4" />
                           </div>
-                          <input
-                            type="text"
+                          <select
+                            id="policyNumber"
                             value={form.policyNumber}
-                            onChange={(e) =>
-                              setForm({ ...form, policyNumber: e.target.value })
-                            }
+                            onChange={handlePolicyChange}
                             className={`w-full pl-9 pr-4 py-2 rounded-lg text-sm ${
                               theme === "dark"
                                 ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
                                 : "bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-blue-600 focus:border-blue-600"
                             } border transition-colors`}
-                            placeholder="Policy Number"
-                          />
+                            required
+                            disabled={loading || policies.length === 0}
+                          >
+                            {policies.length === 0 ? (
+                              <option value="">No active policies found</option>
+                            ) : (
+                              policies.map((policy) => (
+                                <option key={policy.policyNumber} value={policy.policyNumber}>
+                                  {policy.policyNumber}
+                                </option>
+                              ))
+                            )}
+                          </select>
+                          {policies.length === 0 && (
+                            <p className="mt-2 text-sm text-yellow-600 dark:text-yellow-400">
+                              You don't have any active policies to file a claim
+                              against.
+                            </p>
+                          )}
                         </div>
                         <motion.button
                           whileHover={{ scale: 1.05 }}
@@ -876,25 +1041,64 @@ const getStatusColor = (status: string) => {
                           </p>
                         </div>
                       </div>
-                      {imagePreviews.length > 0 && (
+                      {uploadedDocuments.length > 0 && (
                         <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                          {imagePreviews.map((preview, index) => (
-                            <div key={index} className="relative group">
-                              <img
-                                src={preview}
-                                alt={`preview ${index}`}
-                                className="h-32 w-full object-cover rounded-md"
-                              />
-                              <button
-                                type="button"
-                                onClick={() => removeImage(index)}
-                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                                aria-label="Remove image"
-                              >
-                                <FiX className="w-3 h-3" />
-                              </button>
-                            </div>
-                          ))}
+                         {uploadedDocuments.map((doc, index) => {
+  const fileType = doc.name.split('.').pop()?.toLowerCase();
+  const isImage = ['jpg', 'jpeg', 'png', 'gif'].includes(fileType || '');
+  const isPdf = fileType === 'pdf';
+  const isExcel = ['xls', 'xlsx', 'csv'].includes(fileType || '');
+  const isVideo = ['mp4', 'webm', 'ogg'].includes(fileType || '');
+
+  return (
+    <div key={index} className="relative group bg-gray-100 rounded-md p-2">
+      <div className="h-32 w-full flex items-center justify-center overflow-hidden">
+        {isImage ? (
+          <img 
+            src={URL.createObjectURL(doc)} 
+            alt="Document preview" 
+            className="max-h-full max-w-full object-contain"
+          />
+        ) : isPdf ? (
+          <div className="flex flex-col items-center justify-center p-4 text-center">
+            <AiFillFileText className="w-12 h-12 text-red-500 mb-2" />
+            <span className="text-xs font-medium text-gray-700 truncate max-w-full">
+              {doc.name}
+            </span>
+          </div>
+        ) : isExcel ? (
+          <div className="flex flex-col items-center justify-center p-4 text-center">
+            <FileSpreadsheetIcon className="w-12 h-12 text-green-600 mb-2" />
+            <span className="text-xs font-medium text-gray-700 truncate max-w-full">
+              {doc.name}
+            </span>
+          </div>
+        ) : isVideo ? (
+          <video 
+            className="max-h-full max-w-full"
+            controls
+            src={URL.createObjectURL(doc)}
+          />
+        ) : (
+          <div className="flex flex-col items-center justify-center p-4 text-center">
+            <FiFile className="w-12 h-12 text-gray-400 mb-2" />
+            <span className="text-xs font-medium text-gray-700 truncate max-w-full">
+              {doc.name}
+            </span>
+          </div>
+        )}
+      </div>
+      <button
+        type="button"
+        onClick={() => removeImage(index)}
+        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+        aria-label="Remove document"
+      >
+        <FiXCircle className="w-3 h-3" />
+      </button>
+    </div>
+  );
+})}
                         </div>
                       )}
                     </div>
@@ -987,4 +1191,3 @@ const getStatusColor = (status: string) => {
 };
 
 export default NewClaimPage;
-

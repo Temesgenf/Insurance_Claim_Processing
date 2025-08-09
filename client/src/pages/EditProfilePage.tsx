@@ -290,14 +290,9 @@ const EditProfilePage: React.FC = () => {
                       onMouseLeave={() => setIsHoveringPicture(false)}
                     >
                       <div className="relative">
-                        {user?.profilePicture ? (
+                        {user?.profilePictureUrl ? (
                           <img
-                            src={`data:image/jpeg;base64,${btoa(
-                              new Uint8Array((user.profilePicture as any).data).reduce(
-                                (data, byte) => data + String.fromCharCode(byte),
-                                ""
-                              )
-                            )}`}
+                            src={user.profilePictureUrl}
                             alt="Current profile"
                             className="w-32 h-32 rounded-full object-cover border-4 border-gradient-to-r from-blue-500 to-purple-500 shadow-2xl transition-all duration-300 group-hover:scale-105"
                           />

@@ -29,12 +29,9 @@ export class User {
   @Column({ default: false })
   readonly isAdmin!: boolean;
 
-  // New fields for profile picture
-  @Column({ type: "longblob", nullable: true })
-  readonly profilePicture!: Buffer;
-
+  // Cloudinary URL for profile picture
   @Column({ nullable: true })
-  readonly profilePictureType!: string;
+  readonly profilePictureUrl!: string;
 
   @Column()
   readonly createdAt!: Date;

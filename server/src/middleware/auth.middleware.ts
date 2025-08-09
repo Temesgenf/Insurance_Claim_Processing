@@ -11,14 +11,24 @@ const storage = multer.memoryStorage();
 const upload = multer({
   storage,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB
+    fileSize: 10 * 1024 * 1024, // 10MB
   },
   fileFilter: (req, file, cb) => {
-    const allowedTypes = ["image/jpeg", "image/png"];
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "application/pdf",
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "video/mp4",
+      "video/avi",
+      "video/quicktime"
+    ];
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error("Invalid file type. Only JPEG and PNG are allowed."));
+      cb(new Error("Invalid file type. Only images, PDFs, Excel files, and videos are allowed."));
     }
   },
 });
@@ -84,3 +94,5 @@ export const requireAdmin = (
 };
 
 export const updateProfilePictureMiddleware = upload.single("profilePicture") as any;
+
+export const uploadClaimDocumentMiddleware = upload.single("claimDocument") as any;

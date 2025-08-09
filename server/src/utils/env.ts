@@ -16,4 +16,7 @@ export const env = {
   EMAIL_FROM: process.env.EMAIL_FROM || "",
   BREVO_API_KEY: process.env.BREVO_API_KEY || "",
   API_BASE_URL: process.env.API_BASE_URL || "http://localhost:5173",
+  CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME || "",
+  CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY || "",
+  CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET || "",
 };
